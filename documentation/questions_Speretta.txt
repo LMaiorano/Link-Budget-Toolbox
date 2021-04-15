@@ -1,0 +1,3 @@
+Questions for next email/meeting with Speretta:
+
+	- Is there a preferred VCS that the TU wants us using? Private GitHub vs TU GitLab? (Possible easy transfer of development history)
