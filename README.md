@@ -5,7 +5,7 @@
 
 
 
-# Git Commands
+## Git Commands
 
 ### ALWAYS START each work session with: <kbd>git pull</kbd>
 
