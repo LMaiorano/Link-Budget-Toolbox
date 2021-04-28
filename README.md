@@ -2,7 +2,9 @@
 
 [![GitHub license](https://img.shields.io/github/license/LMaiorano/Link-Budget-Toolbox)](https://github.com/LMaiorano/Link-Budget-Toolbox/blob/master/LICENSE)
 
+A modular Python alternative to STK to easily calculate satellite link budgets
 
+More documentation to follow...
 
 
 ## Git Commands
