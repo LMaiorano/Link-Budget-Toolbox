@@ -1,3 +1,10 @@
+# Satellite Link Budget Toolbox
+
+[![GitHub license](https://img.shields.io/github/license/LMaiorano/Link-Budget-Toolbox)](https://github.com/LMaiorano/Link-Budget-Toolbox/blob/master/LICENSE)
+
+
+
+
 # Git Commands
 
 ### ALWAYS START each work session with: <kbd>git pull</kbd>
