@@ -23,7 +23,7 @@ If error:
         - Confirm merge with: <kbd>ESC</kbd>, <kbd>:</kbd>, <kbd>wq</kbd>, <kbd>ENTER</kbd>
     * If merge failed: 
         - Resolve conflicts in the python files
-        - Re-run affected files
+        - Re-run affected files (check for new bugs)
         - <kbd>git add .</kbd>
         - <kbd>git commit -m "Merge description"</kbd>
 
