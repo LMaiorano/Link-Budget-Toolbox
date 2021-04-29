@@ -7,7 +7,9 @@ A modular Python alternative to STK to easily calculate satellite link budgets
 More documentation to follow...
 
 
-## Git Commands
+## Git Command Reference
+
+This is a reference section included by default for new github repositories. The following commands are used in "Git Bash":
 
 ### ALWAYS START each work session with: <kbd>git pull</kbd>
 
