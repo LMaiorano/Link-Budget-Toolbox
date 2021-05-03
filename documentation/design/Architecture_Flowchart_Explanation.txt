@@ -1,0 +1,10 @@
+Requirements user interface:
+-Make idiot proof: ensure no conflicting values as output (Input method defined by user)
+-Output is nested dictionary (dictionary of link elemets with each a dictionary of parameters and their values)
+
+Back-end:
+In the main.py file the elements are imported. The dictionary from the user-side is loaded in. The link element classes are built up as follows:
+Use a generic link element parent class and specialize it for each specific link element in its own link element child class. The generic link element parent class is a seperate file, 
+as well as each specialized link element child class.
+Based on input type by user on the user-side via the dictionary imported in the main.py, the right calculation is executed in the link element child class file.
+The gain/loss outputs are returned to the main file and summed, which is then put back into a file for download and an output for the GUI.
