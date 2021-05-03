@@ -1,0 +1,9 @@
+Signal source (EIRP)
+
+General loss block
+
+General gain block
+
+Radio receiver
+
+Link margin
