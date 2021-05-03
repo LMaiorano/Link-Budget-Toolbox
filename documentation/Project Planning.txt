@@ -1,0 +1,46 @@
+Discussion Points:
+	- Planning
+	- Distribution of work
+	- GitHub Usage
+	- Unit Testing
+
+
+Work Packages:
+	- Building LinkElement Classes (implementations of the calculations)
+	- Main Process program to load/save configs + run calculations
+	- User Interface
+	- Comprehensive Testing
+	- Documentation
+
+
+Proposed Milestones (completed by Monday Meeting):
+	3 May 	- Today
+
+		|			1 WEEK					|
+		|   Architecture 					|
+		|  	Feature definition				|
+		| 	Object Oriented Programming		|	
+	10 May 	- Requirements Defined, features prioritized
+
+		|			1 WEEK					|
+		|	Implementation of main modules:	|
+		|		- UI 						|
+		|		- Backend					|	
+		|		- Testing					|
+		|		- Reference data			|
+		|		- etc						|
+		|									|	
+	24 May	- Minimum Viable Product (Base requirements met)
+
+		|			2 WEEKS					|
+		|	Unit Testing					|
+		|	Verification & Validation		|
+		|	New features					|
+		|									|
+	7 June 	- Feature Freeze 
+
+		|			1 WEEK					|
+		|	Code Cleanup    				|
+		|	Final Documentation 			|
+		|									|
+	13 June - Final Deadline 
