@@ -17,10 +17,14 @@ Proposed Milestones (completed by Monday Meeting):
 	3 May 	- Today
 
 		|			1 WEEK					|
-		|   Architecture 					|
-		|  	Feature definition				|
-		| 	Object Oriented Programming		|	
-	10 May 	- Requirements Defined, features prioritized
+		|   Architecture 					|	luigi + jesper
+				- module Requirements 		|	
+				- updated flowchart			|	
+		|  	LinkElement defs	+ priority	|	willem + nicolas
+		| 	Object Oriented Programming		| 	everyone
+		| 	Documentation Setup + template	|	luigi
+		|									|	
+	10 May 	- Requirements Defined, Link Elements prioritized
 
 		|			1 WEEK					|
 		|	Implementation of main modules:	|
@@ -30,13 +34,19 @@ Proposed Milestones (completed by Monday Meeting):
 		|		- Reference data			|
 		|		- etc						|
 		|									|	
-	24 May	- Minimum Viable Product (Base requirements met)
+	24 May	- Basic Functioning Framework (Modularity requirements met)
+
+		Showcase meeting w/ Stefano
 
 		|			2 WEEKS					|
 		|	Unit Testing					|
 		|	Verification & Validation		|
-		|	New features					|
+		|	New LinkElements				|
+		| 	Polish UI 						|
 		|									|
+	31 May 	- Meeting w/ Stefano 
+		Check that there are no significant changes needed
+
 	7 June 	- Feature Freeze 
 
 		|			1 WEEK					|
