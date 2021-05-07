@@ -7,8 +7,10 @@ Received Power = EIRP (dB) - General loss (dB) + General gain (dB) + Receiver to
 Link Elements:
 ---------------------------
 Element: Signal source (EIRP)
-parameters:
-formula:
+parameters: P, Antenna Gain Ga, antenna efficiency n, antenna area A, wavelength lambda, Losses
+formula: Pin(dB) = P(dB)
+	EIRP(dBW) = 10 log_10(P/1W) + Ga - Losses
+	Antenna gain: Ga = n * ( 4 PI A)/lambda^2
 ---------------------------
 ---------------------------
 Element: General loss block
