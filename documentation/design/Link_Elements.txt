@@ -1,3 +1,5 @@
+Received Power = EIRP (dB) - General loss (dB) + General gain (dB) + Receiver total loss or gain (dB)
+
 Signal source (EIRP)
 
 General loss block
