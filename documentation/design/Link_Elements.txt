@@ -1,7 +1,7 @@
 Link Elements Order:
 -----------------------------------------------------------------------------------------------------
 Total equation:
-Received Power = EIRP (dB) - General loss (dB) + General gain (dB) + Receiver total loss or gain (dB)
+Received Power = EIRP (dB) - Path loss (dB)- General loss (dB) + General gain (dB) + Receiver total loss or gain (dB)
 -----------------------------------------------------------------------------------------------------
 
 Link Elements:
@@ -11,8 +11,13 @@ parameters:
 formula:
 ---------------------------
 ---------------------------
+Element: Path Loss
+parameters:
+formula:
+---------------------------
+---------------------------
 Element: General loss block
-parameters: pointing loss
+parameters: pointing loss,
 formula:
 ---------------------------
 ---------------------------
