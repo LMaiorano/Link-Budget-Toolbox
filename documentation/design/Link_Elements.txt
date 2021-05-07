@@ -30,4 +30,8 @@ Output: P(dB)
 ---------------------------
 ---------------------------
 Link margin
+parameters: P, R,K,Ts
+formula:Pin(dB) = P(dB)
+	SNR = Pin(dB)-R-k-Ts?????
+Output: Pin(dB), SNR
 ---------------------------
