@@ -1,11 +1,30 @@
+Link Elements Order:
+-----------------------------------------------------------------------------------------------------
+Total equation:
 Received Power = EIRP (dB) - General loss (dB) + General gain (dB) + Receiver total loss or gain (dB)
+-----------------------------------------------------------------------------------------------------
 
-Signal source (EIRP)
-
-General loss block
-
-General gain block
-
-Radio receiver
-
+Link Elements:
+---------------------------
+Element: Signal source (EIRP)
+parameters:
+formula:
+---------------------------
+---------------------------
+Element: General loss block
+parameters:
+formula:
+---------------------------
+---------------------------
+Element: General gain block
+parameters:
+formula:
+---------------------------
+---------------------------
+Element: Radio receiver
+parameters:
+formula:
+---------------------------
+---------------------------
 Link margin
+---------------------------
