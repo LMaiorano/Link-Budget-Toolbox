@@ -22,8 +22,8 @@ formula:
 ---------------------------
 ---------------------------
 Element: Radio receiver
-parameters:
-formula:
+parameters: Pin(dB), Receiving Antenna Gain Gr, Reception Feeder Loss Lr,
+formula: Pout(dB) = Pin(dB) + Gr(dB) - Lr(dB)
 ---------------------------
 ---------------------------
 Link margin
