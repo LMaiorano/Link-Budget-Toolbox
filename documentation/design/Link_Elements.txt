@@ -7,8 +7,12 @@ Received Power = EIRP (dB) - Path loss (dB)- General loss (dB) + General gain (d
 Link Elements:
 ---------------------------
 Element: Signal source (EIRP)
-parameters:
-formula:
+parameters: P, Antena Gain Ga, Losses, Antenna Area A, radiation efficiency n, wavelength lambda
+formula: Pin(dBW) = P(dBW)
+	EIRP(dBW) = 10 log_10(P/1W) + Ga - Losses
+	Optional: Antenna Gain: Ga = n (4*PI*A)/(lambda^2)
+	P(dBW) = EIRP(dBW)
+Output: P(dBW)
 ---------------------------
 ---------------------------
 Element: Path Loss
@@ -18,17 +22,17 @@ formula:
 ---------------------------
 Element: General loss block
 parameters: pointing loss,
-formula:
+formula: -
 ---------------------------
 ---------------------------
 Element: General gain block
 parameters:
-formula:
+formula: -
 ---------------------------
 ---------------------------
 Element: Radio receiver
 parameters: P, Receiving Antenna Gain Gr, Reception Feeder Loss Lr, optional Dr, optional eta, optional lambda
-formula:Pin(dB) = P(dB)
+formula:Pin(dBW) = P(dBW)
 	optional: Gr = (Dr*pi)^2*eta/(lambda^2)
 	optional: Gr(dB) = 10*log10(Gr/1)
 	Pout(dB) = Pin(dB) + Gr(dB) - Lr(dB)
