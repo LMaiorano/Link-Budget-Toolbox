@@ -35,7 +35,7 @@ class TxElement(LinkElement):
         self.parameters = parameters
         self.process()
 
-    def process(self)
+    def process(self):
         # Tx Specific calculations
         self.gain = sum(self.parameters)
 
@@ -58,7 +58,7 @@ class FsElement(LinkElement):
         self.parameters = parameters
         self.process()
 
-    def process(self)
+    def process(self):
         # Tx Specific calculations
         self.gain = sum(self.parameters)
         self.loss = sum(self.parameters)
@@ -66,14 +66,15 @@ class FsElement(LinkElement):
 
 # We would create as 
 
+if __name__ == '__main__':
 
-# Example Usage
-basic_elem = LinkElement('Cable', gain=5, loss=0)
+    # Example Usage
+    basic_elem = LinkElement('Cable', gain=5, linktype="CABLE")
 
-tx_elem = TxElement("Ground to S/C", parameters=tx_parameters)
+    # tx_elem = TxElement("Ground to S/C", parameters=tx_parameters)
+    #
+    # fs_elem = FsElement("Space", parameters=tx_parameters)
 
-fs_elem = FsElement("Space", parameters=tx_parameters)
 
-
-# Sum of all gains
-tot_gain = basic_elem.get_gain() + tx_elem.get_gain() + fs_elem.get_gain()
+    # Sum of all gains
+    # tot_gain = basic_elem.get_gain() + tx_elem.get_gain() + fs_elem.get_gain()
