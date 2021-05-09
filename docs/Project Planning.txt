@@ -22,15 +22,16 @@ Proposed Milestones (completed by Monday Meeting):
 				- updated flowchart			|	
 		|  	LinkElement defs	+ priority	|	willem + nicolas
 		| 	Object Oriented Programming		| 	everyone
-		| 	Documentation Setup + template	|	luigi
+		| 	Documentation    NumPy/SciPy	|	luigi
 		|									|	
 	10 May 	- Requirements Defined, Link Elements prioritized
 
 		|			1 WEEK					|
 		|	Implementation of main modules:	|
-		|		- UI 						|
-		|		- Backend					|	
-		|		- Testing					|
+		|		- UI 						|   Nicolas + Luigi
+		|		- Backend
+					- process 					Jesper
+					- link element classes	|	Willem 
 		|		- Reference data			|
 		|		- etc						|
 		|									|	
