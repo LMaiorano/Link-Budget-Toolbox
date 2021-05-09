@@ -8,7 +8,7 @@ author: lmaio
 """
 
 # Two ways of importing the link element classes
-import project.link_element as le       # Numpy style (import numpy as np)
+import project.link_element as le       # Cleaner style (import numpy as np)
 from project.link_element import *      # Also valid
 
 
