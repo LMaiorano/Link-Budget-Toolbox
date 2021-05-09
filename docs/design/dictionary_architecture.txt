@@ -1,0 +1,28 @@
+# dictionary architecture
+(only give dictionary keys if a value(s) is present)
+
+settings 														(std_naming)
+	- Bominal
+	- adv
+	-etc..
+
+generic_values (variables that need to be used many times) 		(std_naming)
+	- orbit_alt
+	- 
+
+elements 														(std_naming)
+	- element1_name
+		- link_type 											(std_naming)
+		- input_type ('gainloss' or 'paramset') 				(std_naming)
+		- gain_loss = value 									(std_naming)
+		- parameters: 		 									(std_naming)
+			- param1 = value 
+			- param2 = value
+	
+	- element2_name
+		- link_type 											(std_naming)
+		- input_type ('gainloss' or 'paramset') 				(std_naming)
+		- gain_loss = value 									(std_naming)
+		- parameters: 		 									(std_naming)
+			- param1 = value 
+			- param2 = value
