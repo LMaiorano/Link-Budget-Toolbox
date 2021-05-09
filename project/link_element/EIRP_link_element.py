@@ -4,7 +4,7 @@ Created on Sun May  9 14:15:31 2021
 
 @author: Willem van Lynden
 """
-import .link_element.py
+from .generic_element import LinkElement
 
 class EIRPElement(LinkElement):
     '''Specific type of LinkElement for the EIRP of the spacecraft,
@@ -25,3 +25,10 @@ class EIRPElement(LinkElement):
     def process(self):
         # Tx Specific calculations
         self.gain = sum(self.parameters)
+
+
+
+if __name__ == '__main__':
+    # Put any code here you want to use to test the class
+    # (like a scratch pad to test stuff while you're working)
+    print('Good Busy Willem! :P')

@@ -14,6 +14,10 @@ class LinkElement:
         self.linktype = linktype
         self.gain = gain
 
+    def __str__(self):
+        return f'{self.name} is a {self.linktype} LinkElement, with a gain of ' \
+               f'{self.gain}dB'
+
     def get_gain(self):
         # Return net gain (used by final process step)
         return self.gain
@@ -52,7 +56,7 @@ class FsElement(LinkElement):
     def __init__(self, name, parameters):
         # Run the initialization of parent LinkElement, with gain and loss 
         #   set initially as unknown (None)
-        super().__init__(name, gain=None, loss=None)
+        super().__init__(name, gain=None)
 
         # Add attributes that are unique to TxElement
         self.parameters = parameters
@@ -78,3 +82,5 @@ if __name__ == '__main__':
 
     # Sum of all gains
     # tot_gain = basic_elem.get_gain() + tx_elem.get_gain() + fs_elem.get_gain()
+
+    print('finished')
