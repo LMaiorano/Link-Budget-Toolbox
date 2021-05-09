@@ -15,13 +15,13 @@ formula: Pin(dBW) = P(dBW)
 Output: P(dBW)
 ---------------------------
 ---------------------------
-Element: Path Loss
+Element: Path Loss (free space + ???)
 parameters:
 formula:
 ---------------------------
 ---------------------------
 Element: General loss block
-parameters: pointing loss,
+parameters: pointing loss, Attenuation losses
 formula: -
 ---------------------------
 ---------------------------
