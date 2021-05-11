@@ -27,8 +27,7 @@ class SC_TX_Ant_LinkElement(LinkElement):
         # SC_Tx_Antenna Specific calculations, using general Gpeak
         #   formulation. Does not cover specific antenna models yet
         Gtpeak = self.efficiency*(np.pi*self.diameter/wavelength)**2  #[-], peak gain
-        print(Gtpeak)
-        self.gain = super().dB(Gtpeak)
+        self.gain = self.dB(Gtpeak)
 
 
 

@@ -20,7 +20,7 @@ class LinkElement:
         return f'{self.name} is a {self.linktype} LinkElement, with a gain of ' \
                f'{self.gain}dB'
                
-    def dB(value):
+    def dB(self,value):
         #Return value in decibels (used in all elements for defining the gain)
         return 10*np.log10(value/1)
 
