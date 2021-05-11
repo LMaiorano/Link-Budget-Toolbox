@@ -4,7 +4,7 @@ Created on Tue May 11 13:15:08 2021
 
 @author: Willem van Lynden
 """
-from .generic_element import LinkElement
+from project.link_element import LinkElement
 import numpy as np
 
 class GS_RX_Ant_LinkElement(LinkElement):

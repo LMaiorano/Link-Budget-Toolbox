@@ -4,7 +4,7 @@ Created on Sun May  9 14:15:31 2021
 
 @author: Willem van Lynden
 """
-from .generic_element import LinkElement
+from project.link_element import LinkElement
 
 class EIRPElement(LinkElement):
     '''Specific type of LinkElement for the EIRP of the spacecraft,
