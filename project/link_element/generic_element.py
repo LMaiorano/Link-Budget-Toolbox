@@ -8,6 +8,8 @@ class LinkElement:
     If parameters are used, then the respective child Element should be created 
     which will process the parameters accordingly
     '''
+    linktypes = ["GENERIC", 'FREESPACE'] # JUST AN EXAMPLE
+
     def __init__(self, name, linktype, gain):
         # The basic attributes that all types Elements must have
         self.name = name
