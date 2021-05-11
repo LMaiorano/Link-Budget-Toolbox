@@ -32,7 +32,7 @@ class GS_RX_Ant_LinkElement(LinkElement):
     def process(self, efficiency, diameter, wavelength):
         # GS_RX_Antenna Specific calculations, does not cover specific antenna models yet
         Gr = efficiency*(diameter*np.pi/wavelength)**2  #[-], receiver gain
-        self.gain = dB(Gr)
+        self.gain = self.dB(Gr)
 
 
 
