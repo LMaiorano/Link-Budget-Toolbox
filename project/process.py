@@ -13,21 +13,21 @@ import project.link_element as le
 #TODO: Import dictionary to GUI
 user_data = {'setting' : 'nominal',
              'generic_values' : {'altitude':800},
-             'elements' : {'spacecraft_transmitter' : {'link_type' : 'TRANSMITTER',
-                                                       'input_type' : 'gainloss',
-                                                       'parameters' : {'parameter1' : None,
-                                                                       'parameter2' : None,
-                                                                       'parameter3' : None}},
-                           'free_space' : {'link_type' : 'FREE_SPACE',
-                                                       'input_type' : 'gainloss',
-                                                       'parameters' : {'parameter1' : None,
-                                                                       'parameter2' : None,
-                                                                       'parameter3' : None}},
-                           'ground_station_receiver': {'link_type': 'RECEIVER',
-                                                       'input_type': 'gainloss',
-                                                       'parameters': {'parameter1': None,
-                                                                      'parameter2': None,
-                                                                      'parameter3': None}}
+             'elements' : {'spacecraft_transmitter' : {'link_type' :    'TRANSMITTER',
+                                                       'input_type' :   'gainloss',
+                                                       'parameters' :  {'parameter1' : None,
+                                                                        'parameter2' : None,
+                                                                        'parameter3' : None}},
+                           'free_space' :              {'link_type' :   'FREE_SPACE',
+                                                       'input_type' :   'gainloss',
+                                                       'parameters' :  {'parameter1' : None,
+                                                                        'parameter2' : None,
+                                                                        'parameter3' : None}},
+                           'ground_station_receiver': {'link_type':     'RECEIVER',
+                                                       'input_type':    'gainloss',
+                                                       'parameters':   {'parameter1': None,
+                                                                       'parameter2': None,
+                                                                       'parameter3': None}}
                            }
              }
 
