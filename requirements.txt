@@ -1,1 +1,4 @@
 brython
+numpy
+flake8
+pytest

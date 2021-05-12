@@ -2,7 +2,7 @@
 (only give dictionary keys if a value(s) is present)
 
 settings 														(std_naming)
-	- Bominal
+	- Nominal
 	- adv
 	-etc..
 
