@@ -1,4 +1,9 @@
 brython
+browser
 numpy
+
+
 flake8
 pytest
+
+pyyaml

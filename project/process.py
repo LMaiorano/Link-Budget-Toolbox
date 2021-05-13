@@ -9,6 +9,8 @@ author: Jesper Frijns
 
 # Two ways of importing the link element classes
 import project.link_element as le
+from pathlib import Path
+import yaml
 
 #TODO: Import dictionary to GUI
 
@@ -39,6 +41,31 @@ user_data = {'setting' : {'case_type' : 'nominal'},
              }
 
 
+def save_to_yaml(d:dict, filename:str):
+    '''Save dictionary to yaml, with a specified filename
+
+    Parameters
+    ----------
+    d : dict
+        Dictionary to save to YAML
+    filename : str
+        Filename of YAML. If only a filename is passed, the save location
+        defaults to "./configs/". This can be overwritten if a filepath is given
+    '''
+    # Convert to Path object, makes manipulation easier in the future
+    filepath = Path(filename)
+
+    if filepath.suffix != '.yaml': # Wrong suffix given
+        filepath = Path(filepath.parent, filepath.stem+'.yaml')
+
+    if len(filepath.parts) == 1: # Only a filename is given, change save directory to default
+        filepath = Path('./configs', filepath.name)
+
+    # Save data to YAML
+    with open(filepath, 'w') as f:
+        yaml.dump(d, f)
+
+
 
 
 if __name__ == '__main__':
@@ -61,5 +88,10 @@ if __name__ == '__main__':
     eirp_example = le.EIRPElement('EIRP Example', parameters=[5, 23])
 
     print(generic)
+
+    ## Save dictionary to yaml
+    # (luigi needed this quick for the gui, it's not necessary for the overall process)
+    save_to_yaml(user_data, 'example_config')
+
 
 
