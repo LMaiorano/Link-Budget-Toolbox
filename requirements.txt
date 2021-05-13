@@ -6,3 +6,7 @@ flake8
 pytest
 
 pyyaml
+
+pyqt5
+pyqt5-tools
+loguru
