@@ -17,6 +17,9 @@ class SC_TX_Ant_LinkElement(LinkElement):
     def __init__(self, name, antenna_efficiency, antenna_diameter):
         # Run the initialization of parent LinkElement, with gain and loss 
         #   set initially as unknown (None)
+        # TODO: Make sure gain is included as input and not set to zero but updated through process if other params are
+        # given
+        # TODO: base calculation methods on input_type given (only gain_loss/parameter set x/ param set y etc..
         super().__init__(name, linktype='SC_TX_ANT', gain=0)
 
         # Add attributes that are unique to TxElement

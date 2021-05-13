@@ -19,20 +19,20 @@ import yaml
 # This is a temporary dictionary. In the end the dictionary should be filled in automatically based on user input.
 user_data = {'setting' : {'case_type' : 'nominal'},
              'generic_values' : {'altitude':800},
-             'elements' : {'SC_TX_Ant' :              {'link_type'  :   'TRANSMITTER',
-                                                       'input_type' :   'gainloss',
+             'elements' : {'SC_TX_Ant' :              {'link_type'  :   'TX',
+                                                       'input_type' :   'gain_loss',
                                                        'gain_loss'  :    10,
                                                        'parameters' :  {'parameter1' : None,
                                                                         'parameter2' : None,
                                                                         'parameter3' : None}},
                            'free_space' :             {'link_type' :    'FREE_SPACE',
-                                                       'input_type' :   'gainloss',
+                                                       'input_type' :   'gain_loss',
                                                        'gain_loss' :     -8,
                                                        'parameters' :  {'parameter1' : None,
                                                                         'parameter2' : None,
                                                                         'parameter3' : None}},
-                           'GS_RX_Ant':               {'link_type'  :   'RECEIVER',
-                                                       'input_type' :   'gainloss',
+                           'GS_RX_Ant':               {'link_type'  :   'RX',
+                                                       'input_type' :   'gain_loss',
                                                        'gain_loss'  :    2,
                                                        'parameters' :  {'parameter1' : None,
                                                                         'parameter2' : None,
@@ -70,8 +70,10 @@ def save_to_yaml(d:dict, filename:str):
 
 if __name__ == '__main__':
     # TODO: Read out dictionary and check for linktypes
+    # call class, give gain, all parameter types and input_type
     # TODO: Based on linktypes, call link elements
     # TODO: Get gainloss from link elements
+    # TODO: Decide on if EIRP should be a class or calculated in process.py
     for i in user_data['elements']:
         # Access seperate link elements one by one, check for input_type and call with correct variables each link
         # element file.
@@ -80,11 +82,10 @@ if __name__ == '__main__':
         #TODO: Make sure that all link element classes are in a seperate file
 
     # TODO: Sum link elements
-    # TODO: Decide on export file (JSON, YAML, etc.)
     # TODO: Save to file for GUI
 
     generic = le.LinkElement('Example 1', 'GENERIC', 3)
-
+    # What input to classes will be: link_type, loss_gain value and all parameter values
     eirp_example = le.EIRPElement('EIRP Example', parameters=[5, 23])
 
     print(generic)
