@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>798</width>
+    <height>593</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,6 +45,13 @@
      </widget>
     </item>
     <item>
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <layout class="QFormLayout" name="formLayout_2"/>
@@ -68,8 +75,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>21</height>
+     <width>798</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
