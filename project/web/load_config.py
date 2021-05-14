@@ -8,7 +8,6 @@ author: lmaio
 """
 
 from browser import document, window, console
-import yaml
 import json
 
 def load_data():
@@ -32,10 +31,6 @@ def file_read(e):
             document['config-text'].value = e.target.result
         except KeyError as KE:
             console.log(f'Cannot show file contents, textarea "{KE}" does not exist')
-
-        # save config to session storage
-        data = yaml.safe_load(e.target.result)
-        storage.setItem('config', data)
 
 
     file = document['file-loadconfig'].files[0]
