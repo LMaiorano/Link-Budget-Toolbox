@@ -29,27 +29,6 @@ class LinkElement:
         return self.gain
 
 
-class TxElement(LinkElement):
-    '''Specific type of LinkElement, that depends on parameters instead of a 
-    single gain/loss value
-
-    Although not defined here, methods "get_gain()" and "get_loss()" are 
-    automatically inherited and will also work
-    '''
-    def __init__(self, name, parameters):
-        # Run the initialization of parent LinkElement, with gain and loss 
-        #   set initially as unknown (None)
-        super().__init__(name, linktype='TX', gain=0)
-
-        # Add attributes that are unique to TxElement
-        self.parameters = parameters
-        self.process()
-
-    def process(self):
-        # Tx Specific calculations
-        self.gain = sum(self.parameters)
-
-
 
 
 class FsElement(LinkElement):

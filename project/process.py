@@ -19,7 +19,7 @@ import yaml
 # This is a temporary dictionary. In the end the dictionary should be filled in automatically based on user input.
 user_data = {'setting' : {'case_type' : 'nominal'},
              'generic_values' : {'altitude':800},
-             'elements' : {'SC_TX_Ant' :              {'link_type'  :   'TX',
+             'elements' : {'TX'         :             {'link_type'  :   'TX',
                                                        'input_type' :   'gain_loss',
                                                        'gain_loss'  :    10,
                                                        'parameters' :  {'parameter1' : None,
