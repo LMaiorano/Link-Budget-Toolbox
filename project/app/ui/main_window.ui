@@ -55,7 +55,14 @@
        <layout class="QFormLayout" name="formLayout_2"/>
       </item>
       <item row="1" column="2">
-       <widget class="QTableWidget" name="tbl_elements"/>
+       <widget class="QTableWidget" name="tbl_elements">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
       <item row="1" column="3">
        <widget class="QTableView" name="tableView"/>
@@ -129,7 +136,6 @@
     <addaction name="action_New"/>
     <addaction name="separator"/>
     <addaction name="action_Open"/>
-    <addaction name="actionOpen_Recent"/>
     <addaction name="separator"/>
     <addaction name="action_Save"/>
     <addaction name="separator"/>
@@ -170,6 +176,9 @@
   <action name="actionExit">
    <property name="text">
     <string>&amp;Exit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
    </property>
   </action>
  </widget>
@@ -214,8 +223,8 @@
    <slot>add_row_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>60</x>
-     <y>301</y>
+     <x>78</x>
+     <y>330</y>
     </hint>
     <hint type="destinationlabel">
      <x>30</x>
@@ -234,8 +243,8 @@
      <y>430</y>
     </hint>
     <hint type="destinationlabel">
-     <x>590</x>
-     <y>431</y>
+     <x>354</x>
+     <y>530</y>
     </hint>
    </hints>
   </connection>
@@ -271,11 +280,44 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionExit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>398</x>
+     <y>296</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_New</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>new_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>398</x>
+     <y>296</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_config_clicked()</slot>
   <slot>add_row_clicked()</slot>
   <slot>run_process_clicked()</slot>
   <slot>save_config_clicked()</slot>
+  <slot>new_clicked()</slot>
  </slots>
 </ui>

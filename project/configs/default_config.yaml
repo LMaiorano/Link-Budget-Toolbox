@@ -4,9 +4,9 @@ elements:
     input_type: gainloss
     link_type: RECEIVER
     parameters:
-      parameter1: null
-      parameter2: null
-      parameter3: null
+      parameter1: val1
+      parameter2: val2
+      parameter3: 100
   SC_TX_Ant:
     gain_loss: 10
     input_type: gainloss
