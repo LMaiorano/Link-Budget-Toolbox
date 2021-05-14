@@ -59,7 +59,17 @@
       <item>
        <widget class="QTableWidget" name="tbl_elements"/>
       </item>
+      <item>
+       <widget class="QTableView" name="tableView"/>
+      </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QPushButton" name="btn_run_process">
+      <property name="text">
+       <string>Run Process</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -165,7 +175,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>60</x>
-     <y>428</y>
+     <y>301</y>
     </hint>
     <hint type="destinationlabel">
      <x>30</x>
@@ -189,9 +199,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btn_run_process</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>run_process_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>59</x>
+     <y>561</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>46</x>
+     <y>459</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_config_clicked()</slot>
   <slot>add_row_clicked()</slot>
+  <slot>run_process_clicked()</slot>
  </slots>
 </ui>

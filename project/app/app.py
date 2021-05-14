@@ -15,6 +15,9 @@ from pathlib import Path
 import sys
 from loguru import logger
 import yaml
+import numpy as np
+
+from project.process import main_process
 
 
 mainwindow_form_class = uic.loadUiType('ui/main_window.ui')[0]
@@ -25,6 +28,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.setupUi(self)
 
         self.cfg_file = None
+        self.cfg_data = None
 
 
     def open_config_clicked(self):
@@ -92,6 +96,9 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.tbl_elements.insertRow(self.tbl_elements.rowCount())
         self.tbl_elements.show()
 
+    def run_process_clicked(self):
+        a = np.pi
+        logger.info(f'Running main process. Pi = {round(a, 3)} . more stuff')
 
 
 if __name__ == '__main__':

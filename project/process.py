@@ -65,7 +65,8 @@ def save_to_yaml(d:dict, filename:str):
     with open(filepath, 'w') as f:
         yaml.dump(d, f)
 
-
+def main_process():
+    print("Jesper's main process")
 
 
 if __name__ == '__main__':
