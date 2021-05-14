@@ -1,4 +1,12 @@
-brython
+brython==3.9.2
 numpy
+
+
 flake8
 pytest
+
+pyyaml
+
+pyqt5
+pyqt5-tools
+loguru
