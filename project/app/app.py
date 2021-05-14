@@ -8,7 +8,8 @@ author: lmaio
 """
 
 from PyQt5 import QtWidgets, uic
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem as TWI
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem as TWI, \
+    QTableWidget, QCheckBox, QHBoxLayout, QRadioButton
 from PyQt5.QtGui import QFont
 
 from pathlib import Path
@@ -17,7 +18,6 @@ from loguru import logger
 import yaml
 import numpy as np
 
-from project.process import main_process
 
 
 mainwindow_form_class = uic.loadUiType('ui/main_window.ui')[0]
@@ -27,8 +27,9 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
 
-        self.cfg_file = None
-        self.cfg_data = None
+        self.cfg_file = Path('../configs/default_config.yaml')
+        self.cfg_data = self.load_config()
+        self.fill_table()
 
 
     def open_config_clicked(self):
@@ -55,16 +56,26 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
     def fill_table(self):
         '''Populate table with elements listed in config file'''
+        # self.tbl_elements = QTableWidget()
+
+
+        # TABLE SETUP
+        col_titles = ['Element', 'Attribute', 'Value']
+        name_col = 0
+        param_col = 1
+        value_col = 2
+
+
 
         elements = self.cfg_data['elements']       # Select sub-dictionary of elements from config
 
         # Determine number of rows needed for table  rows are: name + gainloss + each parameter
-        n_rows = sum([ (2 + len(elem['parameters'])) for elem in elements.values() ])
+        n_rows = sum([ (1 + len(elem['parameters'])) for elem in elements.values() ])
 
-        self.tbl_elements.setColumnCount(2)
+        self.tbl_elements.setColumnCount(len(col_titles))
         self.tbl_elements.setRowCount(n_rows)
 
-        self.tbl_elements.setHorizontalHeaderLabels(['Element', 'Value'])
+        self.tbl_elements.setHorizontalHeaderLabels(col_titles)
         self.tbl_elements.verticalHeader().setVisible(False)
 
         element_font = QFont()
@@ -72,20 +83,31 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         row = 0
         for name, data in elements.items():
-            title = TWI(name)
+            start_row = row
+
+            # Element name. Fixes capitalization, keeping abbreviations in full caps
+            name = name.replace("_", " ")
+            name = " ".join([w.title() if w.islower() else w for w in name.split()])
+
+            title = LinkElementTableItem(name)
             title.setFont(element_font)
-            self.tbl_elements.setItem(row, 0, title)
-            row += 1
+            self.tbl_elements.setItem(row, name_col, title)
 
-            self.tbl_elements.setItem(row, 0, TWI('Gain [dB]'))
-
-            self.tbl_elements.setItem(row, 1, TWI(str(data['gain_loss'])))
+            # General Gain
+            self.tbl_elements.setItem(row, param_col, TWI('Gain [dB]'))
+            self.tbl_elements.setItem(row, value_col, TWI(str(data['gain_loss'])))
             row +=1
-            
+
+            # Parameters
             for param, val in data['parameters'].items():
-                self.tbl_elements.setItem(row, 0, TWI(param))
-                self.tbl_elements.setItem(row, 1, TWI(str(val)))
+
+                self.tbl_elements.setCellWidget(row, param_col, QCheckBox(param))
+                self.tbl_elements.setItem(row, value_col, TWI(str(val)))
                 row += 1
+
+            # Make name cell span all other rows
+            self.tbl_elements.setSpan(start_row, name_col, row-start_row, 1)
+
 
         self.tbl_elements.resizeColumnsToContents()
         self.tbl_elements.show()
@@ -99,6 +121,35 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def run_process_clicked(self):
         a = np.pi
         logger.info(f'Running main process. Pi = {round(a, 3)} . more stuff')
+
+
+    def save_config_clicked(self):
+        '''Save table to dictionary'''
+        # self.tbl_elements = QTableWidget()
+
+        # Convert pyqt table to numpy array
+        data = []
+        for r in range(self.tbl_elements.rowCount()):
+            row = []
+            for c in range(self.tbl_elements.columnCount()):
+                cell_item = self.tbl_elements.item(r, c)
+                if cell_item is not None:
+                    row.append(cell_item.text())
+                else:
+                    row.append(None)
+
+            data.append(row)
+
+        arr = np.array(data)
+
+        # Parse numpy array to dictionaries
+        print(arr)
+
+
+class LinkElementTableItem(TWI):
+    pass
+
+
 
 
 if __name__ == '__main__':

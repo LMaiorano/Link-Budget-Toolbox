@@ -29,6 +29,11 @@
       <layout class="QFormLayout" name="formLayout">
        <item row="0" column="0">
         <widget class="QPushButton" name="btn_load_config">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Load Config File</string>
          </property>
@@ -45,34 +50,62 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>PushButton</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="0">
        <layout class="QFormLayout" name="formLayout_2"/>
       </item>
-      <item>
+      <item row="1" column="2">
+       <widget class="QTableWidget" name="tbl_elements"/>
+      </item>
+      <item row="1" column="3">
+       <widget class="QTableView" name="tableView"/>
+      </item>
+      <item row="1" column="1">
        <widget class="QPushButton" name="btn_add_row">
         <property name="text">
          <string>Add Row</string>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QTableWidget" name="tbl_elements"/>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Element Inputs</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
       </item>
-      <item>
-       <widget class="QTableView" name="tableView"/>
+      <item row="0" column="3">
+       <widget class="QLabel" name="label_2">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Link Budget Results</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
     <item>
      <widget class="QPushButton" name="btn_run_process">
+      <property name="font">
+       <font>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>Run Process</string>
       </property>
@@ -86,7 +119,7 @@
      <x>0</x>
      <y>0</y>
      <width>798</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -222,10 +255,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_Save</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>save_config_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>398</x>
+     <y>296</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_config_clicked()</slot>
   <slot>add_row_clicked()</slot>
   <slot>run_process_clicked()</slot>
+  <slot>save_config_clicked()</slot>
  </slots>
 </ui>
