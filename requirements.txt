@@ -8,5 +8,5 @@ pytest
 pyyaml
 
 pyqt5
-# pyqt5-tools
+pyqt5-tools
 loguru
