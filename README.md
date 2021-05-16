@@ -1,7 +1,7 @@
 # Satellite Link Budget Toolbox
 
 [![GitHub license](https://img.shields.io/github/license/LMaiorano/Link-Budget-Toolbox)](https://github.com/LMaiorano/Link-Budget-Toolbox/blob/master/LICENSE)
-[![build](https://github.com/LMaiorano/Link-Budget-Toolbox/actions/workflows/python-app.yml/badge.svg)](https://github.com/LMaiorano/Link-Budget-Toolbox/actions/workflows/python-app.yml)
+<!-- [![Python Toolbox](https://github.com/LMaiorano/Link-Budget-Toolbox/actions/workflows/python-app.yml/badge.svg)](https://github.com/LMaiorano/Link-Budget-Toolbox/actions/workflows/python-app.yml) --->
 
 A modular Python alternative to STK to easily calculate satellite link budgets
 

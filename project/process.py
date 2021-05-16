@@ -19,7 +19,7 @@ import yaml
 # This is a temporary dictionary. In the end the dictionary should be filled in automatically based on user input.
 user_data = {'setting' : {'case_type' : 'nominal'},
              'generic_values' : {'altitude':800},
-             'elements' : {'TX'         :             {'link_type'  :   'TX',
+             'elements' : {'TX_SC'      :             {'link_type'  :   'TX',
                                                        'input_type' :   'gain_loss',
                                                        'gain_loss'  :    10,
                                                        'parameters' :  {'parameter1' : None,
@@ -31,7 +31,7 @@ user_data = {'setting' : {'case_type' : 'nominal'},
                                                        'parameters' :  {'parameter1' : None,
                                                                         'parameter2' : None,
                                                                         'parameter3' : None}},
-                           'GS_RX_Ant':               {'link_type'  :   'RX',
+                           'RX_GS    ':               {'link_type'  :   'RX',
                                                        'input_type' :   'gain_loss',
                                                        'gain_loss'  :    2,
                                                        'parameters' :  {'parameter1' : None,
@@ -75,16 +75,36 @@ if __name__ == '__main__':
     # TODO: Based on linktypes, call link elements
     # TODO: Get gainloss from link elements
     # TODO: Decide on if EIRP should be a class or calculated in process.py
-    for i in user_data['elements']:
-        # Access seperate link elements one by one, check for input_type and call with correct variables each link
-        # element file.
-        print(i, user_data['elements'])
-        #TODO: Make sure that all link element classes have same naming convention for callability's sake
-        #TODO: Make sure that all link element classes are in a seperate file
+    # TODO: give parameters as a list instead of all variables seperately
+
+    # check for input_type and call with correct variables each link element file.
+    for give_link_element_name in user_data['elements'].keys(): # Access seperate link elements one by one
+
+        for key, element in user_data['elements'][give_link_element_name].items():
+
+            if key == 'link_type':
+                give_link_type = element
+
+            if key == 'gain_loss':
+                give_gain_loss = element
+
+            if key == 'input_type':
+                give_input_type = element
+
+            give_params = []
+            if key == 'parameters':
+                for param_key, param_element in user_data['elements'][give_link_element_name]['parameters'].items():
+                    give_params.append(param_element)
+        results = []
+        # name = 'linktype'_link_element(name, input_type, gain, [param1, param2 ... paramn])
+
+        # TODO: Continue here
+
+        # results.append(eval('le.'+ give_link_type + '_link_element' + '(give_link_element_name, give_input_type, give_gain_loss, \
+        #                                                    None, None, None)'))
 
     # TODO: Sum link elements
     # TODO: Save to file for GUI
-
     generic = le.LinkElement('Example 1', 'GENERIC', 3)
     # What input to classes will be: link_type, loss_gain value and all parameter values
     eirp_example = le.EIRPElement('EIRP Example', parameters=[5, 23])
