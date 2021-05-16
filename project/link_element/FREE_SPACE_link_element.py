@@ -8,7 +8,7 @@ from project.link_element import LinkElement
 import numpy as np
 Re = 6371e3     #[m]
 
-class FreeSpace_LinkElement(LinkElement):
+class Free_Space_LinkElement(LinkElement):
     '''Specific type of LinkElement for the Free Space Loss,
     that can depend a single gain/loss value or on parameters instead. as
     dictated by the input_type value. 
@@ -18,7 +18,7 @@ class FreeSpace_LinkElement(LinkElement):
     '''
     def __init__(self, name, input_type, gain, distance, sc_altitude, gs_altitude, angle, wavelength):
         # Run the initialization of parent LinkElement
-        super().__init__(name, linktype='FreeSpace', gain = 0)
+        super().__init__(name, linktype='FREE_SPACE', gain = 0)
         # Add attributes that are unique to TxElement
         # TODO: figure out if giving wavelength isn' causing problems
         self.input_type = input_type
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     # (like a scratch pad to test stuff while you're working)
     print('Good Busy Willem! :P')
     
-    testelement = FreeSpace_LinkElement('test', 'parameter_set_2', 10, 100e3, 90e3,0,89,1)
+    testelement = Free_Space_LinkElement('test', 'parameter_set_2', 10, 100e3, 90e3,0,89,1)
     print(testelement)
     testelement.process()
     print(testelement)

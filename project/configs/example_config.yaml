@@ -1,23 +1,23 @@
 elements:
-  GS_RX_Ant:
+  'RX_GS    ':
     gain_loss: 2
-    input_type: gainloss
-    link_type: RECEIVER
+    input_type: gain_loss
+    link_type: RX
     parameters:
       parameter1: null
       parameter2: null
       parameter3: null
-  SC_TX_Ant:
+  TX_SC:
     gain_loss: 10
-    input_type: gainloss
-    link_type: TRANSMITTER
+    input_type: gain_loss
+    link_type: TX
     parameters:
       parameter1: null
       parameter2: null
       parameter3: null
   free_space:
     gain_loss: -8
-    input_type: gainloss
+    input_type: gain_loss
     link_type: FREE_SPACE
     parameters:
       parameter1: null
