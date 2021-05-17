@@ -30,12 +30,14 @@ class FREE_SPACE_LinkElement(LinkElement):
         self.angle = angle      #[deg]
         
     def process(self):
+        '''
         # Free Space Path Loss Specific calculations, first checks if any 
         # calculations are required or if gain_loss is directly given and 
         # needs to be used. parameter set 1 gives the distance directly, while
         # parameter set 2 first calculates it with the altitudes of the tx and
         # rx elements, and the angle from horizon as taken from rx (<90deg)
         # Requires the distance between point of Transmission and Reception
+        '''
         
         # TODO: How to define negativity of Losses? parameters automatically 
         # give it, but if gain/loss is pregiven, should it be given as 
@@ -60,15 +62,15 @@ class FREE_SPACE_LinkElement(LinkElement):
             S = sineratio*np.sin(np.deg2rad(c))         #[m]
             Ls = (self.wavelength/(4*np.pi*S))**2 #[-], Free Space Loss, will give negative Decibel as it is smaller than 1
             self.gain = self.dB(Ls)
-        elif self.input_type == "gain_loss":
-            self.gain = -self.gain
+        # elif self.input_type == "gain_loss":
+        #     self.gain = self.gain
 
 if __name__ == '__main__':
     # Put any code here you want to use to test the class
     # (like a scratch pad to test stuff while you're working)
     print('Good Busy Willem! :P')
     
-    testelement = FREE_SPACE_LinkElement('test', 'parameter_set_2', 10, 100e3, 90e3,0,89,1)
+    testelement = FREE_SPACE_LinkElement('test', 'parameter_set_2', -10, 100e3, 90e3,0,89,1)
     print(testelement)
     testelement.process()
     print(testelement)
