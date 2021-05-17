@@ -6,6 +6,7 @@ Created on Tue May 11 12:32:54 2021
 """
 from project.link_element import LinkElement
 import numpy as np
+from project.exceptions import MissingParameterException
 
 class TX_LinkElement(LinkElement):
     '''Specific type of LinkElement for the Transmitting Antenna,
@@ -21,26 +22,43 @@ class TX_LinkElement(LinkElement):
         # Add attributes that are unique to TxElement
         # TODO: figure out if giving wavelength isn' causing problems
         self.input_type = input_type
-        self.efficiency = parameters.get('antenna_efficiency', 0)
-        self.diameter = parameters.get('antenna_diameter', 0)
-        self.wavelength = parameters.get('wavelength', 0)
-        parameters['wavelength']
+
+        try:
+            self.efficiency = parameters['antenna_efficiency']
+            # self.bogus = parameters['bogus']
+            self.diameter = parameters['antenna_diameter']
+            self.wavelength = parameters['wavelength']
+
+            self.process()
+
+        except KeyError as key:
+            print(f'Missing parameter: {key}. Unable to calculate gain with parameters, using default')
+
         
-        self.process()
+
         
     def process(self):
         # TX Specific calculations, first checks if any calculations are 
         # required or if gain_loss is directly given and needs to be usec. 
         # does not cover specific antenna models yet
+
         if self.input_type == "parameter_set_1":
             Gtpeak = self.efficiency*(np.pi*self.diameter/self.wavelength)**2  #[-], peak gain
             self.gain = self.dB(Gtpeak)
+
+
+
         # elif self.input_type == "gain_loss":
         #     self.gain = self.gain
 
 if __name__ == '__main__':
     # Put any code here you want to use to test the class
     # (like a scratch pad to test stuff while you're working)
-    print('Good Busy Willem! :P')
+    # print('Good Busy Willem! :P')
+
+    params = {'antenna_efficiency': 8,
+              'antenna_diameter': 10,
+              'wavelength': 0}
     
-    testelement = TX_LinkElement('test', 'parameter_set_1', 10, 0.5, 1, 1).gain
+    testelement = TX_LinkElement('test', 'parameter_set_1', 10, params).gain
+    print(testelement)

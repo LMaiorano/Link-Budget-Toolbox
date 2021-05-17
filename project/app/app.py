@@ -146,6 +146,9 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.tbl_elements.show()
 
     def run_process_clicked(self):
+
+
+
         a = np.pi
         logger.info(f'Running main process. Pi = {round(a, 3)} . more stuff')
 
