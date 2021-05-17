@@ -11,7 +11,7 @@ elements:
       wavelength: null
   'RX_GS    ':
     gain_loss: 2
-    input_type: gain_loss
+    input_type: parameters_set_1
     link_type: RX
     parameters:
       antenna_diameter: null

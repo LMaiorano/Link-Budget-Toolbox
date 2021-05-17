@@ -11,6 +11,7 @@ author: Jesper Frijns
 import project.link_element as le
 from pathlib import Path
 import yaml
+import pandas as pd
 
 #TODO: Import dictionary automatically from GUI
 
@@ -65,7 +66,7 @@ def save_to_yaml(d:dict, filename:str):
     with open(filepath, 'w') as f:
         yaml.dump(d, f)
 
-def main_process():
+def main_process(user_data):
     print("Jesper's main process")
 
 
@@ -73,6 +74,12 @@ if __name__ == '__main__':
     # call class, give gain, all parameter types and input_type
     # TODO: Get gainloss from link elements
     # TODO: Decide on if EIRP should be a class or calculated in process.py
+
+
+
+    df = pd.DataFrame.from_dict(user_data['elements']).T.reset_index().rename(columns={'index': 'name'})
+
+
 
     # check for input_type and call with correct variables each link element file.
     for give_link_element_name in user_data['elements'].keys(): # Access seperate link elements one by one

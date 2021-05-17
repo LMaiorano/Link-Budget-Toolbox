@@ -9,7 +9,8 @@ author: lmaio
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem, \
-    QTableWidget, QCheckBox, QHBoxLayout, QRadioButton, QMessageBox
+    QTableWidget, QCheckBox, QHBoxLayout, QRadioButton, QMessageBox, \
+    QDialog
 from PyQt5.QtGui import QFont
 
 from pathlib import Path
@@ -18,9 +19,15 @@ from loguru import logger
 import yaml
 import numpy as np
 
+from project.process import main_process
+from project.app.new_element_dialog import NewElementDialog
+
 
 
 mainwindow_form_class = uic.loadUiType('ui/main_window.ui')[0]
+
+
+
 
 class MainWindow(QMainWindow, mainwindow_form_class):
     def __init__(self, parent=None):
@@ -38,31 +45,37 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.cfg_data = self.read_config()
         self.fill_table()
 
+        self.result_data = None
+
 
     def open_config_clicked(self):
         '''Opens a file dialog to select a config file'''
-        dlg = QFileDialog()
+        new = NewElementDialog()
+        exit_successful = new.exec_()
+        print(exit_successful)
 
-        file_path = dlg.getOpenFileName(self, 'Open YAML Configuration FIle',
-                                        directory='../configs',
-                                        filter='Config Files (*.yaml)')[0]
-        if file_path == '':
-            return # Dialog cancelled, Exit this
-
-        self.cfg_file = Path(file_path)
-        self.lbl_config_file.setText(self.cfg_file.name)
-
-        logger.debug(f"Config file set to {self.cfg_file}")
-
-        try:
-            self.clear_table()
-
-            self.cfg_data = self.read_config()
-
-            self.fill_table()
-        except Exception as E:
-            logger.debug(f'Error loading file: {E}')
-            showdialog(['Please select a valid YAML configuration file'])
+        # dlg = QFileDialog()
+        #
+        # file_path = dlg.getOpenFileName(self, 'Open YAML Configuration FIle',
+        #                                 directory='../configs',
+        #                                 filter='Config Files (*.yaml)')[0]
+        # if file_path == '':
+        #     return # Dialog cancelled, Exit this
+        #
+        # self.cfg_file = Path(file_path)
+        # self.lbl_config_file.setText(self.cfg_file.name)
+        #
+        # logger.debug(f"Config file set to {self.cfg_file}")
+        #
+        # try:
+        #     self.clear_table()
+        #
+        #     self.cfg_data = self.read_config()
+        #
+        #     self.fill_table()
+        # except Exception as E:
+        #     logger.debug(f'Error loading file: {E}')
+        #     showdialog(['Please select a valid YAML configuration file'])
 
     def new_clicked(self):
         self.clear_table()
@@ -86,8 +99,12 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.tbl_elements.clearContents()
 
     def fill_table(self):
-        '''Populate table with elements listed in config file'''
+        '''Populate table with elements listed in config file
 
+        This converts the data dictionary elements to the necessary table items
+        The table consists of three columns: Element, Attribute, Value
+        The
+        '''
 
         elements = self.cfg_data['elements']       # Select sub-dictionary of elements from config
 
@@ -150,11 +167,15 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.tbl_elements.show()
 
     def run_process_clicked(self):
+        '''Run Analysis button clicked in UI, which calculates the link budget'''
+        logger.info('Running main process')
+        self.result_data = main_process(self.cfg_data)
+        # TODO: display results
 
 
+    def display_results(self):
+        '''Display the results in the results table'''
 
-        a = np.pi
-        logger.info(f'Running main process. Pi = {round(a, 3)} . more stuff')
 
 
     def save_config_clicked(self):
@@ -221,11 +242,21 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         return data
 
 
+
+
 class LinkElementTableItem(QTableWidgetItem):
     def __init__(self, *args, **kwargs):
+        '''Custom TableWidgetItem to allow other attributes to be stored.
+
+        This is necessary so that additional link element properties can be saved
+        in the data dictionary which is passed to the main process
+        '''
         self.link_type = kwargs.pop('link_type', 'gainloss')
         self.input_type = kwargs.pop('input_type', 'GENERIC')
         super().__init__(*args, **kwargs)
+        self.setToolTip(f'Type: {self.link_type}')
+
+
 
 
 def showdialog(message: list, level='warning'):
@@ -269,6 +300,7 @@ def showdialog(message: list, level='warning'):
 
     msg.exec_()
     return msg
+
 
 
 

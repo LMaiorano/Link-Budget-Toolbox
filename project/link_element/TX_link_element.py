@@ -6,10 +6,7 @@ Created on Tue May 11 12:32:54 2021
 """
 from project.link_element import LinkElement
 import numpy as np
-<<<<<<< HEAD
-=======
 
->>>>>>> 721fcab70754d728427cc5b286f171c83961c1d0
 
 class TX_LinkElement(LinkElement):
     '''Specific type of LinkElement for the Transmitting Antenna,

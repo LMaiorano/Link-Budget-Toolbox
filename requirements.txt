@@ -1,5 +1,6 @@
 brython==3.9.2
 numpy
+pandas
 
 
 flake8
