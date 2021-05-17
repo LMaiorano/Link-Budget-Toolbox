@@ -51,10 +51,28 @@
     </item>
     <item>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="4">
+       <widget class="QLabel" name="label_2">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Results</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
        <layout class="QFormLayout" name="formLayout_2"/>
       </item>
-      <item row="1" column="2">
+      <item row="1" column="4">
+       <widget class="QTableView" name="tableView"/>
+      </item>
+      <item row="1" column="3">
        <widget class="QTableWidget" name="tbl_elements">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -64,17 +82,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
-       <widget class="QTableView" name="tableView"/>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="btn_add_row">
-        <property name="text">
-         <string>Add Row</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
+      <item row="0" column="3">
        <widget class="QLabel" name="label">
         <property name="font">
          <font>
@@ -82,27 +90,30 @@
          </font>
         </property>
         <property name="text">
-         <string>Element Inputs</string>
+         <string> Inputs</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
-       <widget class="QLabel" name="label_2">
-        <property name="font">
-         <font>
-          <pointsize>12</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Link Budget Results</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
+      <item row="1" column="1">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QPushButton" name="btn_add_row">
+          <property name="text">
+           <string>Add Element</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton">
+          <property name="text">
+           <string>Delete Element</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>

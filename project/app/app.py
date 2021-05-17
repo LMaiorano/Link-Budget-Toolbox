@@ -55,6 +55,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         logger.debug(f"Config file set to {self.cfg_file}")
 
         try:
+            self.clear_table()
+
             self.cfg_data = self.read_config()
 
             self.fill_table()
@@ -63,6 +65,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             showdialog(['Please select a valid YAML configuration file'])
 
     def new_clicked(self):
+        self.clear_table()
         self.cfg_file = Path('../configs/default_config.yaml')
         self.cfg_data = self.read_config()
         self.fill_table()
@@ -79,7 +82,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         with open(self.cfg_file, 'w') as f:
             yaml.dump(self.cfg_data, f)
 
-
+    def clear_table(self):
+        self.tbl_elements.clearContents()
 
     def fill_table(self):
         '''Populate table with elements listed in config file'''
