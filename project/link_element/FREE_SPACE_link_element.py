@@ -71,10 +71,6 @@ class FREE_SPACE_LinkElement(LinkElement):
         # rx elements, and the angle from horizon as taken from rx (<90deg)
         # Requires the distance between point of Transmission and Reception
         '''
-        
-        # TODO: How to define negativity of Losses? parameters automatically 
-        # give it, but if gain/loss is pregiven, should it be given as 
-        # negative input or be made a negative input later?
             
         if self.input_type == "parameter_set_1":
             S = self.distance   #[m]
@@ -82,17 +78,24 @@ class FREE_SPACE_LinkElement(LinkElement):
             self.gain = self.dB(Ls)
         elif self.input_type == "parameter_set_2":
             #Use the sine rule to calculate the distance
-            # TODO: also make this work for if the angle between elements is
-            # <90deg
+            # TODO: Make sure this works also for negative horizon angles?
+            # TODO: Make sure that it doesnt matter if ground station is above
+            #       sc, instead make it such that it depends only on tx and rx
+            #       and that they can be everywhere
             
-            # TODO: Breaks at angle = 90 currently
             r_sc = self.sc_altitude + Re    #[m]
             r_gs = self.gs_altitude + Re    #[m]
-            a = 90+self.angle               #[deg]
-            sineratio = r_sc/np.sin(np.deg2rad(a))
-            b = np.rad2deg(np.arcsin(r_gs/sineratio))  #[deg]
-            c = 180-a-b                     #[deg]
-            S = sineratio*np.sin(np.deg2rad(c))         #[m]
+            if self.angle == 90:
+                S = abs(r_sc-r_gs)
+            else:
+                if self.angle < 90:
+                    a = 90+self.angle               #[deg]
+                elif self.angle > 90:
+                    a = 90+abs(180-self.angle)
+                sineratio = r_sc/np.sin(np.deg2rad(a))
+                b = np.rad2deg(np.arcsin(r_gs/sineratio))  #[deg]
+                c = 180-a-b                     #[deg]
+                S = sineratio*np.sin(np.deg2rad(c))         #[m]
             Ls = (self.wavelength/(4*np.pi*S))**2 #[-], Free Space Loss, will give negative Decibel as it is smaller than 1
             self.gain = self.dB(Ls)
         # elif self.input_type == "gain_loss":
@@ -104,9 +107,9 @@ if __name__ == '__main__':
     testparameters = {'distance': 100e3,
                       'sc_altitude': 90e3,
                       'gs_altitude': 0,
-                      'angle':89,
+                      'angle':91,
                       'wavelength':1}    
-    testelement = FREE_SPACE_LinkElement('test', 'parameter_set_2', -10, testparameters)
+    testelement = FREE_SPACE_LinkElement('test', 'parameter_set_2', -100, testparameters)
     print(testelement)
     testelement.process()
     print(testelement)
