@@ -15,16 +15,16 @@ class TX_LinkElement(LinkElement):
     Although not defined here, methods "get_gain()" and "get_loss()" are 
     automatically inherited and will also work
     '''
-    def __init__(self, name, input_type, gain, antenna_efficiency, antenna_diameter, wavelength):
-    # def __init__(self, name, input_type, gain, parameters_dictionary):
+    def __init__(self, name, input_type, gain, parameters):
         # Run the initialization of parent LinkElement
         super().__init__(name, linktype='TX', gain = gain)
         # Add attributes that are unique to TxElement
         # TODO: figure out if giving wavelength isn' causing problems
         self.input_type = input_type
-        self.efficiency = antenna_efficiency
-        self.diameter = antenna_diameter
-        self.wavelength = wavelength
+        self.efficiency = parameters.get('antenna_efficiency', 0)
+        self.diameter = parameters.get('antenna_diameter', 0)
+        self.wavelength = parameters.get('wavelength', 0)
+        parameters['wavelength']
         
         self.process()
         
