@@ -89,10 +89,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         # TODO: check file for required basic structure/components, otherwise raise exception
         return data
 
-    def write_config(self):
-        with open(self.cfg_file, 'w') as f:
-            yaml.dump(self.cfg_data, f)
-
     def clear_table(self):
         self.tbl_elements.clearContents()
 
@@ -167,6 +163,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         exit_successful = new.exec_()
         print(exit_successful)
 
+        self.save_input_table_to_dict()
+
     def delete_element_clicked(self):
         '''Deletes the selected table element'''
 
@@ -184,7 +182,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             for row in range(end, start-1, -1):
                 self.tbl_elements.removeRow(row)
 
-
+            self.save_input_table_to_dict()
 
 
     def run_process_clicked(self):
@@ -200,12 +198,10 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
 
     def save_config_clicked(self):
-        '''Save table to dictionary'''
-        # Convert table to dictionary
-        data = self.convert_table_to_dict()
+        '''Save current configuration to yaml file'''
 
         # Update cfg_data elements
-        self.cfg_data['elements'] = data
+        self.save_input_table_to_dict()
 
         # Create file dialog to get save location
         dlg = QFileDialog()
@@ -226,13 +222,18 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.lbl_config_file.setText(self.cfg_file.name)
 
         # Write full config to file specified above
-        self.write_config()
+        with open(self.cfg_file, 'w') as f:
+            yaml.dump(self.cfg_data, f)
 
         logger.debug(f"Config saved to {self.cfg_file}")
 
-    def convert_table_to_dict(self):
+    def save_input_table_to_dict(self):
         '''Convert PyQt Table to an 'elements' dictionary of the same format
-        as the input config file. This can be passed to the main process'''
+        as the input config file. This can be passed to the main process
+
+        Note: This must be called explicitly and cannot be bound to a cell-changed event,
+        because of how new elements are generated
+        '''
         data = {}
         element_name = None
         for r in range(self.tbl_elements.rowCount()):
@@ -261,10 +262,9 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
                 data[element_name][attribute] = value
 
-        return data
+        self.cfg_data['elements'] = data
 
-    def input_table_modified(self):
-        self.cfg_data = self.convert_table_to_dict()
+
 
 
 
