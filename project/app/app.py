@@ -125,15 +125,15 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         for name, data in elements.items():
             start_row = row
 
-            # ------ Element Title -------------
+            # ---------- Element Title -------------
             # fixes capitalization, keeping abbreviations in full caps
             name = name.replace("_", " ")
             name = " ".join([w.title() if w.islower() else w for w in name.split()])
 
             # create custom table item, that contains other parameters needed later for saving
-            title = LinkElementTableItem(name,
-                                         link_type=data['link_type'],
-                                         input_type=data['input_type'])
+            title = NameTableItem(name,
+                                  link_type=data['link_type'],
+                                  input_type=data['input_type'])
 
             # Set to format as specified above (bold)
             title.setFont(element_font)
@@ -142,15 +142,16 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
             self.tbl_elements.setItem(row, self.name_col, title)
 
-            # ----- General Gain -------------
-            self.tbl_elements.setItem(row, self.attribute_col, QTableWidgetItem('Gain [dB]'))
+            # ------------ Attributes -------------
+
+            self.tbl_elements.setItem(row, self.attribute_col, AttributeTableItem('Gain [dB]'))
             self.tbl_elements.setItem(row, self.value_col, QTableWidgetItem(str(data['gain_loss'])))
             row +=1
 
             # Parameters
             for param, val in data['parameters'].items():
                 # Give parameter a checkbox #TODO: enable checkbox only when necessary
-                self.tbl_elements.setCellWidget(row, self.attribute_col, QCheckBox(param))
+                self.tbl_elements.setItem(row, self.attribute_col, AttributeTableItem(param))
                 self.tbl_elements.setItem(row, self.value_col, QTableWidgetItem(str(val)))
                 row += 1
 
@@ -245,7 +246,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         for r in range(self.tbl_elements.rowCount()):
             # Check if row is a new element
             new_elem_cell = self.tbl_elements.item(r, self.name_col)
-            if isinstance(new_elem_cell, LinkElementTableItem):
+            if isinstance(new_elem_cell, NameTableItem):
                 element_name = new_elem_cell.text()
                 link_type = new_elem_cell.link_type
                 input_type = new_elem_cell.input_type
@@ -275,7 +276,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
 
 
-class LinkElementTableItem(QTableWidgetItem):
+class NameTableItem(QTableWidgetItem):
     def __init__(self, *args, **kwargs):
         '''Custom TableWidgetItem to allow other attributes to be stored.
 
@@ -286,6 +287,19 @@ class LinkElementTableItem(QTableWidgetItem):
         self.input_type = kwargs.pop('input_type', 'GENERIC')
         super().__init__(*args, **kwargs)
         self.setToolTip(f'Type: {self.link_type}')
+
+
+class AttributeTableItem(QTableWidgetItem):
+    def __init__(self, *args, **kwargs):
+        '''Custom TableWidgetItem to allow other attributes to be stored.
+
+        This is necessary so that additional link element properties can be saved
+        in the data dictionary which is passed to the main process
+        '''
+        super().__init__(*args, **kwargs)
+        self.setToolTip(f'Link element attribute')
+
+        self.setFlags(QtCore.Qt.ItemIsEnabled) # not selectable or editable
 
 
 
