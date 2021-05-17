@@ -100,7 +100,7 @@ if __name__ == '__main__':
 
         # TODO: Make give_params input a dictionary (variable_a = dic.get('elements', default value))
         results_val.append(eval('le.'+ give_link_type + '_LinkElement' + '(give_link_element_name,\
-                                                           give_input_type, give_gain_loss, give_params)'))
+                                                           give_input_type, give_gain_loss, give_params).gain'))
 
     flux_margin = sum(results_val)
     # TODO: Save to file result_data (same as user_data, but with gain_loss results updated.
