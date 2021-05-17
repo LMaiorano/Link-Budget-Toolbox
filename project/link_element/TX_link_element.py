@@ -6,7 +6,7 @@ Created on Tue May 11 12:32:54 2021
 """
 from project.link_element import LinkElement
 import numpy as np
-from project.exceptions import MissingParameterException
+
 
 class TX_LinkElement(LinkElement):
     '''Specific type of LinkElement for the Transmitting Antenna,
