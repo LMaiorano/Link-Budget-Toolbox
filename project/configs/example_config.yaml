@@ -5,7 +5,7 @@ elements:
     link_type: FREE_SPACE
     parameters:
       angle: null
-      distance1: null
+      distance: null
       gs_altitude: null
       sc_altitude: null
       wavelength: null
@@ -27,5 +27,5 @@ elements:
       wavelength: null
 generic_values:
   altitude: 800
-setting:
+settings:
   case_type: nominal

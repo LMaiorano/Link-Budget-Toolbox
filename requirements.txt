@@ -1,6 +1,6 @@
 brython==3.9.2
 numpy
-
+panda
 
 flake8
 pytest

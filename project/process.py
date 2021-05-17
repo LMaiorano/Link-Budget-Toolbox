@@ -11,11 +11,12 @@ author: Jesper Frijns
 import project.link_element as le
 from pathlib import Path
 import yaml
+import pandas as pd
 
 #TODO: Import dictionary automatically from GUI
 
 # This is a temporary dictionary. In the end the dictionary should be filled in automatically based on user input.
-user_data = {'setting' : {'case_type' : 'nominal'},
+user_data = {'settings' : {'case_type' : 'nominal'},
              'generic_values' : {'altitude':800},
              'elements' : {'TX_SC'      :             {'link_type'  :   'TX',
                                                        'input_type' :   'gain_loss',
@@ -65,44 +66,40 @@ def save_to_yaml(d:dict, filename:str):
     with open(filepath, 'w') as f:
         yaml.dump(d, f)
 
+def read_user_data(user_data):
+    # check for input_type and call with correct variables each link element file.
+
+    df_user_data = pd.DataFrame.from_dict(user_data['elements']).T.reset_index().rename(columns={'index': 'name'})
+
+    return df_user_data
+
+def call_link_elements(df_user_data):
+
+    # TODO: unpack df_user_data to use it as input in result and update to user_data
+    for give_link_element_name in user_data['elements'].keys():
+        # TODO: uncomment this below if you want to calculate the gains. N.B. This does not work yet as the inputs and
+        # outputs of the classes still have to be changed. (input list of params and output gain_loss only)
+
+        result = (eval('le.'+ give_link_type + '_LinkElement' + '(give_link_element_name,\
+                                                           give_input_type, give_gain_loss, give_params)'))
+        result_name = result.name()
+        result_gain_loss = result.gain()
+
+
+
 def main_process():
     print("Jesper's main process")
+
+    # TODO: If you want to run uncomment the line below
+    # call_link_elements(read_user_data(user_data))
+
 
 
 if __name__ == '__main__':
     # call class, give gain, all parameter types and input_type
     # TODO: Get gainloss from link elements
     # TODO: Decide on if EIRP should be a class or calculated in process.py
-
-    # check for input_type and call with correct variables each link element file.
-    for give_link_element_name in user_data['elements'].keys(): # Access seperate link elements one by one
-
-        for key, element in user_data['elements'][give_link_element_name].items():
-
-            if key == 'link_type':
-                give_link_type = element
-
-            if key == 'gain_loss':
-                give_gain_loss = element
-
-            if key == 'input_type':
-                give_input_type = element
-
-            give_params = []
-            if key == 'parameters':
-                for param_key, param_element in user_data['elements'][give_link_element_name]['parameters'].items():
-                    give_params.append(param_element)
-
-        results_name =  []
-        results_val =   []
-        # TODO: uncomment this below if you want to calculate the gains. N.B. This does not work yet as the inputs and
-        # outputs of the classes still have to be changed. (input list of params and output gain_loss only)
-
-        # TODO: Make give_params input a dictionary (variable_a = dic.get('elements', default value))
-        results_val.append(eval('le.'+ give_link_type + '_LinkElement' + '(give_link_element_name,\
-                                                           give_input_type, give_gain_loss, give_params).gain'))
-
-    flux_margin = sum(results_val)
+    main_process()
     # TODO: Save to file result_data (same as user_data, but with gain_loss results updated.
 
     # generic = le.LinkElement('Example 1', 'GENERIC', 3)
