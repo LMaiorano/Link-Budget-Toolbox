@@ -1,26 +1,58 @@
 FREE_SPACE:
-    parameter_set_name_1:
-        distance:     null
-        wavelength:   null
-    parameter_set_name_2:
-        angle:        null
-        distance:     null
-        gs_altitude:  null
-        sc_altitude:  null
-        wavelength:   null
+    parameter_set_1:
+        distance:
+            description:    distance from spacecraft to ground station
+            units:          m
+        wavelength:
+            description:    radio wavelength in electromagnetic spectrum
+            units:          m
+    parameter_set_2:
+        angle:
+            description:    useful description here
+            units:          xx
+        distance:
+            description:    useful description here
+            units:          xx
+        gs_altitude:
+            description:    useful description here
+            units:          xx
+        sc_altitude:
+            description:    useful description here
+            units:          xx
+        wavelength:
+            description:    useful description here
+            units:          xx
 RX:
     parameter_set_name_1:
-        antenna_diameter:   null
-        antenna_efficiency: null
-        wavelength:         null
+        antenna_diameter:
+            description:    useful description here
+            units:          xx
+        antenna_efficiency:
+            description:    useful description here
+            units:          xx
+        wavelength:
+            description:    useful description here
+            units:          xx
 TX:
     parameter_set_name_1:
-        antenna_diameter:   null
-        antenna_efficiency: null
-        wavelength:         null
+        antenna_diameter:
+            description:    useful description here
+            units:          xx
+        antenna_efficiency:
+            description:    useful description here
+            units:          xx
+        wavelength:
+            description:    useful description here
+            units:          xx
     
 LINK_TYPE:
     parameter_set_name_1:
-        parameter_1: null
-        parameter_2: null
-        parameter_3: null
+        parameter_1:
+            description:    useful description here
+            units:          xx
+        parameter_2:
+            description:    useful description here
+            units:          xx
+        parameter_3:
+            description:    useful description here
+            units:          xx
