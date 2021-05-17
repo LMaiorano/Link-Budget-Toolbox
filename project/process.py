@@ -26,7 +26,7 @@ user_data = {'setting' : {'case_type' : 'nominal'},
                            'FREE_SPACE' :             {'link_type' :    'FREE_SPACE',
                                                        'input_type' :   'gain_loss',
                                                        'gain_loss' :     -8,
-                                                       'parameters' :  {'distance1'     : None,
+                                                       'parameters' :  {'distance'      : None,
                                                                         'sc_altitude'   : None,
                                                                         'gs_altitude'   : None,
                                                                         'angle'         : None,
@@ -95,15 +95,15 @@ if __name__ == '__main__':
 
         results_name =  []
         results_val =   []
-        #TODO: uncomment this below if you want to calculate the gains. N.B. This does not work yet as the inputs and
+        # TODO: uncomment this below if you want to calculate the gains. N.B. This does not work yet as the inputs and
         # outputs of the classes still have to be changed. (input list of params and output gain_loss only)
 
-        # results_name.append(give_link_element_name
-        # results_val.append(eval('le.'+ give_link_type + '_LinkElement' + '(give_link_element_name,\
-        #                                                    give_input_type, give_gain_loss, give_params)'))
+        # TODO: Make give_params input a dictionary (variable_a = dic.get('elements', default value))
+        results_val.append(eval('le.'+ give_link_type + '_LinkElement' + '(give_link_element_name,\
+                                                           give_input_type, give_gain_loss, give_params).gain'))
 
     flux_margin = sum(results_val)
-    # TODO: Save to file for GUI
+    # TODO: Save to file result_data (same as user_data, but with gain_loss results updated.
 
     # generic = le.LinkElement('Example 1', 'GENERIC', 3)
     # # What input to classes will be: link_type, loss_gain value and all parameter values
