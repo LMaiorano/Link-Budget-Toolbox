@@ -9,7 +9,7 @@ author: lmaio
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem, \
-    QTableWidget, QCheckBox, QHBoxLayout, QRadioButton, QMessageBox, \
+    QTableWidget, QCheckBox, QHeaderView, QRadioButton, QMessageBox, \
     QDialog
 from PyQt5.QtGui import QFont
 
@@ -47,6 +47,13 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.fill_table()
 
         self.result_data = None
+
+        # Setup Table Settings
+
+        header = self.tbl_elements.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.Stretch)
 
 
     def open_config_clicked(self):
@@ -151,7 +158,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             self.tbl_elements.setSpan(start_row, self.name_col, row-start_row, 1)
 
         # Set columns to automatically resize
-        self.tbl_elements.resizeColumnsToContents()
         self.tbl_elements.show()
 
 

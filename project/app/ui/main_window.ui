@@ -101,6 +101,12 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="verticalHeaderStretchLastSection">
+         <bool>false</bool>
+        </attribute>
        </widget>
       </item>
       <item row="0" column="3">
@@ -243,22 +249,6 @@
     <hint type="destinationlabel">
      <x>97</x>
      <y>109</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>tbl_elements</sender>
-   <signal>itemChanged(QTableWidgetItem*)</signal>
-   <receiver>tbl_elements</receiver>
-   <slot>resizeColumnsToContents()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>284</x>
-     <y>430</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>354</x>
-     <y>530</y>
     </hint>
    </hints>
   </connection>
