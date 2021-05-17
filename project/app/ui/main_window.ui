@@ -52,7 +52,7 @@
     <item>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="4">
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="lbl_results">
         <property name="font">
          <font>
           <pointsize>12</pointsize>
@@ -69,7 +69,7 @@
       <item row="1" column="1">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QPushButton" name="btn_add_row">
+         <widget class="QPushButton" name="btn_add_element">
           <property name="toolTip">
            <string>asdfasdfasdf</string>
           </property>
@@ -79,7 +79,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="btn_delete_element">
           <property name="text">
            <string>Delete Element</string>
           </property>
@@ -91,7 +91,7 @@
        <layout class="QFormLayout" name="formLayout_2"/>
       </item>
       <item row="1" column="4">
-       <widget class="QTableView" name="tableView"/>
+       <widget class="QTableView" name="tbl_results"/>
       </item>
       <item row="1" column="3">
        <widget class="QTableWidget" name="tbl_elements">
@@ -110,7 +110,7 @@
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="lbl_elements">
         <property name="font">
          <font>
           <pointsize>12</pointsize>
@@ -237,7 +237,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>btn_add_row</sender>
+   <sender>btn_add_element</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>add_element_clicked()</slot>
@@ -317,7 +317,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>pushButton</sender>
+   <sender>btn_delete_element</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>delete_element_clicked()</slot>

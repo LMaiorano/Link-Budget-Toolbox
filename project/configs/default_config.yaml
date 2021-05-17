@@ -25,5 +25,5 @@ elements:
       parameter3: null
 generic_values:
   altitude: 800
-setting:
+settings:
   case_type: nominal

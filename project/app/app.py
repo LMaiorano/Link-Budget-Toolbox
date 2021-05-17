@@ -40,20 +40,20 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.attribute_col = 1
         self.value_col = 2
 
-
+        # Load default configuration
         self.cfg_file = Path('../configs/default_config.yaml')
         self.cfg_data = self.read_config()
         self.tbl_elements: QTableWidget()
         self.fill_table()
-
-        self.result_data = None
-
-        # Setup Table Settings
-
         header = self.tbl_elements.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.Stretch)
+
+        # Set initial values and general attributes
+        self.element_config = self.read_config(file='../element_config_reference.yaml')
+        self.result_data = None
+
 
 
     def open_config_clicked(self):
@@ -73,30 +73,58 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         logger.debug(f"Config file set to {self.cfg_file}")
         
         try:
-            self.clear_table()
-        
             self.cfg_data = self.read_config()
-        
+            self.clear_table_elements()
             self.fill_table()
         except Exception as E:
             logger.debug(f'Error loading file: {E}')
-            showdialog(['Please select a valid YAML configuration file'])
+
+            if not isinstance(E, KeyError): # Some random exception that probably needs debugging
+                msg = ''
+            elif 'Configuration file' in E.args[0]: # KeyError originates from self.read_config()
+                msg = E.args[0]
+            else: # A different (unexpected) KeyError
+                msg = f'Missing required section: "{E.args[0]}"'
+
+            showdialog(['Please select a valid YAML configuration file', msg])
 
     def new_clicked(self):
-        self.clear_table()
+        self.clear_table_elements()
         self.cfg_file = Path('../configs/default_config.yaml')
         self.cfg_data = self.read_config()
         self.fill_table()
 
 
-    def read_config(self) -> dict:
-        '''Reads data out of a config file'''
-        with open(self.cfg_file, 'r') as f:
+    def read_config(self, file=None):
+        '''Reads and loads YAML configuration file to a dictionary
+
+        Parameters
+        ----------
+        file: str
+            (default: self.cfg_file) Filepath of yaml configuration to load
+
+        Returns
+        -------
+        dict
+            Dictionary from yaml file
+        '''
+        if file is None:
+            file = self.cfg_file
+
+        with open(file, 'r') as f:
             data = yaml.full_load(f)
-        # TODO: check file for required basic structure/components, otherwise raise exception
+
+        # verify basic elements
+        if file == self.cfg_file:
+            required_sections = ['elements', 'generic_values', 'settings']
+            for sect in required_sections:
+                if sect not in data.keys():
+                    raise KeyError(f'Configuration file missing required section: "{sect}"')
+
         return data
 
-    def clear_table(self):
+    def clear_table_elements(self):
+        '''Clears input table'''
         self.tbl_elements.clearContents()
 
     def fill_table(self):
@@ -131,9 +159,9 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             name = " ".join([w.title() if w.islower() else w for w in name.split()])
 
             # create custom table item, that contains other parameters needed later for saving
-            title = NameTableItem(name,
-                                  link_type=data['link_type'],
-                                  input_type=data['input_type'])
+            title = ElementTableItem(name,
+                                     link_type=data['link_type'],
+                                     input_type=data['input_type'])
 
             # Set to format as specified above (bold)
             title.setFont(element_font)
@@ -143,8 +171,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             self.tbl_elements.setItem(row, self.name_col, title)
 
             # ------------ Attributes -------------
-
-            self.tbl_elements.setItem(row, self.attribute_col, AttributeTableItem('Gain [dB]'))
+            self.tbl_elements.setItem(row, self.attribute_col, AttributeTableItem('Gain [dB]', type='gain_loss'))
             self.tbl_elements.setItem(row, self.value_col, QTableWidgetItem(str(data['gain_loss'])))
             row +=1
 
@@ -241,32 +268,46 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         because of how new elements are generated
         '''
         data = {}
+        parameters = {}
         element_name = None
         for r in range(self.tbl_elements.rowCount()):
             # Check if row is a new element
-            new_elem_cell = self.tbl_elements.item(r, self.name_col)
-            if isinstance(new_elem_cell, NameTableItem):
-                element_name = new_elem_cell.text()
-                link_type = new_elem_cell.link_type
-                input_type = new_elem_cell.input_type
+            elem_item = self.tbl_elements.item(r, self.name_col)
+            if isinstance(elem_item, ElementTableItem):
+                # save previous parameters if they exist
+                if element_name and parameters:
+                    data[element_name]['parameters'] = parameters
+                    parameters = {} # reset to empty
+
+                element_name = elem_item.text()
+                link_type = elem_item.link_type
+                input_type = elem_item.input_type
 
                 data[element_name] = {'input_type': input_type,
                                       'link_type': link_type}
 
             # Use last defined element name for the remaining parameters, skip if not defined
             if element_name:
+                attribute = self.tbl_elements.item(r, self.attribute_col)
 
                 # Extract attribute name, depending on how data was inserted into cell
-                if self.tbl_elements.cellWidget(r,
-                                                self.attribute_col):  # returns none if incorrect cell type
-                    attribute = self.tbl_elements.cellWidget(r, self.attribute_col).text()
-
-                else:  # Assumes cell type is a QTableWidgetItem ('TWI')
-                    attribute = self.tbl_elements.item(r, self.attribute_col).text()
+                attribute_type = attribute.type
+                if attribute_type == 'gain_loss':
+                    name = 'gain_loss'
+                else:
+                    name = attribute.text()
 
                 value = self.tbl_elements.item(r, self.value_col).text()
 
-                data[element_name][attribute] = value
+                # Decide where to save name:value
+                if attribute_type == 'parameter':
+                    parameters[name] = value
+                else:
+                    data[element_name][name] = value
+
+        # save last set of parameters if they exist
+        if element_name and parameters:
+            data[element_name]['parameters'] = parameters
 
         self.cfg_data['elements'] = data
 
@@ -275,7 +316,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
 
 
-class NameTableItem(QTableWidgetItem):
+class ElementTableItem(QTableWidgetItem):
     def __init__(self, *args, **kwargs):
         '''Custom TableWidgetItem to allow other attributes to be stored.
 
@@ -295,6 +336,7 @@ class AttributeTableItem(QTableWidgetItem):
         This is necessary so that additional link element properties can be saved
         in the data dictionary which is passed to the main process
         '''
+        self.type = kwargs.pop('type', 'parameter')
         super().__init__(*args, **kwargs)
         self.setToolTip(f'Link element attribute')
 
