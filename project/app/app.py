@@ -50,32 +50,29 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
     def open_config_clicked(self):
         '''Opens a file dialog to select a config file'''
-        new = NewElementDialog()
-        exit_successful = new.exec_()
-        print(exit_successful)
 
-        # dlg = QFileDialog()
-        #
-        # file_path = dlg.getOpenFileName(self, 'Open YAML Configuration FIle',
-        #                                 directory='../configs',
-        #                                 filter='Config Files (*.yaml)')[0]
-        # if file_path == '':
-        #     return # Dialog cancelled, Exit this
-        #
-        # self.cfg_file = Path(file_path)
-        # self.lbl_config_file.setText(self.cfg_file.name)
-        #
-        # logger.debug(f"Config file set to {self.cfg_file}")
-        #
-        # try:
-        #     self.clear_table()
-        #
-        #     self.cfg_data = self.read_config()
-        #
-        #     self.fill_table()
-        # except Exception as E:
-        #     logger.debug(f'Error loading file: {E}')
-        #     showdialog(['Please select a valid YAML configuration file'])
+        dlg = QFileDialog()
+        
+        file_path = dlg.getOpenFileName(self, 'Open YAML Configuration FIle',
+                                        directory='../configs',
+                                        filter='Config Files (*.yaml)')[0]
+        if file_path == '':
+            return # Dialog cancelled, Exit this
+        
+        self.cfg_file = Path(file_path)
+        self.lbl_config_file.setText(self.cfg_file.name)
+        
+        logger.debug(f"Config file set to {self.cfg_file}")
+        
+        try:
+            self.clear_table()
+        
+            self.cfg_data = self.read_config()
+        
+            self.fill_table()
+        except Exception as E:
+            logger.debug(f'Error loading file: {E}')
+            showdialog(['Please select a valid YAML configuration file'])
 
     def new_clicked(self):
         self.clear_table()
@@ -163,8 +160,12 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
     def add_row_clicked(self):
         '''Adds new row to column, could be expanded to add a preset number of rows'''
-        self.tbl_elements.insertRow(self.tbl_elements.rowCount())
-        self.tbl_elements.show()
+        # self.tbl_elements.insertRow(self.tbl_elements.rowCount())
+        # self.tbl_elements.show()
+        new = NewElementDialog()
+        exit_successful = new.exec_()
+        print(exit_successful)
+
 
     def run_process_clicked(self):
         '''Run Analysis button clicked in UI, which calculates the link budget'''

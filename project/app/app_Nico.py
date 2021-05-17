@@ -20,7 +20,7 @@ import numpy as np
 from project.process import main_process
 
 
-mainwindow_form_class = uic.loadUiType('ui/main_window.ui')[0]
+mainwindow_form_class = uic.loadUiType('ui/main_window_nico.ui')[0]
 
 class MainWindow(QMainWindow, mainwindow_form_class):
     def __init__(self, parent=None):
