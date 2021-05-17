@@ -150,7 +150,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
             # Parameters
             for param, val in data['parameters'].items():
-                # Give parameter a checkbox #TODO: enable checkbox only when necessary
                 self.tbl_elements.setItem(row, self.attribute_col, AttributeTableItem(param))
                 self.tbl_elements.setItem(row, self.value_col, QTableWidgetItem(str(val)))
                 row += 1

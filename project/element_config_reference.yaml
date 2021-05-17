@@ -1,0 +1,26 @@
+FREE_SPACE:
+    parameter_set_name_1:
+        distance:     null
+        wavelength:   null
+    parameter_set_name_2:
+        angle:        null
+        distance:     null
+        gs_altitude:  null
+        sc_altitude:  null
+        wavelength:   null
+RX:
+    parameter_set_name_1:
+        antenna_diameter:   null
+        antenna_efficiency: null
+        wavelength:         null
+TX:
+    parameter_set_name_1:
+        antenna_diameter:   null
+        antenna_efficiency: null
+        wavelength:         null
+    
+LINK_TYPE:
+    parameter_set_name_1:
+        parameter_1: null
+        parameter_2: null
+        parameter_3: null
