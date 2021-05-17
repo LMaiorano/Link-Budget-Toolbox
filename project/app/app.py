@@ -35,7 +35,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.setupUi(self)
 
         # TABLE SETUP
-        self.col_titles = ['Element', 'Attribute', 'Value']
+        self.col_titles = ['Element Name', 'Attribute', 'Value']
         self.name_col = 0
         self.attribute_col = 1
         self.value_col = 2
@@ -43,6 +43,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         self.cfg_file = Path('../configs/default_config.yaml')
         self.cfg_data = self.read_config()
+        self.tbl_elements: QTableWidget()
         self.fill_table()
 
         self.result_data = None
@@ -158,13 +159,32 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.tbl_elements.show()
 
 
-    def add_row_clicked(self):
+    def add_element_clicked(self):
         '''Adds new row to column, could be expanded to add a preset number of rows'''
         # self.tbl_elements.insertRow(self.tbl_elements.rowCount())
         # self.tbl_elements.show()
         new = NewElementDialog()
         exit_successful = new.exec_()
         print(exit_successful)
+
+    def delete_element_clicked(self):
+        '''Deletes the selected table element'''
+
+        selected = self.tbl_elements.selectedRanges()
+        if len(selected) == 0:
+            return # quit because no rows selected
+
+        col_L = selected[0].leftColumn()
+
+        if col_L == 0: # Element name must be selected, so you cant remove individual attributes
+            start = selected[0].topRow()
+            end =  selected[-1].bottomRow()
+            logger.debug(f'Delete range: {start} - {end}')
+
+            for row in range(end, start-1, -1):
+                self.tbl_elements.removeRow(row)
+
+
 
 
     def run_process_clicked(self):
@@ -176,13 +196,13 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
     def display_results(self):
         '''Display the results in the results table'''
-
+        raise NotImplementedError
 
 
     def save_config_clicked(self):
         '''Save table to dictionary'''
         # Convert table to dictionary
-        data = self.convert_table_dict()
+        data = self.convert_table_to_dict()
 
         # Update cfg_data elements
         self.cfg_data['elements'] = data
@@ -210,8 +230,9 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         logger.debug(f"Config saved to {self.cfg_file}")
 
-    def convert_table_dict(self):
-        # Convert PyQt Table to elements dict
+    def convert_table_to_dict(self):
+        '''Convert PyQt Table to an 'elements' dictionary of the same format
+        as the input config file. This can be passed to the main process'''
         data = {}
         element_name = None
         for r in range(self.tbl_elements.rowCount()):
@@ -241,6 +262,9 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                 data[element_name][attribute] = value
 
         return data
+
+    def input_table_modified(self):
+        self.cfg_data = self.convert_table_to_dict()
 
 
 

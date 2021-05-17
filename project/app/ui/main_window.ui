@@ -234,15 +234,15 @@
    <sender>btn_add_row</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>add_row_clicked()</slot>
+   <slot>add_element_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>78</x>
-     <y>330</y>
+     <x>55</x>
+     <y>232</y>
     </hint>
     <hint type="destinationlabel">
-     <x>30</x>
-     <y>370</y>
+     <x>97</x>
+     <y>109</y>
     </hint>
    </hints>
   </connection>
@@ -326,12 +326,30 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>delete_element_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>60</x>
+     <y>399</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>61</x>
+     <y>331</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_config_clicked()</slot>
-  <slot>add_row_clicked()</slot>
+  <slot>add_element_clicked()</slot>
   <slot>run_process_clicked()</slot>
   <slot>save_config_clicked()</slot>
   <slot>new_clicked()</slot>
+  <slot>delete_element_clicked()</slot>
+  <slot>input_table_modified()</slot>
  </slots>
 </ui>
