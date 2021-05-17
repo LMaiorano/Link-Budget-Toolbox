@@ -6,7 +6,6 @@ Created on Tue May 11 12:32:54 2021
 """
 from project.link_element import LinkElement
 import numpy as np
-from project.exceptions import MissingParameterException
 
 class TX_LinkElement(LinkElement):
     '''Specific type of LinkElement for the Transmitting Antenna,
@@ -25,7 +24,6 @@ class TX_LinkElement(LinkElement):
 
         try:
             self.efficiency = parameters['antenna_efficiency']
-            # self.bogus = parameters['bogus']
             self.diameter = parameters['antenna_diameter']
             self.wavelength = parameters['wavelength']
 
@@ -45,9 +43,6 @@ class TX_LinkElement(LinkElement):
         if self.input_type == "parameter_set_1":
             Gtpeak = self.efficiency*(np.pi*self.diameter/self.wavelength)**2  #[-], peak gain
             self.gain = self.dB(Gtpeak)
-
-
-
         # elif self.input_type == "gain_loss":
         #     self.gain = self.gain
 

@@ -16,18 +16,51 @@ class FREE_SPACE_LinkElement(LinkElement):
     Although not defined here, methods "get_gain()" and "get_loss()" are 
     automatically inherited and will also work
     '''
-    def __init__(self, name, input_type, gain, distance, sc_altitude, gs_altitude, angle, wavelength):
+    def __init__(self, name, input_type, gain, parameters):
+        '''short name
+        
+        summary
+        
+        Parameters
+        ----------
+        name : TYPE
+            DESCRIPTION.
+        input_type : TYPE
+            DESCRIPTION.
+        gain : TYPE
+            DESCRIPTION.
+        distance : TYPE
+            DESCRIPTION.
+        sc_altitude : TYPE
+            DESCRIPTION.
+        gs_altitude : TYPE
+            DESCRIPTION.
+        angle : TYPE
+            DESCRIPTION.
+        wavelength : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        '''
         # Run the initialization of parent LinkElement
-        super().__init__(name, linktype='FREE_SPACE', gain = 0)
+        super().__init__(name, linktype='FREE_SPACE', gain = gain)
         # Add attributes that are unique to TxElement
         # TODO: figure out if giving wavelength isn' causing problems
-        self.input_type = input_type
-        self.gain = gain
-        self.distance = distance
-        self.wavelength = wavelength
-        self.sc_altitude = sc_altitude
-        self.gs_altitude = gs_altitude
-        self.angle = angle      #[deg]
+        try:
+            self.input_type = input_type
+            self.distance = parameters['distance']
+            self.sc_altitude = parameters['sc_altitude']
+            self.gs_altitude = parameters['gs_altitude']
+            self.angle = parameters['angle']     #[deg]
+            self.wavelength = parameters['wavelength']
+            
+            self.process()
+            
+        except KeyError as key:
+            print(f'Missing parameter: {key}. Unable to calculate gain with parameters, using default')
         
     def process(self):
         '''
@@ -68,9 +101,12 @@ class FREE_SPACE_LinkElement(LinkElement):
 if __name__ == '__main__':
     # Put any code here you want to use to test the class
     # (like a scratch pad to test stuff while you're working)
-    print('Good Busy Willem! :P')
-    
-    testelement = FREE_SPACE_LinkElement('test', 'parameter_set_2', -10, 100e3, 90e3,0,89,1)
+    testparameters = {'distance': 100e3,
+                      'sc_altitude': 90e3,
+                      'gs_altitude': 0,
+                      'angle':89,
+                      'wavelength':1}    
+    testelement = FREE_SPACE_LinkElement('test', 'parameter_set_2', -10, testparameters)
     print(testelement)
     testelement.process()
     print(testelement)
