@@ -12,9 +12,7 @@ import project.link_element as le
 from pathlib import Path
 import yaml
 
-#TODO: Import dictionary to GUI
-
-#TODO: Put right link element names in 'elements' to call
+#TODO: Import dictionary automatically from GUI
 
 # This is a temporary dictionary. In the end the dictionary should be filled in automatically based on user input.
 user_data = {'setting' : {'case_type' : 'nominal'},
@@ -22,21 +20,23 @@ user_data = {'setting' : {'case_type' : 'nominal'},
              'elements' : {'TX_SC'      :             {'link_type'  :   'TX',
                                                        'input_type' :   'gain_loss',
                                                        'gain_loss'  :    10,
-                                                       'parameters' :  {'parameter1' : None,
-                                                                        'parameter2' : None,
-                                                                        'parameter3' : None}},
-                           'free_space' :             {'link_type' :    'FREE_SPACE',
+                                                       'parameters' :  {'antenna_efficiency'    : None,
+                                                                        'antenna_diameter'      : None,
+                                                                        'wavelength'            : None}},
+                           'FREE_SPACE' :             {'link_type' :    'FREE_SPACE',
                                                        'input_type' :   'gain_loss',
                                                        'gain_loss' :     -8,
-                                                       'parameters' :  {'parameter1' : None,
-                                                                        'parameter2' : None,
-                                                                        'parameter3' : None}},
+                                                       'parameters' :  {'distance1'     : None,
+                                                                        'sc_altitude'   : None,
+                                                                        'gs_altitude'   : None,
+                                                                        'angle'         : None,
+                                                                        'wavelength'    : None}},
                            'RX_GS    ':               {'link_type'  :   'RX',
                                                        'input_type' :   'gain_loss',
                                                        'gain_loss'  :    2,
-                                                       'parameters' :  {'parameter1' : None,
-                                                                        'parameter2' : None,
-                                                                        'parameter3' : None}}
+                                                       'parameters' :  {'antenna_efficiency'    : None,
+                                                                        'antenna_diameter'      : None,
+                                                                        'wavelength'            : None}},
                            }
              }
 
@@ -70,12 +70,9 @@ def main_process():
 
 
 if __name__ == '__main__':
-    # TODO: Read out dictionary and check for linktypes
     # call class, give gain, all parameter types and input_type
-    # TODO: Based on linktypes, call link elements
     # TODO: Get gainloss from link elements
     # TODO: Decide on if EIRP should be a class or calculated in process.py
-    # TODO: give parameters as a list instead of all variables seperately
 
     # check for input_type and call with correct variables each link element file.
     for give_link_element_name in user_data['elements'].keys(): # Access seperate link elements one by one
@@ -95,21 +92,24 @@ if __name__ == '__main__':
             if key == 'parameters':
                 for param_key, param_element in user_data['elements'][give_link_element_name]['parameters'].items():
                     give_params.append(param_element)
-        results = []
-        # name = 'linktype'_link_element(name, input_type, gain, [param1, param2 ... paramn])
 
-        # TODO: Continue here
+        results_name =  []
+        results_val =   []
+        #TODO: uncomment this below if you want to calculate the gains. N.B. This does not work yet as the inputs and
+        # outputs of the classes still have to be changed. (input list of params and output gain_loss only)
 
-        # results.append(eval('le.'+ give_link_type + '_link_element' + '(give_link_element_name, give_input_type, give_gain_loss, \
-        #                                                    None, None, None)'))
+        # results_name.append(give_link_element_name
+        # results_val.append(eval('le.'+ give_link_type + '_LinkElement' + '(give_link_element_name,\
+        #                                                    give_input_type, give_gain_loss, give_params)'))
 
-    # TODO: Sum link elements
+    flux_margin = sum(results_val)
     # TODO: Save to file for GUI
-    generic = le.LinkElement('Example 1', 'GENERIC', 3)
-    # What input to classes will be: link_type, loss_gain value and all parameter values
-    eirp_example = le.EIRPElement('EIRP Example', parameters=[5, 23])
 
-    print(generic)
+    # generic = le.LinkElement('Example 1', 'GENERIC', 3)
+    # # What input to classes will be: link_type, loss_gain value and all parameter values
+    # eirp_example = le.EIRPElement('EIRP Example', parameters=[5, 23])
+    #
+    # print(generic)
 
     ## Save dictionary to yaml
     # (luigi needed this quick for the gui, it's not necessary for the overall process)

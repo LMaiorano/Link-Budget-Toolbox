@@ -1,28 +1,30 @@
 elements:
+  FREE_SPACE:
+    gain_loss: -8
+    input_type: gain_loss
+    link_type: FREE_SPACE
+    parameters:
+      angle: null
+      distance1: null
+      gs_altitude: null
+      sc_altitude: null
+      wavelength: null
   'RX_GS    ':
     gain_loss: 2
     input_type: gain_loss
     link_type: RX
     parameters:
-      parameter1: null
-      parameter2: null
-      parameter3: null
+      antenna_diameter: null
+      antenna_efficiency: null
+      wavelength: null
   TX_SC:
     gain_loss: 10
     input_type: gain_loss
     link_type: TX
     parameters:
-      parameter1: null
-      parameter2: null
-      parameter3: null
-  free_space:
-    gain_loss: -8
-    input_type: gain_loss
-    link_type: FREE_SPACE
-    parameters:
-      parameter1: null
-      parameter2: null
-      parameter3: null
+      antenna_diameter: null
+      antenna_efficiency: null
+      wavelength: null
 generic_values:
   altitude: 800
 setting:

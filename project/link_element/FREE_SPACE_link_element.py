@@ -8,7 +8,7 @@ from project.link_element import LinkElement
 import numpy as np
 Re = 6371e3     #[m]
 
-class Free_Space_LinkElement(LinkElement):
+class FREE_SPACE_LinkElement(LinkElement):
     '''Specific type of LinkElement for the Free Space Loss,
     that can depend a single gain/loss value or on parameters instead. as
     dictated by the input_type value. 
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     # (like a scratch pad to test stuff while you're working)
     print('Good Busy Willem! :P')
     
-    testelement = Free_Space_LinkElement('test', 'parameter_set_2', 10, 100e3, 90e3,0,89,1)
+    testelement = FREE_SPACE_LinkElement('test', 'parameter_set_2', 10, 100e3, 90e3,0,89,1)
     print(testelement)
     testelement.process()
     print(testelement)
