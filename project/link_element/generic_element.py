@@ -8,7 +8,7 @@ class LinkElement:
     If parameters are used, then the respective child Element should be created 
     which will process the parameters accordingly
     '''
-    LINK_TYPES = ['TRANSMITTER', 'FREE_SPACE', 'RECEIVER'] # JUST AN EXAMPLE
+    LINK_TYPES = ['TX', 'FREE_SPACE', 'RX'] # JUST AN EXAMPLE
 
     def __init__(self, name, linktype, gain):
         # The basic attributes that all types Elements must have
@@ -28,29 +28,6 @@ class LinkElement:
         # Return net gain (used by final process step)
         return self.gain
 
-
-
-
-class FsElement(LinkElement):
-    '''Specific type of LinkElement, that depends on parameters instead of a 
-    single gain/loss value
-
-    Although not defined here, methods "get_gain()" and "get_loss()" are 
-    automatically inherited and will also work
-    '''
-    def __init__(self, name, parameters):
-        # Run the initialization of parent LinkElement, with gain and loss 
-        #   set initially as unknown (None)
-        super().__init__(name, gain=None)
-
-        # Add attributes that are unique to TxElement
-        self.parameters = parameters
-        self.process()
-
-    def process(self):
-        # Tx Specific calculations
-        self.gain = sum(self.parameters)
-        self.loss = sum(self.parameters)
 
 
 # We would create as 

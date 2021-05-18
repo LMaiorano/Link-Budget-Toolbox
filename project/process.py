@@ -88,19 +88,19 @@ def fill_results_data(df_user_data):
 
     return results_data
 
-def main_process():
-    print("Jesper's main process")
+def main_process(user_data):
+    # print("Jesper's main process")
 
     results_data = fill_results_data(read_user_data(user_data))
 
     return results_data
 
 if __name__ == '__main__':
-    main_process()
+    main_process(user_data)
 
     ## Save dictionary to yaml
     # (luigi needed this quick for the gui, it's not necessary for the overall process)
-    save_to_yaml(user_data, 'example_config')
+    # save_to_yaml(user_data, 'example_config')
 
 
 

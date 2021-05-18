@@ -1,28 +1,26 @@
 elements:
   Free Space:
     gain_loss: '-8'
-    input_type: gainloss
+    input_type: parameter_set_2
     link_type: FREE_SPACE
     parameters:
-      parameter1: None
-      parameter2: None
-      parameter3: None
+      angle: '30'
+      distance: '32'
+      gs_altitude: '21'
+      sc_altitude: '321'
+      wavelength: '54'
   GS RX Ant:
     gain_loss: '2'
-    input_type: gainloss
-    link_type: RECEIVER
+    input_type: parameter_set_1
+    link_type: RX
     parameters:
-      parameter1: val1
-      parameter2: val2
-      parameter3: '100'
+      antenna_diameter: val1
+      antenna_efficiency: val2
+      wavelength: '100'
   SC TX Ant:
     gain_loss: '10'
-    input_type: gainloss
-    link_type: TRANSMITTER
-    parameters:
-      parameter1: None
-      parameter2: None
-      parameter3: None
+    input_type: gain_loss
+    link_type: TX
 generic_values:
   altitude: 800
 settings:
