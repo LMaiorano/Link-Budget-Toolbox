@@ -1,7 +1,7 @@
 elements:
   Free Space:
     gain_loss: '-8'
-    index: 1
+    idx: 3
     input_type: parameter_set_2
     link_type: FREE_SPACE
     parameters:
@@ -12,7 +12,7 @@ elements:
       wavelength: None
   GS RX Ant:
     gain_loss: '2'
-    index: 2
+    idx: 1
     input_type: parameter_set_1
     link_type: RX
     parameters:
@@ -21,7 +21,7 @@ elements:
       wavelength: '100'
   SC TX Ant:
     gain_loss: '10'
-    index: 3
+    idx: 2
     input_type: gain_loss
     link_type: TX
 generic_values:

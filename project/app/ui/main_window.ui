@@ -154,7 +154,6 @@
      <string>&amp;File</string>
     </property>
     <addaction name="action_New"/>
-    <addaction name="separator"/>
     <addaction name="action_Open"/>
     <addaction name="separator"/>
     <addaction name="action_Save"/>
