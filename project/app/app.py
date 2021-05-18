@@ -41,7 +41,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         # TABLE SETUP
         self.col_titles = ['Element Name', 'Attribute', 'Value', 'Units']
-        self.res_col_titles = ['Gain', 'Value', 'Units']
+        self.res_col_titles = ['Total GAIN', 'Value', 'Units']
         self.name_col = 0
         self.attribute_col = 1
         self.value_col = 2
@@ -173,10 +173,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             start_row = row
 
             # ---------------------- Element Title ------------------------------------
-            # fixes capitalization, keeping abbreviations in full caps
-            # name = name.replace("_", " ")
-            # name = " ".join([w.title() if w.islower() else w for w in name.split()])
-
             # Create element title table item, containing other attributes needed later for saving
             element_link_type = data['link_type']
             element_input_type = data['input_type']
@@ -234,19 +230,22 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         for name, elem in results_data.items():
             try:
                 rows = len(elem['parameters'])
-            except KeyError:  # this link element has no parameters, so just a gain_loss
+            except (KeyError, TypeError):  # this link element has no parameters, so just a gain_loss
                 rows = 1
             elem_rows[name] = rows
             n_rows += rows
 
 
         # Create empty table of correct size
-        self.tbl_elements.setColumnCount(len(self.res_col_titles))
-        self.tbl_elements.setRowCount(n_rows)
+        self.tbl_results.setColumnCount(len(self.res_col_titles))
+        self.tbl_results.setRowCount(n_rows)
 
         # Set row/column labels
-        self.tbl_elements.setHorizontalHeaderLabels(self.res_col_titles)
-        self.tbl_elements.verticalHeader().setVisible(False)
+        self.tbl_results.setHorizontalHeaderLabels(self.res_col_titles)
+        self.tbl_results.verticalHeader().setVisible(False)
+
+        title_font = QFont()
+        title_font.setBold(True)
 
 
         # Order elements according to their saved index
@@ -264,7 +263,9 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             gain_item = QTableWidgetItem(str(data['gain_loss']))
             gain_item.setFlags(QtCore.Qt.ItemIsEnabled)
 
-            self.tbl_results.setItem(row, 0, AttributeTableItem('Gain', description=descr))
+            title = AttributeTableItem(f'{name} Gain', description=descr)
+            title.setFont(title_font)
+            self.tbl_results.setItem(row, 0, title)
             self.tbl_results.setItem(row, 1, gain_item)
             self.tbl_results.setItem(row, 2, UnitsTableItem(units))
 
@@ -273,9 +274,14 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             for r in range(len(self.res_col_titles)):
                 self.tbl_results.setSpan(start_row, r, elem_rows[name], 1)
 
+            row += elem_rows[name]
 
         # Show table
-        self.tbl_elements.show()
+        self.tbl_results.show()
+        header = self.tbl_results.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.Stretch)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
 
 
 
@@ -325,7 +331,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         exit_successful = new.exec_()
         print(exit_successful)
 
-        self.save_input_table_to_dict()
+
 
     def delete_element_clicked(self):
         '''Deletes the selected table element'''
@@ -344,19 +350,16 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             for row in range(end, start-1, -1):
                 self.tbl_elements.removeRow(row)
 
-            self.save_input_table_to_dict()
+
+
 
 
     def run_process_clicked(self):
         '''Run Analysis button clicked in UI, which calculates the link budget'''
         logger.info('Running main process')
-        self.result_data = main_process(self.cfg_data)
+        # self.result_data = main_process(self.cfg_data)
         # TODO: display results
-
-
-    def display_results(self):
-        '''Display the results in the results table'''
-        raise NotImplementedError
+        self.fill_results_table(self.cfg_data['elements'])
 
 
     def save_config_clicked(self):
@@ -437,7 +440,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                 else:
                     name = attribute.text()
 
-                # TODO: Ensure only floats are entered into this column
+                # if strings are entered, this will raise a TypeError to be caught by the click action
                 value = self.tbl_elements.item(r, self.value_col).text()
                 if value == '':
                     value = 0

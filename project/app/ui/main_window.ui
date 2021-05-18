@@ -53,6 +53,18 @@
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="4">
        <widget class="QLabel" name="lbl_results">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="font">
          <font>
           <pointsize>12</pointsize>
@@ -90,9 +102,6 @@
       <item row="1" column="0">
        <layout class="QFormLayout" name="formLayout_2"/>
       </item>
-      <item row="1" column="4">
-       <widget class="QTableView" name="tbl_results"/>
-      </item>
       <item row="1" column="3">
        <widget class="QTableWidget" name="tbl_elements">
         <property name="sizePolicy">
@@ -111,6 +120,18 @@
       </item>
       <item row="0" column="3">
        <widget class="QLabel" name="lbl_elements">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="font">
          <font>
           <pointsize>12</pointsize>
@@ -123,6 +144,9 @@
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QTableWidget" name="tbl_results"/>
       </item>
      </layout>
     </item>
