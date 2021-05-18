@@ -7,8 +7,27 @@ elements:
       angle: null
       distance: null
       gs_altitude: null
-      sc_altitude: null
-      wavelength: null
+      sc_altitude: !!python/object/apply:numpy.core.multiarray.scalar
+      - &id001 !!python/object/apply:numpy.dtype
+        args:
+        - f8
+        - false
+        - true
+        state: !!python/tuple
+        - 3
+        - <
+        - null
+        - null
+        - null
+        - -1
+        - -1
+        - 0
+      - !!binary |
+        AAAAAAAAiUA=
+      wavelength: !!python/object/apply:numpy.core.multiarray.scalar
+      - *id001
+      - !!binary |
+        VOQQcXMquT4=
   'RX_GS    ':
     gain_loss: 2
     input_type: gain_loss
@@ -16,7 +35,10 @@ elements:
     parameters:
       antenna_diameter: null
       antenna_efficiency: null
-      wavelength: null
+      wavelength: !!python/object/apply:numpy.core.multiarray.scalar
+      - *id001
+      - !!binary |
+        VOQQcXMquT4=
   TX_SC:
     gain_loss: 10
     input_type: gain_loss
@@ -24,8 +46,12 @@ elements:
     parameters:
       antenna_diameter: null
       antenna_efficiency: null
-      wavelength: null
+      wavelength: !!python/object/apply:numpy.core.multiarray.scalar
+      - *id001
+      - !!binary |
+        VOQQcXMquT4=
 generic_values:
-  altitude: 800
+  sc_altitude: 800
+  wavelength: 1.5e-06
 settings:
   case_type: nominal

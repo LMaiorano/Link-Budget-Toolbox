@@ -16,28 +16,29 @@ import pandas as pd
 #TODO: Import dictionary automatically from GUI
 
 # This is a temporary dictionary. In the end the dictionary should be filled in automatically based on user input.
-user_data = {'settings' : {'case_type' : 'nominal'},
-             'generic_values' : {'altitude':800},
-             'elements' : {'TX_SC'      :             {'link_type'  :   'TX',
+user_data = {'settings'         : {'case_type'      : 'nominal'},
+             'generic_values'   : {'sc_altitude'    : 800,                # [m]
+                                   'wavelength'     : 1500*10**(-9)},     # [m]
+             'elements'         : {'TX_SC'      :     {'link_type'  :   'TX',
                                                        'input_type' :   'gain_loss',
-                                                       'gain_loss'  :    10,
-                                                       'parameters' :  {'antenna_efficiency'    : None,
-                                                                        'antenna_diameter'      : None,
-                                                                        'wavelength'            : None}},
-                           'FREE_SPACE' :             {'link_type' :    'FREE_SPACE',
+                                                       'gain_loss'  :    10,            # [dB]
+                                                       'parameters' :  {'antenna_efficiency'    : None,     # [-]
+                                                                        'antenna_diameter'      : None,     # [m]
+                                                                        'wavelength'            : None}},   # [m]
+                                   'FREE_SPACE' :     {'link_type' :    'FREE_SPACE',
                                                        'input_type' :   'gain_loss',
                                                        'gain_loss' :     -8,
-                                                       'parameters' :  {'distance'      : None,
-                                                                        'sc_altitude'   : None,
-                                                                        'gs_altitude'   : None,
-                                                                        'angle'         : None,
-                                                                        'wavelength'    : None}},
-                           'RX_GS    ':               {'link_type'  :   'RX',
+                                                       'parameters' :  {'distance'      : None,     # [m]
+                                                                        'sc_altitude'   : None,     # [m]
+                                                                        'gs_altitude'   : None,     # [m]
+                                                                        'angle'         : None,     # [deg]
+                                                                        'wavelength'    : None}},   # [m]
+                                   'RX_GS    ':       {'link_type'  :   'RX',
                                                        'input_type' :   'gain_loss',
-                                                       'gain_loss'  :    2,
-                                                       'parameters' :  {'antenna_efficiency'    : None,
-                                                                        'antenna_diameter'      : None,
-                                                                        'wavelength'            : None}},
+                                                       'gain_loss'  :    2,             # [dB]
+                                                       'parameters' :  {'antenna_efficiency'    : None,     # [-]
+                                                                        'antenna_diameter'      : None,     # [m]
+                                                                        'wavelength'            : None}},   # [m]
                            }
              }
 
@@ -66,12 +67,71 @@ def save_to_yaml(d:dict, filename:str):
         yaml.dump(d, f)
 
 def read_user_data(user_data):
+    '''Write the link element inputs from the user_data dictionary to a dataframe
 
-    df_user_data = pd.DataFrame.from_dict(user_data['elements']).T.reset_index().rename(columns={'index': 'name'})
+    Parameters
+    ----------
+    user_data: dict
+        Dictionary containing the data and link elements the user has given
+
+    Returns
+    -------
+    df_user_data : df
+        Dictionary which gives along its rows per link element the link element name, link type, input type,
+        gain loss and parameters, based on the user input in the dictionary user_data
+    '''
+
+    df_user_data = pd.DataFrame.from_dict(user_data['elements']).T.reset_index().rename(columns={'index' : 'name'})
 
     return df_user_data
 
+def update_params_from_genval(user_data, df_user_data):
+    '''Use the user-given generic values to update the matching parameters within all link elements
+
+    Parameters
+    ----------
+    user_data: dict
+        Dictionary containing the data and link elements the user has given
+    df_user_data : df
+        Dictionary which gives along its rows per link element the link element name, link type, input type,
+        gain/loss and parameters, based on the user input in the dictionary user_data
+
+    Returns
+    -------
+    user_data: dict
+        Dictionary containing the data and link elements the user has given
+
+    '''
+
+    df_generic_values = pd.DataFrame.from_dict(user_data['generic_values'], orient='index').reset_index()\
+        .rename(columns={'index' : 'variable', 0 : 'value'})
+
+    for i in range(len(df_generic_values)):
+
+        for j in range(len(df_user_data)):
+
+            if df_generic_values.iloc[i]['variable'] in \
+                    user_data['elements'][df_user_data.get("name")[j]]['parameters']:
+
+                user_data['elements'][df_user_data.get("name")[j]]['parameters']\
+                    .update({df_generic_values.iloc[i]['variable'] : df_generic_values.iloc[i]['value']})
+
+    return user_data
+
 def fill_results_data(df_user_data):
+    '''Get the gain/loss of each link element and write it to the results_data dictionary
+
+    Parameters
+    ----------
+    df_user_data : df
+        Dictionary which gives along its rows per link element the link element name, link type, input type,
+        gain loss and parameters, based on the user input in the dictionary user_data
+
+    Returns
+    -------
+    results_data : dict
+        User_data dictionary which has been updated with the calculated gains/losses
+    '''
 
     results_data = user_data
 
@@ -88,10 +148,18 @@ def fill_results_data(df_user_data):
 
     return results_data
 
+# TODO: Make user_data an input of main_process()
 def main_process():
+    '''Use user_data dictionary to calculate gains/losses to create a results_data dictionary
+
+    Returns
+    -------
+    results_data : dict
+        User_data dictionary which has been updated with the calculated gains/losses
+    '''
     print("Jesper's main process")
 
-    results_data = fill_results_data(read_user_data(user_data))
+    results_data = fill_results_data(read_user_data(update_params_from_genval(user_data, read_user_data(user_data))))
 
     return results_data
 
