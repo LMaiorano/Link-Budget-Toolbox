@@ -1,16 +1,18 @@
 elements:
   Free Space:
     gain_loss: '-8'
+    index: 1
     input_type: parameter_set_2
     link_type: FREE_SPACE
     parameters:
-      angle: '30'
-      distance: '32'
-      gs_altitude: '21'
-      sc_altitude: '321'
-      wavelength: '54'
+      angle: None
+      distance: None
+      gs_altitude: None
+      sc_altitude: None
+      wavelength: None
   GS RX Ant:
     gain_loss: '2'
+    index: 2
     input_type: parameter_set_1
     link_type: RX
     parameters:
@@ -19,6 +21,7 @@ elements:
       wavelength: '100'
   SC TX Ant:
     gain_loss: '10'
+    index: 3
     input_type: gain_loss
     link_type: TX
 generic_values:

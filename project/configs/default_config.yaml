@@ -1,5 +1,6 @@
 elements:
   GS_RX_Ant:
+    index: 0
     gain_loss: 2
     input_type: parameter_set_1
     link_type: RX
@@ -8,10 +9,12 @@ elements:
       antenna_efficiency: val2
       wavelength: 100
   SC_TX_Ant:
+    index: 1
     gain_loss: 10
     input_type: gain_loss
     link_type: TX
   free_space:
+    index: 2
     gain_loss: -8
     input_type: parameter_set_2
     link_type: FREE_SPACE

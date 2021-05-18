@@ -124,6 +124,12 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                 if sect not in data.keys():
                     raise KeyError(f'Configuration file missing required section: "{sect}"')
 
+            # Add a default index (top) if missing in element configuration
+            for element in data['elements'].values():
+                if 'index' not in element.keys():
+                    element['index'] = 0
+
+
         return data
 
     def clear_table_elements(self):
@@ -159,8 +165,11 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         element_font = QFont()
         element_font.setBold(True)
 
+        # Order elements according to their saved index
+        elements_ordered = {key: val for key, val in sorted(elements.items(), key=lambda item: item[1]['index'])}
+
         row = 0
-        for name, data in elements.items():
+        for name, data in elements_ordered.items():
             start_row = row
 
             # ---------------------- Element Title ------------------------------------
@@ -179,7 +188,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             title.setFont(element_font)
             # Add title element to table
             self.tbl_elements.setItem(row, self.name_col, title)
-            logger.debug(f'Added {name} to row {row}')
 
             # ------------------------- Attributes ------------------------------------
             units = self.get_attribute_details(data, gain=True)['units']
@@ -338,6 +346,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         data = {}
         parameters = {}
         element_name = None
+        index = 0
         for r in range(self.tbl_elements.rowCount()):
             # Check if row is a new element
             elem_item = self.tbl_elements.item(r, self.name_col)
@@ -347,12 +356,14 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                     data[element_name]['parameters'] = parameters
                     parameters = {} # reset to empty
 
+                index += 1
                 element_name = elem_item.text()
                 link_type = elem_item.link_type
                 input_type = elem_item.input_type
 
                 data[element_name] = {'input_type': input_type,
-                                      'link_type': link_type}
+                                      'link_type': link_type,
+                                      'index': index}
 
             # Use last defined element name for the remaining parameters, skip if not defined
             if element_name:
