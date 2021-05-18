@@ -436,9 +436,18 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def run_process_clicked(self):
         '''Run Analysis button clicked in UI, which calculates the link budget'''
         logger.info('Running main process')
+
+        # Update cfg_data elements
+        try:
+            self.save_input_table_to_dict()
+        except ValueError:
+            showdialog(['Please check that only numerical values are entered'])
+            return  # Abort saving file
+
         # self.result_data = main_process(self.cfg_data)
         # TODO: display results
         self.fill_results_table(self.cfg_data['elements'])
+        self.btn_save_results.setEnabled(True)
 
 
     def save_config_clicked(self):
