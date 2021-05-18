@@ -49,18 +49,17 @@ class FREE_SPACE_LinkElement(LinkElement):
         super().__init__(name, linktype='FREE_SPACE', gain = gain)
         # Add attributes that are unique to TxElement
         # TODO: figure out if giving wavelength isn' causing problems
-        try:
-            self.input_type = input_type
-            self.distance = parameters['distance']
-            self.sc_altitude = parameters['sc_altitude']
-            self.gs_altitude = parameters['gs_altitude']
-            self.angle = parameters['angle']     #[deg]
-            self.wavelength = parameters['wavelength']
-            
+        self.input_type = input_type
+
+        self.distance = parameters.get('distance', None)
+        self.sc_altitude = parameters.get('sc_altitude', None)
+        self.gs_altitude = parameters.get('gs_altitude', None)
+        self.angle = parameters.get('angle', None)     #[deg]
+        self.wavelength = parameters.get('wavelength', None)
+
+        if self.input_type != 'gain_loss':
             self.process()
-            
-        except KeyError as key:
-            print(f'Missing parameter: {key}. Unable to calculate gain with parameters, using default')
+
         
     def process(self):
         '''

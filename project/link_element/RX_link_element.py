@@ -21,15 +21,15 @@ class RX_LinkElement(LinkElement):
         # Add attributes that are unique to RxElement
         # TODO: figure out if giving wavelength isn' causing problems
         self.input_type = input_type
-        try:
-            self.efficiency = parameters['antenna_efficiency']
-            self.diameter = parameters['antenna_diameter']
-            self.wavelength = parameters['wavelength']
-            
+
+        self.efficiency = parameters.get('antenna_efficiency', None)
+        self.diameter = parameters.get('antenna_diameter', None)
+        self.wavelength = parameters.get('wavelength', None)
+
+        if self.input_type != 'gain_loss':
             self.process()
             
-        except KeyError as key:
-            print(f'Missing parameter: {key}. Unable to calculate gain with parameters, using default')
+
         
     def process(self):
         # RX Specific calculations, first checks if any calculations are 
