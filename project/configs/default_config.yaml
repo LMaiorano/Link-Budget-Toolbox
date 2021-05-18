@@ -1,30 +1,30 @@
 elements:
-  GS_RX_Ant:
-    idx: 0
-    gain_loss: 2
-    input_type: parameter_set_1
-    link_type: RX
-    parameters:
-      antenna_diameter: 0
-      antenna_efficiency: 0
-      wavelength: 100
-  SC_TX_Ant:
-    idx: 1
-    gain_loss: 10
-    input_type: gain_loss
-    link_type: TX
-    parameters: null
-  free_space:
-    idx: 2
-    gain_loss: -8
+  Free Space:
+    gain_loss: null
+    idx: 3
     input_type: parameter_set_2
     link_type: FREE_SPACE
     parameters:
-      angle: 0
-      distance: 0
-      gs_altitude: 0
-      sc_altitude: 0
-      wavelength: 0
+      angle: 0.0
+      distance: 0.0
+      gs_altitude: 0.0
+      sc_altitude: 0.0
+      wavelength: 0.0
+  GS RX Ant:
+    gain_loss: null
+    idx: 1
+    input_type: parameter_set_1
+    link_type: RX
+    parameters:
+      antenna_diameter: 0.0
+      antenna_efficiency: 0.0
+      wavelength: 100.0
+  SC TX Ant:
+    gain_loss: 10.0
+    idx: 2
+    input_type: gain_loss
+    link_type: TX
+    parameters: null
 generic_values:
   altitude: 800
 settings:

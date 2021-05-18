@@ -1,49 +1,49 @@
 FREE_SPACE:
     parameter_set_1:
         distance:
-            description:    distance from spacecraft to ground station
+            description:    Distance between spacecraft and ground station
             units:          m
         wavelength:
-            description:    radio wavelength in electromagnetic spectrum
+            description:    Radio signal wavelength
             units:          nm
     parameter_set_2:
         angle:
-            description:    useful description here
+            description:
             units:          deg
         distance:
-            description:    useful description here
+            description:    Distance between spacecraft and ground station
             units:          m
         gs_altitude:
-            description:    useful description here
+            description:    Ground station altitude
             units:          km
         sc_altitude:
-            description:    useful description here
+            description:    Spacecraft altitude
             units:          km
         wavelength:
-            description:    useful description here
+            description:    Radio signal wavelength
             units:          nm
 RX:
     parameter_set_1:
         antenna_diameter:
-            description:    useful description here
+            description:
             units:          m
         antenna_efficiency:
-            description:    useful description here
-            units:          m
+            description:
+            units:          "-"
         wavelength:
-            description:    useful description here
+            description:    Radio signal wavelength
             units:          nm
 TX:
     parameter_set_1:
         antenna_diameter:
-            description:    useful description here
+            description:    Diameter of antenna
             units:          m
         antenna_efficiency:
-            description:    useful description here
-            units:          m
+            description:    Efficiency of antenna
+            units:          "-"
         wavelength:
-            description:    useful description here
-            units:          m
+            description:    Radio signal wavelength
+            units:          nm
 GENERIC:
     gain_loss:
         description:        "Overall gain of the Link Element. \n\tPositive = Gain \n\tNegative = Loss" # Must use double quotes to recognize line-break: \n

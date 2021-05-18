@@ -154,11 +154,11 @@
      <widget class="QPushButton" name="btn_run_process">
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>16</pointsize>
        </font>
       </property>
       <property name="text">
-       <string>Run Process</string>
+       <string>Run Analysis</string>
       </property>
      </widget>
     </item>
