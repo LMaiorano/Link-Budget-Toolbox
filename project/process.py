@@ -41,7 +41,6 @@ user_data = {'settings' : {'case_type' : 'nominal'},
                            }
              }
 
-
 def save_to_yaml(d:dict, filename:str):
     '''Save dictionary to yaml, with a specified filename
 
@@ -67,46 +66,37 @@ def save_to_yaml(d:dict, filename:str):
         yaml.dump(d, f)
 
 def read_user_data(user_data):
-    # check for input_type and call with correct variables each link element file.
 
     df_user_data = pd.DataFrame.from_dict(user_data['elements']).T.reset_index().rename(columns={'index': 'name'})
 
     return df_user_data
 
-def call_link_elements(df_user_data):
+def fill_results_data(df_user_data):
 
-    # TODO: unpack df_user_data to use it as input in result and update to user_data
-    for give_link_element_name in user_data['elements'].keys():
-        # TODO: uncomment this below if you want to calculate the gains. N.B. This does not work yet as the inputs and
-        # outputs of the classes still have to be changed. (input list of params and output gain_loss only)
+    results_data = user_data
 
-        result = (eval('le.'+ give_link_type + '_LinkElement' + '(give_link_element_name,\
-                                                           give_input_type, give_gain_loss, give_params)'))
-        result_name = result.name()
-        result_gain_loss = result.gain()
+    for i in range(len(df_user_data)):
+        # calculation step
+        result_gain_loss = (eval('le.'+ df_user_data.get("link_type")[i] + '_LinkElement' +
+                                 '(df_user_data.get("name")[i], \
+                                 df_user_data.get("input_type")[i],\
+                                 df_user_data.get("gain_loss")[i], \
+                                 df_user_data.get("parameters")[i])')).gain
 
+        #update step
+        results_data['elements'][df_user_data.get("name")[i]]["gain_loss"] = result_gain_loss
 
+    return results_data
 
 def main_process():
     print("Jesper's main process")
 
-    # TODO: If you want to run uncomment the line below
-    # call_link_elements(read_user_data(user_data))
+    results_data = fill_results_data(read_user_data(user_data))
 
-
+    return results_data
 
 if __name__ == '__main__':
-    # call class, give gain, all parameter types and input_type
-    # TODO: Get gainloss from link elements
-    # TODO: Decide on if EIRP should be a class or calculated in process.py
     main_process()
-    # TODO: Save to file result_data (same as user_data, but with gain_loss results updated.
-
-    # generic = le.LinkElement('Example 1', 'GENERIC', 3)
-    # # What input to classes will be: link_type, loss_gain value and all parameter values
-    # eirp_example = le.EIRPElement('EIRP Example', parameters=[5, 23])
-    #
-    # print(generic)
 
     ## Save dictionary to yaml
     # (luigi needed this quick for the gui, it's not necessary for the overall process)
