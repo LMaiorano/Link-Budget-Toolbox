@@ -172,9 +172,7 @@ def main_process(user_data):
 if __name__ == '__main__':
     main_process(user_data)
 
-    ## Save dictionary to yaml
-    # (luigi needed this quick for the gui, it's not necessary for the overall process)
-    # save_to_yaml(user_data, 'example_config')
+
 
 
 

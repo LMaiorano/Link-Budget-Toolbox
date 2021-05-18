@@ -149,7 +149,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         n_rows = 0
         for elem in elements.values():
             try:
-                n_rows += 1 + len(elem['parameters'])
+                n_rows += len(elem['parameters'])
             except KeyError: # this link element has no parameters, so just a gain_loss
                 n_rows += 1
 
@@ -190,20 +190,21 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             self.tbl_elements.setItem(row, self.name_col, title)
 
             # ------------------------- Attributes ------------------------------------
-            units = self.get_attribute_details(data, gain=True)['units']
-            descr = self.get_attribute_details(data, gain=True)['description']
+            if element_input_type == 'gain_loss':
+                units = self.get_attribute_details(data, gain=True)['units']
+                descr = self.get_attribute_details(data, gain=True)['description']
 
-            self.tbl_elements.setItem(row, self.attribute_col,
-                                      AttributeTableItem('Gain', type='gain_loss',
-                                                         description=descr))
-            self.tbl_elements.setItem(row, self.value_col,
-                                      QTableWidgetItem(str(data['gain_loss'])))
-            self.tbl_elements.setItem(row, self.units_col,
-                                      UnitsTableItem(units))
-            row +=1
+                self.tbl_elements.setItem(row, self.attribute_col,
+                                          AttributeTableItem('Gain', type='gain_loss',
+                                                             description=descr))
+                self.tbl_elements.setItem(row, self.value_col,
+                                          QTableWidgetItem(str(data['gain_loss'])))
+                self.tbl_elements.setItem(row, self.units_col,
+                                          UnitsTableItem(units))
+                row +=1
 
+            else: # If link element has parameters
             # --------------------- Parameters
-            try: # If link element has parameters
                 for param, val in data['parameters'].items():
                     units = self.get_attribute_details(data, parameter=param)['units']
                     descr = self.get_attribute_details(data, parameter=param)['description']
@@ -217,8 +218,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                     self.tbl_elements.setItem(row, self.units_col,
                                               UnitsTableItem(units))
                     row += 1
-            except KeyError:
-                logger.debug(f'{name} does not have parameters')
+
 
             # Make name cell span all other rows
             self.tbl_elements.setSpan(start_row, self.name_col, row-start_row, 1)
@@ -389,8 +389,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             data[element_name]['parameters'] = parameters
 
         self.cfg_data['elements'] = data
-
-
 
 
 
