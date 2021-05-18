@@ -5,48 +5,52 @@ FREE_SPACE:
             units:          m
         wavelength:
             description:    radio wavelength in electromagnetic spectrum
-            units:          m
+            units:          nm
     parameter_set_2:
         angle:
             description:    useful description here
-            units:          xx
+            units:          deg
         distance:
             description:    useful description here
-            units:          xx
+            units:          m
         gs_altitude:
             description:    useful description here
-            units:          xx
+            units:          km
         sc_altitude:
             description:    useful description here
-            units:          xx
+            units:          km
         wavelength:
             description:    useful description here
-            units:          xx
+            units:          nm
 RX:
-    parameter_set_name_1:
+    parameter_set_1:
         antenna_diameter:
             description:    useful description here
-            units:          xx
+            units:          m
         antenna_efficiency:
             description:    useful description here
-            units:          xx
+            units:          m
         wavelength:
             description:    useful description here
-            units:          xx
+            units:          nm
 TX:
-    parameter_set_name_1:
+    parameter_set_1:
         antenna_diameter:
             description:    useful description here
-            units:          xx
+            units:          m
         antenna_efficiency:
             description:    useful description here
-            units:          xx
+            units:          m
         wavelength:
             description:    useful description here
-            units:          xx
+            units:          m
+GENERIC:
+    gain_loss:
+        description:        "Overall gain of the Link Element. \n\tPositive = Gain \n\tNegative = Loss" # Must use double quotes to recognize line-break: \n
+        units:              dB
     
 LINK_TYPE:
-    parameter_set_name_1:
+    parameter_set_1:
         parameter_1:
             description:    useful description here
             units:          xx

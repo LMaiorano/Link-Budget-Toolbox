@@ -34,25 +34,28 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
 
+        # Set initial values and general attributes
+        self.cfg_file = Path('../configs/default_config.yaml')
+        self.cfg_data = self.read_config()
+        self.element_details = self.read_config(file='../element_config_reference.yaml')
+        self.result_data = None
+
         # TABLE SETUP
-        self.col_titles = ['Element Name', 'Attribute', 'Value']
+        self.col_titles = ['Element Name', 'Attribute', 'Value', 'Units']
         self.name_col = 0
         self.attribute_col = 1
         self.value_col = 2
+        self.units_col = 3
 
         # Load default configuration
-        self.cfg_file = Path('../configs/default_config.yaml')
-        self.cfg_data = self.read_config()
-        self.tbl_elements: QTableWidget()
         self.fill_table()
         header = self.tbl_elements.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.Stretch)
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
 
-        # Set initial values and general attributes
-        self.element_config = self.read_config(file='../element_config_reference.yaml')
-        self.result_data = None
+
 
 
 
@@ -121,6 +124,12 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                 if sect not in data.keys():
                     raise KeyError(f'Configuration file missing required section: "{sect}"')
 
+            # Add a default index (top) if missing in element configuration
+            for element in data['elements'].values():
+                if 'index' not in element.keys():
+                    element['index'] = 0
+
+
         return data
 
     def clear_table_elements(self):
@@ -131,61 +140,128 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         '''Populate table with elements listed in config file
 
         This converts the data dictionary elements to the necessary table items
-        The table consists of three columns: Element, Attribute, Value
-        The
+        The table consists of four columns: Element, Attribute, Value, Units
         '''
-
+        # TODO: add index attribute to config file to remember order for results table
         elements = self.cfg_data['elements']       # Select sub-dictionary of elements from config
 
         # Determine number of rows needed for table  rows are: name + gainloss + each parameter
-        n_rows = sum([ (1 + len(elem['parameters'])) for elem in elements.values() ])
+        n_rows = 0
+        for elem in elements.values():
+            try:
+                n_rows += 1 + len(elem['parameters'])
+            except KeyError: # this link element has no parameters, so just a gain_loss
+                n_rows += 1
 
+        # Create empty table of correct size
         self.tbl_elements.setColumnCount(len(self.col_titles))
         self.tbl_elements.setRowCount(n_rows)
 
+        # Set row/column labels
         self.tbl_elements.setHorizontalHeaderLabels(self.col_titles)
         self.tbl_elements.verticalHeader().setVisible(False)
 
+        # Set Font of element titles
         element_font = QFont()
         element_font.setBold(True)
 
+        # Order elements according to their saved index
+        elements_ordered = {key: val for key, val in sorted(elements.items(), key=lambda item: item[1]['index'])}
+
         row = 0
-        for name, data in elements.items():
+        for name, data in elements_ordered.items():
             start_row = row
 
-            # ---------- Element Title -------------
+            # ---------------------- Element Title ------------------------------------
             # fixes capitalization, keeping abbreviations in full caps
             name = name.replace("_", " ")
             name = " ".join([w.title() if w.islower() else w for w in name.split()])
 
-            # create custom table item, that contains other parameters needed later for saving
+            # Create element title table item, containing other attributes needed later for saving
+            element_link_type = data['link_type']
+            element_input_type = data['input_type']
             title = ElementTableItem(name,
-                                     link_type=data['link_type'],
-                                     input_type=data['input_type'])
+                                     link_type=element_link_type,
+                                     input_type=element_input_type)
 
             # Set to format as specified above (bold)
             title.setFont(element_font)
-            # disable editing of this item
-            # title.setFlags(QtCore.Qt.ItemIsSelectable |  QtCore.Qt.ItemIsEnabled)
-
+            # Add title element to table
             self.tbl_elements.setItem(row, self.name_col, title)
 
-            # ------------ Attributes -------------
-            self.tbl_elements.setItem(row, self.attribute_col, AttributeTableItem('Gain [dB]', type='gain_loss'))
-            self.tbl_elements.setItem(row, self.value_col, QTableWidgetItem(str(data['gain_loss'])))
+            # ------------------------- Attributes ------------------------------------
+            units = self.get_attribute_details(data, gain=True)['units']
+            descr = self.get_attribute_details(data, gain=True)['description']
+
+            self.tbl_elements.setItem(row, self.attribute_col,
+                                      AttributeTableItem('Gain', type='gain_loss',
+                                                         description=descr))
+            self.tbl_elements.setItem(row, self.value_col,
+                                      QTableWidgetItem(str(data['gain_loss'])))
+            self.tbl_elements.setItem(row, self.units_col,
+                                      UnitsTableItem(units))
             row +=1
 
-            # Parameters
-            for param, val in data['parameters'].items():
-                self.tbl_elements.setItem(row, self.attribute_col, AttributeTableItem(param))
-                self.tbl_elements.setItem(row, self.value_col, QTableWidgetItem(str(val)))
-                row += 1
+            # --------------------- Parameters
+            try: # If link element has parameters
+                for param, val in data['parameters'].items():
+                    units = self.get_attribute_details(data, parameter=param)['units']
+                    descr = self.get_attribute_details(data, parameter=param)['description']
+
+                    self.tbl_elements.setItem(row, self.attribute_col,
+                                              AttributeTableItem(param, description=descr))
+
+                    self.tbl_elements.setItem(row, self.value_col,
+                                              QTableWidgetItem(str(val)))
+
+                    self.tbl_elements.setItem(row, self.units_col,
+                                              UnitsTableItem(units))
+                    row += 1
+            except KeyError:
+                logger.debug(f'{name} does not have parameters')
 
             # Make name cell span all other rows
             self.tbl_elements.setSpan(start_row, self.name_col, row-start_row, 1)
 
-        # Set columns to automatically resize
+        # Show table
         self.tbl_elements.show()
+
+    def get_attribute_details(self, element:dict, parameter=None, gain=False):
+        '''Gets details about an element's parameters
+
+        Reads data from element_config_reference.yaml using a specific element.
+        The link_type and input_type are used to determine which parameter set is applicable
+
+        Parameters
+        ----------
+        element : dict
+            A specific element dictionary as specified in the configuration files
+        parameter : dict
+            (Default: None) Which parameter to return. If not specified, a full dict of all params will be returned.
+            If input_type is 'gain_loss', then this is not relevant
+        gain : bool
+            (Default: False) Whether to return details only about the Gain attribute
+
+        Returns
+        -------
+        dict
+            {'description': xx, 'units': xx} of either: all parameters for a specific input_type or
+            of a specific parameter (if specified)
+
+
+        '''
+        input_type = element['input_type']
+
+        if input_type == 'gain_loss' or gain: # Parameter_set not relevant because gain is directly given
+            return self.element_details['GENERIC']['gain_loss']
+
+        param_set_details = self.element_details[element['link_type']][input_type]
+        if parameter: # If a specific parameter is requested
+            return param_set_details[parameter]
+
+        # Otherwise return all parameters
+        return param_set_details
+
 
 
     def add_element_clicked(self):
@@ -270,6 +346,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         data = {}
         parameters = {}
         element_name = None
+        index = 0
         for r in range(self.tbl_elements.rowCount()):
             # Check if row is a new element
             elem_item = self.tbl_elements.item(r, self.name_col)
@@ -279,12 +356,14 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                     data[element_name]['parameters'] = parameters
                     parameters = {} # reset to empty
 
+                index += 1
                 element_name = elem_item.text()
                 link_type = elem_item.link_type
                 input_type = elem_item.input_type
 
                 data[element_name] = {'input_type': input_type,
-                                      'link_type': link_type}
+                                      'link_type': link_type,
+                                      'index': index}
 
             # Use last defined element name for the remaining parameters, skip if not defined
             if element_name:
@@ -337,9 +416,20 @@ class AttributeTableItem(QTableWidgetItem):
         in the data dictionary which is passed to the main process
         '''
         self.type = kwargs.pop('type', 'parameter')
+        self.description = kwargs.pop('description', 'Link element attribute')
         super().__init__(*args, **kwargs)
-        self.setToolTip(f'Link element attribute')
+        self.setToolTip(self.description)
 
+        self.setFlags(QtCore.Qt.ItemIsEnabled) # not selectable or editable
+
+class UnitsTableItem(QTableWidgetItem):
+    def __init__(self, *args, **kwargs):
+        '''Custom TableWidgetItem to allow other attributes to be stored.
+
+        This is necessary so that additional link element properties can be saved
+        in the data dictionary which is passed to the main process
+        '''
+        super().__init__(*args, **kwargs)
         self.setFlags(QtCore.Qt.ItemIsEnabled) # not selectable or editable
 
 

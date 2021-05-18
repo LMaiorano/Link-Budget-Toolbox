@@ -12,6 +12,7 @@ generic_values (variables that need to be used many times) 		(std_naming)
 
 elements 														(std_naming)
 	- element1_name
+		- index													(std_naming)
 		- link_type 											(std_naming)
 		- input_type ('gainloss' or 'paramset') 				(std_naming)
 		- gain_loss = value 									(std_naming)
@@ -20,6 +21,7 @@ elements 														(std_naming)
 			- param2 = value
 	
 	- element2_name
+		- index													(std_naming)
 		- link_type 											(std_naming)
 		- input_type ('gainloss' or 'paramset') 				(std_naming)
 		- gain_loss = value 									(std_naming)

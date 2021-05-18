@@ -16,16 +16,19 @@ import pandas as pd
 #TODO: Import dictionary automatically from GUI
 
 # This is a temporary dictionary. In the end the dictionary should be filled in automatically based on user input.
+
 user_data = {'settings'         : {'case_type'      : 'nominal'},
              'generic_values'   : {'sc_altitude'    : 800,                # [m]
                                    'wavelength'     : 1500*10**(-9)},     # [m]
              'elements'         : {'TX_SC'      :     {'link_type'  :   'TX',
+                                                       'idx'        :    0,
                                                        'input_type' :   'gain_loss',
                                                        'gain_loss'  :    10,            # [dB]
                                                        'parameters' :  {'antenna_efficiency'    : None,     # [-]
                                                                         'antenna_diameter'      : None,     # [m]
                                                                         'wavelength'            : None}},   # [m]
                                    'FREE_SPACE' :     {'link_type' :    'FREE_SPACE',
+                                                       'idx'        :    1,
                                                        'input_type' :   'gain_loss',
                                                        'gain_loss' :     -8,
                                                        'parameters' :  {'distance'      : None,     # [m]
@@ -34,6 +37,7 @@ user_data = {'settings'         : {'case_type'      : 'nominal'},
                                                                         'angle'         : None,     # [deg]
                                                                         'wavelength'    : None}},   # [m]
                                    'RX_GS    ':       {'link_type'  :   'RX',
+                                                       'idx'        :    2,
                                                        'input_type' :   'gain_loss',
                                                        'gain_loss'  :    2,             # [dB]
                                                        'parameters' :  {'antenna_efficiency'    : None,     # [-]
@@ -107,9 +111,7 @@ def update_params_from_genval(user_data, df_user_data):
         .rename(columns={'index' : 'variable', 0 : 'value'})
 
     for i in range(len(df_generic_values)):
-
         for j in range(len(df_user_data)):
-
             if df_generic_values.iloc[i]['variable'] in \
                     user_data['elements'][df_user_data.get("name")[j]]['parameters']:
 
@@ -149,26 +151,30 @@ def fill_results_data(df_user_data):
     return results_data
 
 # TODO: Make user_data an input of main_process()
-def main_process():
+def main_process(user_data):
     '''Use user_data dictionary to calculate gains/losses to create a results_data dictionary
+
+    Parameters
+    ----------
+    user_data: dict
+        Dictionary containing the data and link elements the user has given
 
     Returns
     -------
     results_data : dict
         User_data dictionary which has been updated with the calculated gains/losses
     '''
-    print("Jesper's main process")
 
     results_data = fill_results_data(read_user_data(update_params_from_genval(user_data, read_user_data(user_data))))
 
     return results_data
 
 if __name__ == '__main__':
-    main_process()
+    main_process(user_data)
 
     ## Save dictionary to yaml
     # (luigi needed this quick for the gui, it's not necessary for the overall process)
-    save_to_yaml(user_data, 'example_config')
+    # save_to_yaml(user_data, 'example_config')
 
 
 
