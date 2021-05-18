@@ -12,39 +12,45 @@ import project.link_element as le
 from pathlib import Path
 import yaml
 import pandas as pd
+from loguru import logger
 
 #TODO: Import dictionary automatically from GUI
 
 # This is a temporary dictionary. In the end the dictionary should be filled in automatically based on user input.
 
-user_data = {'settings'         : {'case_type'      : 'nominal'},
-             'generic_values'   : {'sc_altitude'    : 800,                # [m]
-                                   'wavelength'     : 1500*10**(-9)},     # [m]
-             'elements'         : {'TX_SC'      :     {'link_type'  :   'TX',
-                                                       'idx'        :    0,
-                                                       'input_type' :   'gain_loss',
-                                                       'gain_loss'  :    10,            # [dB]
-                                                       'parameters' :  {'antenna_efficiency'    : None,     # [-]
-                                                                        'antenna_diameter'      : None,     # [m]
-                                                                        'wavelength'            : None}},   # [m]
-                                   'FREE_SPACE' :     {'link_type' :    'FREE_SPACE',
-                                                       'idx'        :    1,
-                                                       'input_type' :   'gain_loss',
-                                                       'gain_loss' :     -8,
-                                                       'parameters' :  {'distance'      : None,     # [m]
-                                                                        'sc_altitude'   : None,     # [m]
-                                                                        'gs_altitude'   : None,     # [m]
-                                                                        'angle'         : None,     # [deg]
-                                                                        'wavelength'    : None}},   # [m]
-                                   'RX_GS    ':       {'link_type'  :   'RX',
-                                                       'idx'        :    2,
-                                                       'input_type' :   'gain_loss',
-                                                       'gain_loss'  :    2,             # [dB]
-                                                       'parameters' :  {'antenna_efficiency'    : None,     # [-]
-                                                                        'antenna_diameter'      : None,     # [m]
-                                                                        'wavelength'            : None}},   # [m]
-                           }
-             }
+# user_data = {'settings'         : {'case_type'      : 'nominal'},
+#              'generic_values'   : {'sc_altitude'    : 800,                # [m]
+#                                    'wavelength'     : 1500*10**(-9)},     # [m]
+#              'elements'         : {'TX_SC'      :     {'link_type'  :   'TX',
+#                                                        'idx'        :    0,
+#                                                        'input_type' :   'gain_loss',
+#                                                        'gain_loss'  :    10,            # [dB]
+#                                                        'parameters' :  {'antenna_efficiency'    : None,     # [-]
+#                                                                         'antenna_diameter'      : None,     # [m]
+#                                                                         'wavelength'            : None}},   # [m]
+#                                    'FREE_SPACE' :     {'link_type' :    'FREE_SPACE',
+#                                                        'idx'        :    1,
+#                                                        'input_type' :   'gain_loss',
+#                                                        'gain_loss' :     -8,
+#                                                        'parameters' :  {'distance'      : None,     # [m]
+#                                                                         'sc_altitude'   : None,     # [m]
+#                                                                         'gs_altitude'   : None,     # [m]
+#                                                                         'angle'         : None,     # [deg]
+#                                                                         'wavelength'    : None}},   # [m]
+#                                    'RX_GS    ':       {'link_type'  :   'RX',
+#                                                        'idx'        :    2,
+#                                                        'input_type' :   'gain_loss',
+#                                                        'gain_loss'  :    2,             # [dB]
+#                                                        'parameters' :  {'antenna_efficiency'    : None,     # [-]
+#                                                                         'antenna_diameter'      : None,     # [m]
+#                                                                         'wavelength'            : None}},   # [m]
+#                            }
+#              }
+
+def load_from_yaml(file):
+    with open(file, 'r') as f:
+        data = yaml.full_load(f)
+    return data
 
 def save_to_yaml(d:dict, filename:str):
     '''Save dictionary to yaml, with a specified filename
@@ -71,7 +77,7 @@ def save_to_yaml(d:dict, filename:str):
         yaml.dump(d, f)
 
 def read_user_data(user_data):
-    '''Write the link element inputs from the user_data dictionary to a dataframe
+    '''Convert the link element inputs from the user_data dictionary to a dataframe
 
     Parameters
     ----------
@@ -112,11 +118,15 @@ def update_params_from_genval(user_data, df_user_data):
 
     for i in range(len(df_generic_values)):
         for j in range(len(df_user_data)):
-            if df_generic_values.iloc[i]['variable'] in \
-                    user_data['elements'][df_user_data.get("name")[j]]['parameters']:
+            try:
+                if df_generic_values.iloc[i]['variable'] in \
+                        user_data['elements'][df_user_data.get("name")[j]]['parameters']:
 
-                user_data['elements'][df_user_data.get("name")[j]]['parameters']\
-                    .update({df_generic_values.iloc[i]['variable'] : df_generic_values.iloc[i]['value']})
+                    user_data['elements'][df_user_data.get("name")[j]]['parameters']\
+                        .update({df_generic_values.iloc[i]['variable'] : df_generic_values.iloc[i]['value']})
+
+            except KeyError as KE:
+                logger.debug(f'user_data missing key: "{KE}"')
 
     return user_data
 
@@ -170,7 +180,12 @@ def main_process(user_data):
     return results_data
 
 if __name__ == '__main__':
-    main_process(user_data)
+
+    default_file = 'configs/default_config.yaml'
+
+    data = load_from_yaml(default_file)
+
+    main_process(data)
 
 
 
