@@ -9,8 +9,7 @@ author: lmaio
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem, \
-    QTableWidget, QCheckBox, QHeaderView, QRadioButton, QMessageBox, \
-    QDialog
+     QHeaderView, QMessageBox
 from PyQt5.QtGui import QFont
 
 from pathlib import Path
@@ -42,13 +41,15 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         # TABLE SETUP
         self.col_titles = ['Element Name', 'Attribute', 'Value', 'Units']
+        self.res_col_titles = ['Gain', 'Value', 'Units']
         self.name_col = 0
         self.attribute_col = 1
         self.value_col = 2
         self.units_col = 3
 
+
         # Load default configuration
-        self.fill_table()
+        self.fill_input_table()
         header = self.tbl_elements.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
@@ -78,7 +79,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         try:
             self.cfg_data = self.read_config()
             self.clear_table_elements()
-            self.fill_table()
+            self.fill_input_table()
         except Exception as E:
             logger.debug(f'Error loading file: {E}')
 
@@ -95,7 +96,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.clear_table_elements()
         self.cfg_file = Path('../configs/default_config.yaml')
         self.cfg_data = self.read_config()
-        self.fill_table()
+        self.fill_input_table()
 
 
     def read_config(self, file=None):
@@ -136,13 +137,12 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         '''Clears input table'''
         self.tbl_elements.clearContents()
 
-    def fill_table(self):
-        '''Populate table with elements listed in config file
+    def fill_input_table(self):
+        '''Populate table with elements in stored in the cfg_data attribute
 
         This converts the data dictionary elements to the necessary table items
         The table consists of four columns: Element, Attribute, Value, Units
         '''
-        # TODO: add index attribute to config file to remember order for results table
         elements = self.cfg_data['elements']       # Select sub-dictionary of elements from config
 
         # Determine number of rows needed for table  rows are: name + gainloss + each parameter
@@ -150,7 +150,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         for elem in elements.values():
             try:
                 n_rows += len(elem['parameters'])
-            except KeyError: # this link element has no parameters, so just a gain_loss
+            except (KeyError, TypeError): # this link element has no parameters, so just a gain_loss
                 n_rows += 1
 
         # Create empty table of correct size
@@ -174,8 +174,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
             # ---------------------- Element Title ------------------------------------
             # fixes capitalization, keeping abbreviations in full caps
-            name = name.replace("_", " ")
-            name = " ".join([w.title() if w.islower() else w for w in name.split()])
+            # name = name.replace("_", " ")
+            # name = " ".join([w.title() if w.islower() else w for w in name.split()])
 
             # Create element title table item, containing other attributes needed later for saving
             element_link_type = data['link_type']
@@ -225,6 +225,59 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         # Show table
         self.tbl_elements.show()
+
+    def fill_results_table(self, results_data):
+
+        # Determine number of rows needed for table. Stored to dict of element_name: rows
+        n_rows = 0
+        elem_rows = {}
+        for name, elem in results_data.items():
+            try:
+                rows = len(elem['parameters'])
+            except KeyError:  # this link element has no parameters, so just a gain_loss
+                rows = 1
+            elem_rows[name] = rows
+            n_rows += rows
+
+
+        # Create empty table of correct size
+        self.tbl_elements.setColumnCount(len(self.res_col_titles))
+        self.tbl_elements.setRowCount(n_rows)
+
+        # Set row/column labels
+        self.tbl_elements.setHorizontalHeaderLabels(self.res_col_titles)
+        self.tbl_elements.verticalHeader().setVisible(False)
+
+
+        # Order elements according to their saved index
+        elements_ordered = {key: val for key, val in
+                            sorted(results_data.items(), key=lambda item: item[1]['idx'])}
+
+        row = 0
+        for name, data in elements_ordered.items():
+            start_row = row
+
+            # Load these from element_config_reference for consistency, so it can be changed elsewhere
+            units = self.get_attribute_details(data, gain=True)['units']
+            descr = self.get_attribute_details(data, gain=True)['description']
+
+            gain_item = QTableWidgetItem(str(data['gain_loss']))
+            gain_item.setFlags(QtCore.Qt.ItemIsEnabled)
+
+            self.tbl_results.setItem(row, 0, AttributeTableItem('Gain', description=descr))
+            self.tbl_results.setItem(row, 1, gain_item)
+            self.tbl_results.setItem(row, 2, UnitsTableItem(units))
+
+
+            # Make cells span all other rows of this element
+            for r in range(len(self.res_col_titles)):
+                self.tbl_results.setSpan(start_row, r, elem_rows[name], 1)
+
+
+        # Show table
+        self.tbl_elements.show()
+
+
 
     def get_attribute_details(self, element:dict, parameter=None, gain=False):
         '''Gets details about an element's parameters
@@ -310,7 +363,12 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         '''Save current configuration to yaml file'''
 
         # Update cfg_data elements
-        self.save_input_table_to_dict()
+        try:
+            self.save_input_table_to_dict()
+        except ValueError:
+            showdialog(['Please check that only numerical values are entered'])
+            return # Abort saving file
+
 
         # Create file dialog to get save location
         dlg = QFileDialog()
@@ -352,8 +410,11 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             elem_item = self.tbl_elements.item(r, self.name_col)
             if isinstance(elem_item, ElementTableItem):
                 # save previous parameters if they exist
-                if element_name and parameters:
-                    data[element_name]['parameters'] = parameters
+                if element_name:
+                    if parameters:
+                        data[element_name]['parameters'] = parameters
+                    else:
+                        data[element_name]['parameters'] = None
                     parameters = {} # reset to empty
 
                 idx += 1
@@ -376,7 +437,11 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                 else:
                     name = attribute.text()
 
+                # TODO: Ensure only floats are entered into this column
                 value = self.tbl_elements.item(r, self.value_col).text()
+                if value == '':
+                    value = 0
+                value = float(value)
 
                 # Decide where to save name:value
                 if attribute_type == 'parameter':
@@ -385,10 +450,14 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                     data[element_name][name] = value
 
         # save last set of parameters if they exist
-        if element_name and parameters:
+        if len(parameters) > 0:
             data[element_name]['parameters'] = parameters
+        else:
+            data[element_name]['parameters'] = None
 
         self.cfg_data['elements'] = data
+
+        self.fill_input_table() # reload table with saved values (fills empty cells with 0)
 
 
 
@@ -400,7 +469,7 @@ class ElementTableItem(QTableWidgetItem):
         This is necessary so that additional link element properties can be saved
         in the data dictionary which is passed to the main process
         '''
-        self.link_type = kwargs.pop('link_type', 'gainloss')
+        self.link_type = kwargs.pop('link_type', 'gain_loss')
         self.input_type = kwargs.pop('input_type', 'GENERIC')
         super().__init__(*args, **kwargs)
         self.setToolTip(f'Type: {self.link_type}')
@@ -438,7 +507,7 @@ def showdialog(message: list, level='warning'):
 
     Parameters
     ----------
-    message : [str]
+    message : list of str
         List of message strings. The first (required) is the main message. The
             second (optional) is additional detailed information
     level : str
