@@ -13,6 +13,7 @@ elements:
     gain_loss: 10
     input_type: gain_loss
     link_type: TX
+    parameters: null
   free_space:
     idx: 2
     gain_loss: -8
