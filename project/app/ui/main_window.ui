@@ -52,7 +52,7 @@
     <item>
      <widget class="QGroupBox" name="globalVarsBox">
       <property name="enabled">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <property name="font">
        <font>
