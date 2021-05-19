@@ -14,8 +14,15 @@ from PyQt5.QtWidgets import QDialog
 newelement_form_class = uic.loadUiType('ui/new_element.ui')[0]
 
 class NewElementDialog(QDialog, newelement_form_class):
-    def __init__(self, parent=None, username=None):
+    def __init__(self, element_reference:dict, parent=None):
         super().__init__(parent=parent)
         self.setupUi(self)
 
-        self.username = username
+        self.element_ref = element_reference
+
+        # Add available elements to combobox
+        self.comboBox.clear() # Ensures it start empty
+        for input_type in self.element_ref.keys():
+            self.comboBox.addItem(input_type)
+
+

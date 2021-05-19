@@ -48,15 +48,15 @@ GENERIC:
     gain_loss:
         description:        "Overall gain of the Link Element. \n\tPositive = Gain \n\tNegative = Loss" # Must use double quotes to recognize line-break: \n
         units:              dB
-    
-LINK_TYPE:
-    parameter_set_1:
-        parameter_1:
-            description:    useful description here
-            units:          xx
-        parameter_2:
-            description:    useful description here
-            units:          xx
-        parameter_3:
-            description:    useful description here
-            units:          xx
+
+#LINK_TYPE:
+#    parameter_set_1:
+#        parameter_1:
+#            description:    useful description here
+#            units:          xx
+#        parameter_2:
+#            description:    useful description here
+#            units:          xx
+#        parameter_3:
+#            description:    useful description here
+#            units:          xx

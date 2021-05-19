@@ -7,21 +7,17 @@ date: 13/05/2021
 author: lmaio
 """
 
-from PyQt5 import QtWidgets, uic, QtCore
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem, \
-     QHeaderView, QMessageBox
-from PyQt5.QtGui import QFont
-
-from pathlib import Path
 import sys
-from loguru import logger
+from pathlib import Path
+
 import yaml
-import numpy as np
+from PyQt5 import QtWidgets, uic, QtCore
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem, \
+    QHeaderView, QMessageBox
+from loguru import logger
 
-from project.process import main_process
 from project.app.new_element_dialog import NewElementDialog
-
-
 
 mainwindow_form_class = uic.loadUiType('ui/main_window.ui')[0]
 
@@ -29,14 +25,17 @@ mainwindow_form_class = uic.loadUiType('ui/main_window.ui')[0]
 
 
 class MainWindow(QMainWindow, mainwindow_form_class):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, **kwargs):
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
 
+        default_cfg = kwargs.pop('default_config_yaml', '../configs/default_config.yaml')
+        element_ref = kwargs.pop('element_reference_yaml', '../element_config_reference.yaml')
+
         # Set initial values and general attributes
-        self.cfg_file = Path('../configs/default_config.yaml')
+        self.cfg_file = Path(default_cfg)
         self.cfg_data = self.read_config()
-        self.element_details = self.read_config(file='../element_config_reference.yaml')
+        self.element_details = self.read_config(file=element_ref)
         self.result_data = None
 
         # TABLE SETUP
@@ -363,7 +362,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
 
 
-
     def get_attribute_details(self, element:dict, parameter=None, gain=False):
         '''Gets details about an element's parameters
 
@@ -406,7 +404,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         '''Adds new row to column, could be expanded to add a preset number of rows'''
         # self.tbl_elements.insertRow(self.tbl_elements.rowCount())
         # self.tbl_elements.show()
-        new = NewElementDialog()
+        new = NewElementDialog(self.element_details)
         exit_successful = new.exec_()
         print(exit_successful)
 
