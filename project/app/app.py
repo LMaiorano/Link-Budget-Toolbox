@@ -16,6 +16,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem, \
     QHeaderView, QMessageBox
 from loguru import logger
+import numpy as np
 
 from project.app.new_element_dialog import NewElementDialog
 
@@ -280,8 +281,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             else: # If link element has parameters
             # --------------------- Parameters
                 for param, val in data['parameters'].items():
-                    units = self.get_attribute_details(data, parameter=param)['units']
-                    descr = self.get_attribute_details(data, parameter=param)['description']
+                    units = self.get_attribute_details(data, specific_parameter=param)['units']
+                    descr = self.get_attribute_details(data, specific_parameter=param)['description']
 
                     self.tbl_elements.setItem(row, self.attribute_col,
                                               AttributeTableItem(param, description=descr))
@@ -362,7 +363,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
 
 
-    def get_attribute_details(self, element:dict, parameter=None, gain=False):
+    def get_attribute_details(self, element:dict, specific_parameter=None, gain=False):
         '''Gets details about an element's parameters
 
         Reads data from element_config_reference.yaml using a specific element.
@@ -372,7 +373,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         ----------
         element : dict
             A specific element dictionary as specified in the configuration files
-        parameter : dict
+        specific_parameter : dict
             (Default: None) Which parameter to return. If not specified, a full dict of all params will be returned.
             If input_type is 'gain_loss', then this is not relevant
         gain : bool
@@ -392,8 +393,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             return self.element_details['GENERIC']['gain_loss']
 
         param_set_details = self.element_details[element['link_type']][input_type]
-        if parameter: # If a specific parameter is requested
-            return param_set_details[parameter]
+        if specific_parameter: # If a specific parameter is requested
+            return param_set_details[specific_parameter]
 
         # Otherwise return all parameters
         return param_set_details
@@ -404,9 +405,40 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         '''Adds new row to column, could be expanded to add a preset number of rows'''
         # self.tbl_elements.insertRow(self.tbl_elements.rowCount())
         # self.tbl_elements.show()
-        new = NewElementDialog(self.element_details)
-        exit_successful = new.exec_()
+        new_dlg = NewElementDialog(self.element_details)
+        exit_successful = new_dlg.exec_()
+
+        if exit_successful:
+            elem_type = new_dlg.cmb_element_type.currentText() # get link type
+            param_set = 'parameter_set_1' #new_dlg.cmb_set_param.currentText() # get parameter set
+            name      = 'new_name' #new_dlg.name.text()     # get name
+
+            new_element = self.build_empty_element(elem_type, param_set)
+            self.cfg_data['elements'][name] = new_element
+
+            self.fill_input_table()
+
+
         print(exit_successful)
+
+    def build_empty_element(self, link_type, input_type):
+        # basic data
+        data = {'gain_loss': None,
+                'idx': np.inf,
+                'input_type': input_type,
+                'link_type': link_type,
+                'parameters': None}
+
+        # get exact parameters from reference (if not a basic gain_loss element)
+        if link_type != 'gain_loss':
+            param_set_details = self.get_attribute_details(data)
+            data['parameters'] = {}
+            for param in param_set_details.keys():
+                data['parameters'][param] = '??'
+
+        return data
+
+
 
 
 
