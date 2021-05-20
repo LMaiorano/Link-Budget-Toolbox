@@ -21,8 +21,17 @@ class NewElementDialog(QDialog, newelement_form_class):
         self.element_ref = element_reference
 
         # Add available elements to combobox
-        self.comboBox.clear() # Ensures it start empty
+        self.cmb_element_type.clear() # Ensures it start empty
         for input_type in self.element_ref.keys():
-            self.comboBox.addItem(input_type)
+            self.cmb_element_type.addItem(input_type)
 
-
+    def continue_clicked(self):
+        pass
+    
+    def yes_gain_clicked(self):
+        pass
+    
+    def no_gain_clicked(self):
+        pass
+    
+    
