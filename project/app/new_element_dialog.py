@@ -54,12 +54,17 @@ class NewElementDialog(QDialog, newelement_form_class):
     def element_type_selected(self):
         selected_elment_type = self.cmb_element_type.currentText()
         logger.debug(f'Element type selected {selected_elment_type}')
+
+        # Prevents error when starting and type is ''
+        if selected_elment_type in self.element_ref.keys():
+            self.refresh_param_set(selected_elment_type)
+
         return(selected_elment_type)
 
 
-
     def param_set_selected(self):
-        logger.debug(f'New parameter set selected')
+        param_set = self.cmb_set_param.currentText()
+        logger.debug(f'Selected: {param_set}')
 
     
     def yes_gain_clicked(self):
@@ -77,9 +82,13 @@ class NewElementDialog(QDialog, newelement_form_class):
 
         selected_elment_type = self.element_type_selected()
 
+        self.refresh_param_set(selected_elment_type)
+
+
+    def refresh_param_set(self, selected_elem_type):
         # Add available parameters to Parameters Set combobox
         self.cmb_set_param.clear()  # Ensures it start empty
-        for param_set in self.element_ref[selected_elment_type].keys():
+        for param_set in self.element_ref[selected_elem_type].keys():
             self.cmb_set_param.addItem(param_set)
 
     
