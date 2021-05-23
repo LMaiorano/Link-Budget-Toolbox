@@ -61,7 +61,7 @@ class NewElementDialog(QDialog, newelement_form_class):
             self.refresh_param_set(selected_elment_type)
 
         return(selected_elment_type)
-
+:
 
 
     def param_set_selected(self):
