@@ -29,9 +29,7 @@ class NewElementDialog(QDialog, newelement_form_class):
             self.cmb_element_type.addItem(input_type)
             
         # Start with an empty Element Type combobox
-        self.cmb_set_param.clear() # Ensures it start empty    
-            
-    def get_element_name(self):
+        self.cmb_set_param.clear() # Ensures it start empty
 
         # Initially hide parameters
         self.rdl_yes.setChecked(True)
@@ -48,21 +46,41 @@ class NewElementDialog(QDialog, newelement_form_class):
             # Do its normal accept stuff
             super().accept()
 
-    def elem_type_selected(self):
-        type = self.cmb_element_type.currentText()
-        logger.debug(f'Element type selected {type}')
+    def get_element_name(self):
+        element_name = self.txt_element_name.toPlainText()
+        return(element_name)
+
+
+    def element_type_selected(self):
+        selected_elment_type = self.cmb_element_type.currentText()
+        logger.debug(f'Element type selected {selected_elment_type}')
+        return(selected_elment_type)
+
+
 
     def param_set_selected(self):
         logger.debug(f'New parameter set selected')
 
-    def continue_clicked(self):
-        pass
     
     def yes_gain_clicked(self):
         self.group_parameters.hide()
+
+        # Add gain_loss parameters to Parameters Set combobox
+        self.cmb_set_param.clear()  # Ensures it start empty
+        self.cmb_set_param.addItem("gain_loss")
     
     def no_gain_clicked(self):
         self.group_parameters.show()
+
+        ''' The user does not know the gain/loss value. The parameter is set based
+                on the available sets that come with the selected Element Type'''
+
+        selected_elment_type = self.element_type_selected()
+
+        # Add available parameters to Parameters Set combobox
+        self.cmb_set_param.clear()  # Ensures it start empty
+        for param_set in self.element_ref[selected_elment_type].keys():
+            self.cmb_set_param.addItem(param_set)
 
     
     def continue_clicked(self):
