@@ -14,7 +14,7 @@ import yaml
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem, \
-    QHeaderView
+    QHeaderView, QRadioButton
 from loguru import logger
 import numpy as np
 
@@ -411,9 +411,13 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         exit_successful = new_dlg.exec_()
 
         if exit_successful:
-            elem_type = new_dlg.cmb_element_type.currentText() # get link type
-            param_set = 'parameter_set_1'#new_dlg.cmb_set_param.currentText() # get parameter set
-            name      = new_dlg.txt_element_name.text()     # get name
+            name = new_dlg.txt_element_name.text()              # get name
+            elem_type = new_dlg.cmb_element_type.currentText()  # get link type
+            gain_loss = new_dlg.rdl_yes.isChecked()             # get if total gain is known
+            if gain_loss:
+                param_set = 'gain_loss'
+            else:
+                param_set = new_dlg.cmb_set_param.currentText() # get parameter set
 
             # Create blank element dict
             new_element = self.build_empty_element(elem_type, param_set)
@@ -436,7 +440,9 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                 'parameters': None}
 
         # get exact parameters from reference (if not a basic gain_loss element)
-        if link_type != 'gain_loss':
+        if input_type == 'gain_loss':
+            data['gain_loss'] = '??'
+        else:
             param_set_details = self.get_attribute_details(data)
             data['parameters'] = {}
             for param in param_set_details.keys():
