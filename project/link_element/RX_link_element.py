@@ -19,7 +19,6 @@ class RX_LinkElement(LinkElement):
         # Run the initialization of parent LinkElement
         super().__init__(name, linktype='RX', gain = gain)
         # Add attributes that are unique to RxElement
-        # TODO: figure out if giving wavelength isn' causing problems
         self.input_type = input_type
 
         self.efficiency = parameters.get('antenna_efficiency', None)

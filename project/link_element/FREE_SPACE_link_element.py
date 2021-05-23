@@ -48,7 +48,6 @@ class FREE_SPACE_LinkElement(LinkElement):
         # Run the initialization of parent LinkElement
         super().__init__(name, linktype='FREE_SPACE', gain = gain)
         # Add attributes that are unique to TxElement
-        # TODO: figure out if giving wavelength isn' causing problems
         self.input_type = input_type
 
         self.distance = parameters.get('distance', None)
@@ -70,7 +69,7 @@ class FREE_SPACE_LinkElement(LinkElement):
         # rx elements, and the angle from horizon as taken from rx (<90deg)
         # Requires the distance between point of Transmission and Reception
         '''
-            
+# TODO: Use the testcase as provided in the microsat course slides to test this and align elevation provision          
         if self.input_type == "parameter_set_1":
             S = self.distance   #[m]
             Ls = (self.wavelength/(4*np.pi*S))**2 #[-], Free Space Loss, will give negative Decibel as it is smaller than 1

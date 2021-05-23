@@ -20,7 +20,6 @@ class TX_LinkElement(LinkElement):
         # Run the initialization of parent LinkElement
         super().__init__(name, linktype='TX', gain = gain)
         # Add attributes that are unique to TxElement
-        # TODO: figure out if giving wavelength isn' causing problems
         self.input_type = input_type
 
         self.efficiency = parameters.get('antenna_efficiency', None)
@@ -37,7 +36,7 @@ class TX_LinkElement(LinkElement):
         # TX Specific calculations, first checks if any calculations are 
         # required or if gain_loss is directly given and needs to be usec. 
         # does not cover specific antenna models yet
-
+# TODO: Include calculation method from Space Instrumentation Course
         if self.input_type == "parameter_set_1":
             Gtpeak = self.efficiency*(np.pi*self.diameter/self.wavelength)**2  #[-], peak gain
             self.gain = self.dB(Gtpeak)
