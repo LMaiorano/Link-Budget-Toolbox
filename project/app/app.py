@@ -14,17 +14,18 @@ import yaml
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem, \
-    QHeaderView, QRadioButton
+    QHeaderView
 from loguru import logger
 import numpy as np
 
 from project.app.new_element_dialog import NewElementDialog
 from project.app.notification_dialog import showdialog
 
+
+
+
+
 mainwindow_form_class = uic.loadUiType('ui/main_window.ui')[0]
-
-
-
 
 class MainWindow(QMainWindow, mainwindow_form_class):
     def __init__(self, parent=None, **kwargs):
@@ -90,6 +91,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
             showdialog(['Please select a valid YAML configuration file', msg])
 
+
     def new_clicked(self):
         self.clear_table_elements()
         self.cfg_file = Path('../configs/default_config.yaml')
@@ -131,9 +133,11 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         return data
 
+
     def clear_table_elements(self):
         '''Clears input table'''
         self.tbl_elements.clearContents()
+
 
     def save_input_table_to_dict(self):
         '''Convert PyQt Table to an 'elements' dictionary of the same format
@@ -213,6 +217,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.cfg_data['elements'] = data
 
         self.fill_input_table() # reload table with saved values (fills empty cells with 0)
+
 
     def fill_input_table(self):
         '''Populate table with elements in stored in the cfg_data attribute
@@ -298,6 +303,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         # Show table
         self.tbl_elements.show()
+
 
     def fill_results_table(self, results_data):
 
@@ -430,7 +436,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             self.fill_input_table()
 
 
-
     def build_empty_element(self, link_type, input_type):
         # basic data
         data = {'gain_loss': None,
@@ -467,7 +472,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
             for row in range(end, start-1, -1):
                 self.tbl_elements.removeRow(row)
-
 
 
     def run_process_clicked(self):
@@ -599,6 +603,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.fill_input_table()  # reload table with saved values (fills empty cells with 0)
 
 
+
+
 class ElementTableItem(QTableWidgetItem):
     def __init__(self, *args, **kwargs):
         '''Custom TableWidgetItem to allow other attributes to be stored.
@@ -610,6 +616,10 @@ class ElementTableItem(QTableWidgetItem):
         self.input_type = kwargs.pop('input_type', 'GENERIC')
         super().__init__(*args, **kwargs)
         self.setToolTip(f'Type: {self.link_type}')
+
+        # not directly editable to prevent duplicate naming
+        self.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
+
 
 
 class AttributeTableItem(QTableWidgetItem):
@@ -625,6 +635,8 @@ class AttributeTableItem(QTableWidgetItem):
         self.setToolTip(self.description)
 
         self.setFlags(QtCore.Qt.ItemIsEnabled) # not selectable or editable
+
+
 
 class UnitsTableItem(QTableWidgetItem):
     def __init__(self, *args, **kwargs):
