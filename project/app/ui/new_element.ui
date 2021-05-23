@@ -313,7 +313,7 @@
    <sender>cmb_element_type</sender>
    <signal>currentTextChanged(QString)</signal>
    <receiver>Dialog</receiver>
-   <slot>elem_type_selected()</slot>
+   <slot>element_type_selected()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>260</x>
@@ -330,7 +330,7 @@
   <slot>continue_clicked()</slot>
   <slot>yes_gain_clicked()</slot>
   <slot>no_gain_clicked()</slot>
-  <slot>elem_type_selected()</slot>
+  <slot>element_type_selected()</slot>
   <slot>param_set_selected()</slot>
  </slots>
 </ui>
