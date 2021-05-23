@@ -10,12 +10,13 @@ author: nicolas Fosseprez
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QDialog
 from project.app.notification_dialog import showdialog
+from loguru import logger
 
 
 newelement_form_class = uic.loadUiType('ui/new_element.ui')[0]
 
 class NewElementDialog(QDialog, newelement_form_class):
-    def __init__(self, element_reference:dict, existing_names:list, parent=None):
+    def __init__(self, element_reference, existing_names, parent=None):
         super().__init__(parent=parent)
         self.setupUi(self)
 
@@ -26,6 +27,10 @@ class NewElementDialog(QDialog, newelement_form_class):
         self.cmb_element_type.clear() # Ensures it start empty
         for input_type in self.element_ref.keys():
             self.cmb_element_type.addItem(input_type)
+
+        # Initially hide parameters
+        self.rdl_yes.setChecked(True)
+        self.group_parameters.hide()
 
     def accept(self) -> None:
         '''Check that required fields are filled before continuing'''
@@ -38,13 +43,20 @@ class NewElementDialog(QDialog, newelement_form_class):
             # Do its normal accept stuff
             super().accept()
 
+    def elem_type_selected(self):
+        type = self.cmb_element_type.currentText()
+        logger.debug(f'Element type selected {type}')
+
+    def param_set_selected(self):
+        logger.debug(f'New parameter set selected')
+
     def continue_clicked(self):
         pass
     
     def yes_gain_clicked(self):
-        pass
+        self.group_parameters.hide()
     
     def no_gain_clicked(self):
-        pass
+        self.group_parameters.show()
     
     

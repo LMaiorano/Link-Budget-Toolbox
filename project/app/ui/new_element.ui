@@ -18,16 +18,32 @@
     <layout class="QFormLayout" name="formLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="lbl_element_name">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Element Name:</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="txt_element_name"/>
+      <widget class="QLineEdit" name="txt_element_name">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="lbl_elementtype">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Element Type:</string>
        </property>
@@ -35,6 +51,11 @@
      </item>
      <item row="1" column="1">
       <widget class="QComboBox" name="cmb_element_type">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <item>
         <property name="text">
          <string> -- </string>
@@ -62,17 +83,27 @@
        </item>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="2" column="0">
       <widget class="QLabel" name="lbl_know_gainloss">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="text">
-        <string>Do you know the Gain/Loss?</string>
+        <string>Do you know the total Gain/Loss?      </string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="2" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QRadioButton" name="rdl_yes">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Yes</string>
          </property>
@@ -80,13 +111,18 @@
        </item>
        <item>
         <widget class="QRadioButton" name="rdl_no">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>No</string>
          </property>
         </widget>
        </item>
        <item>
-        <spacer name="horizontalSpacer">
+        <spacer name="horizontalSpacer_3">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -100,51 +136,78 @@
        </item>
       </layout>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="lbl_set_of_param">
-       <property name="text">
-        <string>Set of Parameters:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QComboBox" name="cmb_set_param">
-       <item>
-        <property name="text">
-         <string>Set 1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Set 2</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="lbl_parameters">
-       <property name="text">
-        <string>Parameters:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QTableWidget" name="tbl_parameters"/>
-     </item>
-     <item row="2" column="1">
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
     </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="group_parameters">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="title">
+      <string>Parameters</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="lbl_set_of_param">
+        <property name="text">
+         <string>Set of Parameters:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cmb_set_param">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>Set 1</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Set 2</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lbl_parameters">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>Parameters:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QTableWidget" name="tbl_parameters">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -167,8 +230,8 @@
    <slot>no_gain_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>233</x>
-     <y>196</y>
+     <x>314</x>
+     <y>73</y>
     </hint>
     <hint type="destinationlabel">
      <x>544</x>
@@ -183,8 +246,8 @@
    <slot>yes_gain_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>191</x>
-     <y>201</y>
+     <x>269</x>
+     <y>78</y>
     </hint>
     <hint type="destinationlabel">
      <x>540</x>
@@ -228,15 +291,31 @@
    <sender>cmb_set_param</sender>
    <signal>currentTextChanged(QString)</signal>
    <receiver>Dialog</receiver>
-   <slot>continue_clicked()</slot>
+   <slot>param_set_selected()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>168</x>
+     <x>211</x>
      <y>226</y>
     </hint>
     <hint type="destinationlabel">
-     <x>34</x>
-     <y>144</y>
+     <x>136</x>
+     <y>147</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmb_element_type</sender>
+   <signal>currentTextChanged(QString)</signal>
+   <receiver>Dialog</receiver>
+   <slot>elem_type_selected()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>260</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>156</x>
+     <y>93</y>
     </hint>
    </hints>
   </connection>
@@ -245,5 +324,7 @@
   <slot>continue_clicked()</slot>
   <slot>yes_gain_clicked()</slot>
   <slot>no_gain_clicked()</slot>
+  <slot>elem_type_selected()</slot>
+  <slot>param_set_selected()</slot>
  </slots>
 </ui>
