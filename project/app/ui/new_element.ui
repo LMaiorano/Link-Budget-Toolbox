@@ -25,10 +25,62 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="1">
+       <widget class="QPlainTextEdit" name="txt_element_name"/>
+      </item>
+      <item row="2" column="2">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QRadioButton" name="rdl_yes">
+          <property name="text">
+           <string>Yes</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="rdl_no">
+          <property name="text">
+           <string>No</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="lbl_element_name">
+        <property name="text">
+         <string>Element Name:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lbl_know_gainloss">
+        <property name="text">
+         <string>Do you know the Gain/Loss?</string>
+        </property>
+       </widget>
+      </item>
       <item row="3" column="3">
        <widget class="QPushButton" name="btn_continue">
         <property name="text">
          <string>Continue</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" colspan="2">
+       <widget class="QTableWidget" name="tbl_parameters"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lbl_elementtype">
+        <property name="text">
+         <string>Element Type:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="lbl_set_of_param">
+        <property name="text">
+         <string>Set of parameters:</string>
         </property>
        </widget>
       </item>
@@ -46,22 +98,12 @@
         </item>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="lbl_set_of_param">
-        <property name="text">
-         <string>Set of parameters:</string>
-        </property>
-       </widget>
-      </item>
       <item row="4" column="0">
        <widget class="QLabel" name="lbl_parameters">
         <property name="text">
          <string>Parameters:</string>
         </property>
        </widget>
-      </item>
-      <item row="4" column="1" colspan="2">
-       <widget class="QTableWidget" name="tbl_parameters"/>
       </item>
       <item row="1" column="1" colspan="2">
        <widget class="QComboBox" name="cmb_element_type">
@@ -91,48 +133,6 @@
          </property>
         </item>
        </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="lbl_elementtype">
-        <property name="text">
-         <string>Element Type:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QRadioButton" name="rdl_yes">
-          <property name="text">
-           <string>Yes</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="rdl_no">
-          <property name="text">
-           <string>No</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lbl_element_name">
-        <property name="text">
-         <string>Element Name:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QLabel" name="lbl_know_gainloss">
-        <property name="text">
-         <string>Do you know the Gain/Loss?</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPlainTextEdit" name="txt_element_name"/>
       </item>
      </layout>
     </item>
@@ -174,8 +174,8 @@
    <slot>yes_gain_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>491</x>
-     <y>228</y>
+     <x>484</x>
+     <y>230</y>
     </hint>
     <hint type="destinationlabel">
      <x>509</x>
@@ -231,10 +231,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>cmb_element_type</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>Dialog</receiver>
+   <slot>element_type_selected()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>331</x>
+     <y>183</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>222</x>
+     <y>203</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>continue_clicked()</slot>
   <slot>yes_gain_clicked()</slot>
   <slot>no_gain_clicked()</slot>
+  <slot>element_type_selected()</slot>
+  <slot>get_element_name()</slot>
  </slots>
 </ui>
