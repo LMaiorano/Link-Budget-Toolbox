@@ -15,11 +15,12 @@ from project.app.notification_dialog import showdialog
 newelement_form_class = uic.loadUiType('ui/new_element.ui')[0]
 
 class NewElementDialog(QDialog, newelement_form_class):
-    def __init__(self, element_reference:dict, parent=None):
+    def __init__(self, element_reference:dict, existing_names:list, parent=None):
         super().__init__(parent=parent)
         self.setupUi(self)
 
         self.element_ref = element_reference
+        self.existing_names = existing_names
 
         # Add available elements to combobox
         self.cmb_element_type.clear() # Ensures it start empty
@@ -30,8 +31,11 @@ class NewElementDialog(QDialog, newelement_form_class):
         '''Check that required fields are filled before continuing'''
         name = self.txt_element_name.text()
         if len(name) == 0:
-            showdialog(['New element must have a name'])
+            showdialog(['The new element must have a name'])
+        elif name.lower() in self.existing_names:
+            showdialog(['This element name already exists'])
         else:
+            # Do its normal accept stuff
             super().accept()
 
     def continue_clicked(self):

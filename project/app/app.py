@@ -402,12 +402,17 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         '''Adds new row to column, could be expanded to add a preset number of rows'''
         # self.tbl_elements.insertRow(self.tbl_elements.rowCount())
         # self.tbl_elements.show()
-        new_dlg = NewElementDialog(self.element_details)
+
+        # Get existing names, (cannot have a dupicate, due to dictionary structure)
+        existing_element_names = [name.lower() for name in self.cfg_data['elements'].keys()]
+
+        # Open Dialog
+        new_dlg = NewElementDialog(self.element_details, existing_element_names)
         exit_successful = new_dlg.exec_()
 
         if exit_successful:
             elem_type = new_dlg.cmb_element_type.currentText() # get link type
-            param_set = new_dlg.cmb_set_param.currentText() # get parameter set
+            param_set = 'parameter_set_1'#new_dlg.cmb_set_param.currentText() # get parameter set
             name      = new_dlg.txt_element_name.text()     # get name
 
             # Create blank element dict

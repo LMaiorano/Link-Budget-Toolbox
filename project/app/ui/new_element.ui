@@ -13,141 +13,150 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>30</y>
-     <width>641</width>
-     <height>431</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="3" column="3">
-       <widget class="QPushButton" name="btn_continue">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="lbl_element_name">
+       <property name="text">
+        <string>Element Name:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="txt_element_name"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="lbl_elementtype">
+       <property name="text">
+        <string>Element Type:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="cmb_element_type">
+       <item>
         <property name="text">
-         <string>Continue</string>
+         <string> -- </string>
         </property>
-       </widget>
-      </item>
-      <item row="3" column="1" colspan="2">
-       <widget class="QComboBox" name="cmb_set_param">
-        <item>
-         <property name="text">
-          <string>Set 1</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Set 2</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="lbl_set_of_param">
+       </item>
+       <item>
         <property name="text">
-         <string>Set of Parameters:</string>
+         <string>Blank Item</string>
         </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="lbl_parameters">
+       </item>
+       <item>
         <property name="text">
-         <string>Parameters:</string>
+         <string>TX - Transmitter</string>
         </property>
-       </widget>
-      </item>
-      <item row="4" column="1" colspan="2">
-       <widget class="QTableWidget" name="tbl_parameters"/>
-      </item>
-      <item row="1" column="1" colspan="2">
-       <widget class="QComboBox" name="cmb_element_type">
-        <item>
-         <property name="text">
-          <string> -- </string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Blank Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>TX - Transmitter</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>RX - Receiver</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Path Loss</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="lbl_elementtype">
+       </item>
+       <item>
         <property name="text">
-         <string>Element Type:</string>
+         <string>RX - Receiver</string>
         </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QRadioButton" name="rdl_yes">
-          <property name="text">
-           <string>Yes</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="rdl_no">
-          <property name="text">
-           <string>No</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lbl_element_name">
+       </item>
+       <item>
         <property name="text">
-         <string>Element Name:</string>
+         <string>Path Loss</string>
         </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QLabel" name="lbl_know_gainloss">
+       </item>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="lbl_know_gainloss">
+       <property name="text">
+        <string>Do you know the Gain/Loss?</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QRadioButton" name="rdl_yes">
+         <property name="text">
+          <string>Yes</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="rdl_no">
+         <property name="text">
+          <string>No</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="lbl_set_of_param">
+       <property name="text">
+        <string>Set of Parameters:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="cmb_set_param">
+       <item>
         <property name="text">
-         <string>Do you know the Gain/Loss?</string>
+         <string>Set 1</string>
         </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QLineEdit" name="txt_element_name"/>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QDialogButtonBox" name="buttonBox">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="standardButtons">
-       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
+       </item>
+       <item>
+        <property name="text">
+         <string>Set 2</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="lbl_parameters">
+       <property name="text">
+        <string>Parameters:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QTableWidget" name="tbl_parameters"/>
+     </item>
+     <item row="2" column="1">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections>
@@ -158,8 +167,8 @@
    <slot>no_gain_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>480</x>
-     <y>91</y>
+     <x>233</x>
+     <y>196</y>
     </hint>
     <hint type="destinationlabel">
      <x>544</x>
@@ -174,8 +183,8 @@
    <slot>yes_gain_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>410</x>
-     <y>96</y>
+     <x>191</x>
+     <y>201</y>
     </hint>
     <hint type="destinationlabel">
      <x>540</x>
@@ -216,18 +225,18 @@
    </hints>
   </connection>
   <connection>
-   <sender>btn_continue</sender>
-   <signal>clicked()</signal>
+   <sender>cmb_set_param</sender>
+   <signal>currentTextChanged(QString)</signal>
    <receiver>Dialog</receiver>
    <slot>continue_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>659</x>
-     <y>127</y>
+     <x>168</x>
+     <y>226</y>
     </hint>
     <hint type="destinationlabel">
-     <x>622</x>
-     <y>66</y>
+     <x>34</x>
+     <y>144</y>
     </hint>
    </hints>
   </connection>
