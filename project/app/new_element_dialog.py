@@ -54,6 +54,15 @@ class NewElementDialog(QDialog, newelement_form_class):
     def element_type_selected(self):
         selected_elment_type = self.cmb_element_type.currentText()
         logger.debug(f'Element type selected {selected_elment_type}')
+<<<<<<< HEAD
+=======
+
+        # Prevents error when starting and type is ''
+        if selected_elment_type in self.element_ref.keys():
+            self.refresh_param_set(selected_elment_type)
+
+        return(selected_elment_type)
+>>>>>>> a893a73cb50d9a07180c9bdb306d336b951f022a
 
         # Prevents error when starting and type is ''
         if selected_elment_type in self.element_ref.keys():
