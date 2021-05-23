@@ -49,7 +49,7 @@
       <item row="3" column="0">
        <widget class="QLabel" name="lbl_set_of_param">
         <property name="text">
-         <string>Set of parameters:</string>
+         <string>Set of Parameters:</string>
         </property>
        </widget>
       </item>
@@ -131,8 +131,8 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QPlainTextEdit" name="txt_element_name"/>
+      <item row="0" column="1" colspan="2">
+       <widget class="QLineEdit" name="txt_element_name"/>
       </item>
      </layout>
     </item>
@@ -158,12 +158,12 @@
    <slot>no_gain_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>546</x>
-     <y>228</y>
+     <x>480</x>
+     <y>91</y>
     </hint>
     <hint type="destinationlabel">
-     <x>554</x>
-     <y>146</y>
+     <x>544</x>
+     <y>201</y>
     </hint>
    </hints>
   </connection>
@@ -174,12 +174,12 @@
    <slot>yes_gain_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>491</x>
-     <y>228</y>
+     <x>410</x>
+     <y>96</y>
     </hint>
     <hint type="destinationlabel">
-     <x>509</x>
-     <y>106</y>
+     <x>540</x>
+     <y>266</y>
     </hint>
    </hints>
   </connection>
@@ -190,8 +190,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>137</x>
-     <y>426</y>
+     <x>138</x>
+     <y>459</y>
     </hint>
     <hint type="destinationlabel">
      <x>514</x>
@@ -206,8 +206,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>69</x>
-     <y>426</y>
+     <x>70</x>
+     <y>459</y>
     </hint>
     <hint type="destinationlabel">
      <x>412</x>
@@ -222,12 +222,12 @@
    <slot>continue_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>668</x>
-     <y>272</y>
+     <x>659</x>
+     <y>127</y>
     </hint>
     <hint type="destinationlabel">
-     <x>584</x>
-     <y>47</y>
+     <x>622</x>
+     <y>66</y>
     </hint>
    </hints>
   </connection>

@@ -9,6 +9,7 @@ author: nicolas Fosseprez
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QDialog
+from project.app.notification_dialog import showdialog
 
 
 newelement_form_class = uic.loadUiType('ui/new_element.ui')[0]
@@ -24,6 +25,14 @@ class NewElementDialog(QDialog, newelement_form_class):
         self.cmb_element_type.clear() # Ensures it start empty
         for input_type in self.element_ref.keys():
             self.cmb_element_type.addItem(input_type)
+
+    def accept(self) -> None:
+        '''Check that required fields are filled before continuing'''
+        name = self.txt_element_name.text()
+        if len(name) == 0:
+            showdialog(['New element must have a name'])
+        else:
+            super().accept()
 
     def continue_clicked(self):
         pass

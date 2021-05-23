@@ -14,11 +14,12 @@ import yaml
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem, \
-    QHeaderView, QMessageBox
+    QHeaderView
 from loguru import logger
 import numpy as np
 
 from project.app.new_element_dialog import NewElementDialog
+from project.app.notification_dialog import showdialog
 
 mainwindow_form_class = uic.loadUiType('ui/main_window.ui')[0]
 
@@ -55,9 +56,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.Stretch)
         header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
-
-
-
 
 
     def open_config_clicked(self):
@@ -400,7 +398,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         return param_set_details
 
 
-
     def add_element_clicked(self):
         '''Adds new row to column, could be expanded to add a preset number of rows'''
         # self.tbl_elements.insertRow(self.tbl_elements.rowCount())
@@ -410,16 +407,20 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         if exit_successful:
             elem_type = new_dlg.cmb_element_type.currentText() # get link type
-            param_set = 'parameter_set_1' #new_dlg.cmb_set_param.currentText() # get parameter set
-            name      = 'new_name' #new_dlg.name.text()     # get name
+            param_set = new_dlg.cmb_set_param.currentText() # get parameter set
+            name      = new_dlg.txt_element_name.text()     # get name
 
+            # Create blank element dict
             new_element = self.build_empty_element(elem_type, param_set)
-            self.cfg_data['elements'][name] = new_element
 
+            # Add to active config
+            self.cfg_data['elements'][name] = new_element
+            logger.debug(f'Added element: {name}')
+
+            # Reload table
             self.fill_input_table()
 
 
-        print(exit_successful)
 
     def build_empty_element(self, link_type, input_type):
         # basic data
@@ -437,9 +438,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                 data['parameters'][param] = '??'
 
         return data
-
-
-
 
 
     def delete_element_clicked(self):
@@ -626,51 +624,6 @@ class UnitsTableItem(QTableWidgetItem):
         '''
         super().__init__(*args, **kwargs)
         self.setFlags(QtCore.Qt.ItemIsEnabled) # not selectable or editable
-
-
-
-
-def showdialog(message: list, level='warning'):
-    '''Popup dialog box to warn user of some sort of error or other information
-
-    Parameters
-    ----------
-    message : list of str
-        List of message strings. The first (required) is the main message. The
-            second (optional) is additional detailed information
-    level : str
-        Sets type and icon of message box. (default: 'warning'),
-        or 'question', 'information', 'critical'
-
-    Returns
-    -------
-        Exit status of QMessageBox()
-    '''
-    if not isinstance(message, list):
-        raise TypeError('Message must be a list of strings')
-    icon = QMessageBox.Warning
-    if level == 'question':
-        icon = QMessageBox.Question
-    elif level == 'information':
-        icon = QMessageBox.Information
-    elif level == 'critical':
-        icon = QMessageBox.Critical
-
-    msg = QMessageBox()
-    msg.setIcon(icon)
-
-    msg.setText(message[0])
-    msg.setWindowTitle(level.capitalize())
-
-    if len(message) > 1:
-        msg.setInformativeText(message[1])
-    if len(message) > 2:
-        msg.setDetailedText(message[2])
-
-    msg.setStandardButtons(QMessageBox.Ok)
-
-    msg.exec_()
-    return msg
 
 
 
