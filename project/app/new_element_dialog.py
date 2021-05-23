@@ -23,10 +23,15 @@ class NewElementDialog(QDialog, newelement_form_class):
         self.element_ref = element_reference
         self.existing_names = existing_names
 
-        # Add available elements to combobox
+        # Add available parameters to Element Type combobox
         self.cmb_element_type.clear() # Ensures it start empty
         for input_type in self.element_ref.keys():
             self.cmb_element_type.addItem(input_type)
+            
+        # Start with an empty Element Type combobox
+        self.cmb_set_param.clear() # Ensures it start empty    
+            
+    def get_element_name(self):
 
         # Initially hide parameters
         self.rdl_yes.setChecked(True)
@@ -58,5 +63,11 @@ class NewElementDialog(QDialog, newelement_form_class):
     
     def no_gain_clicked(self):
         self.group_parameters.show()
+
     
+    def continue_clicked(self):
+        ''' Show all the data the user has selected for the new Element'''
+        
+        # Gather all the Element parameters
+        element_name = self.get_element_name()  # Get the element name
     
