@@ -69,11 +69,12 @@ class FREE_SPACE_LinkElement(LinkElement):
         # rx elements, and the angle from horizon as taken from rx (<90deg)
         # Requires the distance between point of Transmission and Reception
         '''
-# TODO: Use the testcase as provided in the microsat course slides to test this and align elevation provision          
+        # TODO: Use the testcase as provided in the microsat course slides to test this and align elevation provision
         if self.input_type == "parameter_set_1":
-            S = self.distance   #[m]
-            Ls = (self.wavelength/(4*np.pi*S))**2 #[-], Free Space Loss, will give negative Decibel as it is smaller than 1
-            self.gain = self.dB(Ls)
+            self.calc_1()
+            # S = self.distance   #[m]
+            # Ls = (self.wavelength/(4*np.pi*S))**2 #[-], Free Space Loss, will give negative Decibel as it is smaller than 1
+            # self.gain = self.dB(Ls)
         elif self.input_type == "parameter_set_2":
             #Use the sine rule to calculate the distance
             # TODO: Make sure this works also for negative horizon angles?
@@ -98,6 +99,13 @@ class FREE_SPACE_LinkElement(LinkElement):
             self.gain = self.dB(Ls)
         # elif self.input_type == "gain_loss":
         #     self.gain = self.gain
+
+
+    def calc_1(self):
+        S = self.distance  # [m]
+        Ls = (self.wavelength / (
+                    4 * np.pi * S)) ** 2  # [-], Free Space Loss, will give negative Decibel as it is smaller than 1
+        self.gain = self.dB(Ls)
 
 if __name__ == '__main__':
     # Put any code here you want to use to test the class
