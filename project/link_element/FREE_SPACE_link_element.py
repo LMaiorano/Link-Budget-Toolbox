@@ -23,31 +23,31 @@ class FREE_SPACE_LinkElement(LinkElement):
     def __init__(self, name, input_type, gain, parameters):
         '''Free Space Link Element object
         
-        Assigns all initial values such as the name, wether a gain is given
+        Assigns all attributes such as the name, wether a gain is given
         directly or needs to be calculated, said gain and the parameters list
         
         Parameters
         ----------
-        name : TYPE
+        name : str
             Defines the type of link element.
-        input_type : TYPE
+        input_type : str
             Defines wether a gain/loss is given or a parameter set is used.
-        gain : TYPE
+        gain : int
             The gain or loss in Decibel of this link element in the case it is
             known or given. Losses are given as negative gains.
-        distance : TYPE
+        distance : int
             The total distance between the transmitting and receiving elements.
-        sc_altitude : TYPE
+        sc_altitude : int
             The altitude, not orbit, of the furthest of the transmitting and
             receiving points to the barycentre in the system under
             consideration.
-        gs_altitude : TYPE
+        gs_altitude : int
             The altitude, not orbit, of the closest of the transmitting and
             receiving points to the barycentre in the system under
             consideration.
-        angle : TYPE
+        angle : int
             The elevation angle of sc as seen from the horizon of the gs point.
-        wavelength : TYPE
+        wavelength : int
             The wavelength of the transmission in [m].
 
         Returns
@@ -59,22 +59,22 @@ class FREE_SPACE_LinkElement(LinkElement):
         super().__init__(name, linktype='FREE_SPACE', gain = gain)
         # Add attributes that are unique to TxElement
         self.input_type = input_type
-
+        # Add attributes that are unique parameters to FREE_Space_LinkElement
         self.distance = parameters.get('distance', None)
         self.sc_altitude = parameters.get('sc_altitude', None)
         self.gs_altitude = parameters.get('gs_altitude', None)
         self.angle = parameters.get('angle', None)     #[deg]
         self.wavelength = parameters.get('wavelength', None)
-
+        # check if gain/loss is given directly or calculations are required
         if self.input_type != 'gain_loss':
             self.process()
 
         
     def process(self):
         '''
-        Free Space Path Loss Specific calculations, first checks if any 
-        calculations are required or if gain_loss is directly given and 
-        needs to be used. parameter_set_1 gives the distance directly, while
+        Free Space Path Loss Specific calculations, it checks which parameter
+        set needs to be used and uses the respective required calculations.
+        Parameter_set_1 gives the distance directly, while
         parameter_set_2 first calculates it with the altitudes of a
         groundstation, the closest to the barycentre and a spacecraft, the
         furthest from the barycentre, and the angle from horizon as taken from
@@ -89,37 +89,14 @@ class FREE_SPACE_LinkElement(LinkElement):
         
         if self.input_type == "parameter_set_1":
             self.calc_1()
-            # S = self.distance   #[m]
-            # Ls = (self.wavelength/(4*np.pi*S))**2 #[-], Free Space Loss, will give negative Decibel as it is smaller than 1
-            # self.gain = self.dB(Ls)
         elif self.input_type == "parameter_set_2":
             # TODO: Make a try statement here that catches when people have
             # The gs altitude above the sc altitude
             self.calc_2()            
-            # r_sc = self.sc_altitude + Re    #[m]
-            # r_gs = self.gs_altitude + Re    #[m]
-            # if self.angle == 90:
-            #     S = abs(r_sc-r_gs)
-            # elif self.angle == -90 or self.angle == 270:
-            #     S = abs(r_sc+r_gs)
-            # else:
-            #     if self.angle < 90:
-            #         a = 90+self.angle               #[deg]
-            #     elif self.angle > 90:
-            #         a = 90+180-self.angle
-            #     sineratio = r_sc/np.sin(np.deg2rad(a))
-            #     b = np.rad2deg(np.arcsin(r_gs/sineratio))  #[deg]
-            #     c = 180-a-b                     #[deg]
-            #     S = sineratio*np.sin(np.deg2rad(c))         #[m]
-            # Ls = (self.wavelength/(4*np.pi*S))**2 #[-], Free Space Loss, will give negative Decibel as it is smaller than 1
-            # self.gain = self.dB(Ls)
-        # elif self.input_type == "gain_loss":
-        #     self.gain = self.gain
-
 
     def calc_1(self):
         '''
-        Calculates the gain using a given distance between the transmitting
+        Calculates the Free Space Loss using a given distance between the transmitting
         and receiving points.
 
         Returns
@@ -128,15 +105,17 @@ class FREE_SPACE_LinkElement(LinkElement):
 
         '''
         S = self.distance  # [m]
-        Ls = (self.wavelength / (
-                    4 * np.pi * S)) ** 2  # [-], Free Space Loss, will give negative Decibel as it is smaller than 1
+        Ls = (self.wavelength / (4 * np.pi * S)) ** 2  # [-], Free Space Loss
         self.gain = self.dB(Ls)
         
     def calc_2(self):
         '''
-        Calculates the gain using the distance between two points, defined
-        only by their altitude and the horizon-elevation of the highest point,
-        named sc, as measured from the lowest point, named gs.
+        Calculates the gain using the distance between two points orbiting a
+        barycentre: gs, groundstation, the closest to the barycentre and sc,
+        spacecraft, the furthest from the barycentre. The final parameter is
+        the angle from the horizon as taken from the groundstation. The
+        sine-rule is then used to calculate the distance between sc and gs,
+        after which the Free Space Loss is calculated.
 
         Returns
         -------
