@@ -501,6 +501,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         self.sum_results() # Sum the values in the gain column and display in totals
 
+        self.btn_save_results.setEnabled(True)
+
 
     def sum_results(self):
         sum = 0
