@@ -9,7 +9,7 @@ elements:
       distance: 0.0
       gs_altitude: 0.0
       sc_altitude: 0.0
-      wavelength: 0.0
+      wavelength: 10.0
   GS RX Ant:
     gain_loss: null
     idx: 1
@@ -25,5 +25,10 @@ elements:
     input_type: gain_loss
     link_type: TX
     parameters: null
+general_values:
+  input_power: null
+  rx_sys_threshold: null
+  total_gain:   null
+  total_margin: null
 settings:
   case_type: nominal
