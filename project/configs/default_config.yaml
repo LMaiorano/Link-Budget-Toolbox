@@ -25,7 +25,5 @@ elements:
     input_type: gain_loss
     link_type: TX
     parameters: null
-generic_values:
-  altitude: 800
 settings:
   case_type: nominal

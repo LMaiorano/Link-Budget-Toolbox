@@ -120,7 +120,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         # verify basic elements
         if file == self.cfg_file:
-            required_sections = ['elements', 'generic_values', 'settings']
+            required_sections = ['elements', 'settings']
             for sect in required_sections:
                 if sect not in data.keys():
                     raise KeyError(f'Configuration file missing required section: "{sect}"')
@@ -137,6 +137,10 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def clear_table_elements(self):
         '''Clears input table'''
         self.tbl_elements.clearContents()
+
+        self.tbl_results.clearContents()
+        self.tbl_results.setRowCount(0)
+        self.tbl_results.setColumnCount(0)
 
 
     def save_input_table_to_dict(self):
@@ -488,7 +492,29 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         # self.result_data = main_process(self.cfg_data)
         # TODO: display results
         self.fill_results_table(self.cfg_data['elements'])
-        self.btn_save_results.setEnabled(True)
+
+        self.sum_results() # Sum the values in the gain column and display in totals
+
+
+    def sum_results(self):
+        sum = 0
+
+        for r in range(self.tbl_results.rowCount()):
+            gain_item = self.tbl_results.item(r, 1)
+            if isinstance(gain_item, QTableWidgetItem):
+                gain = gain_item.text()
+                try:
+                    sum += float(gain)
+
+                except ValueError as E:
+                    logger.debug(E)
+                    showdialog([f'An error has occurred during the analysis:', 'One or more elements '
+                                f'are missing a total gain'])
+
+        # self.txt_total = QtWidgets.QLineEdit()
+        self.txt_total.setText(f'{sum:.1f}')
+
+
 
 
     def save_config_clicked(self):
@@ -527,7 +553,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         logger.debug(f"Config saved to {self.cfg_file}")
 
 
-    def save_results_table_to_dict(self):
+    def save_results_table_to_dict(self): # TODO: in progress. Not used anywhere yet
         '''Convert PyQt Table to an 'elements' dictionary of the same format
                 as the input config file. This can be passed to the main process
 
