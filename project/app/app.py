@@ -475,12 +475,12 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         col_L = selected[0].leftColumn()
 
         if col_L == 0: # Element name must be selected, so you cant remove individual attributes
-            start = selected[0].topRow()
-            end =  selected[-1].bottomRow()
-            logger.debug(f'Delete range: {start} - {end}')
+            rows = sorted([cell.topRow() for cell in selected])
+            logger.debug(f'Removing rows: {rows}')
 
-            for row in range(end, start-1, -1):
+            for row in reversed(rows): # Must remove from bottom up, else indexes gets confused
                 self.tbl_elements.removeRow(row)
+
 
 
     def run_process_clicked(self):
