@@ -1,21 +1,29 @@
 elements:
-  '23':
-    gain_loss: 23.0
+  Free Space:
+    gain_loss:
     idx: 3
-    input_type: gain_loss
+    input_type: parameter_set_2
     link_type: FREE_SPACE
-    parameters: null
+    parameters:
+      angle: 0.0
+      distance: 0.0
+      gs_altitude: 0.0
+      sc_altitude: 0.0
+      wavelength: 10.0
+  GS RX Ant:
+    gain_loss:
+    idx: 1
+    input_type: parameter_set_1
+    link_type: RX
+    parameters:
+      antenna_diameter: 0.0
+      antenna_efficiency: 0.0
+      wavelength: 100.0
   SC TX Ant:
     gain_loss: 10.0
-    idx: 1
-    input_type: gain_loss
-    link_type: TX
-    parameters: null
-  asdff:
-    gain_loss: 4.0
     idx: 2
     input_type: gain_loss
-    link_type: FREE_SPACE
+    link_type: TX
     parameters: null
 settings:
   case_type: nominal

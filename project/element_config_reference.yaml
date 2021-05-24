@@ -8,7 +8,7 @@ FREE_SPACE:
             units:          nm
     parameter_set_2:
         angle:
-            description:
+            description:    "??????"
             units:          deg
         distance:
             description:    Distance between spacecraft and ground station
@@ -22,13 +22,14 @@ FREE_SPACE:
         wavelength:
             description:    Radio signal wavelength
             units:          nm
+            range:          "(0, inf]"
 RX:
     parameter_set_1:
         antenna_diameter:
             description:
             units:          m
         antenna_efficiency:
-            description:
+            description:    "??????"
             units:          "-"
         wavelength:
             description:    Radio signal wavelength
@@ -46,7 +47,7 @@ TX:
             units:          nm
     parameter_set_2:
         waist_radius:
-            description:
+            description:    "??????"
             units:          m
         wavelength:
             description:    Radio signal wavelength

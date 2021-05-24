@@ -20,6 +20,7 @@ import numpy as np
 
 from project.app.new_element_dialog import NewElementDialog
 from project.app.notification_dialog import showdialog
+from project.process import main_process
 
 
 
@@ -494,7 +495,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             showdialog(['Please check that only numerical values are entered'])
             return  # Abort saving file
 
-        # self.result_data = main_process(self.cfg_data)
+        self.result_data = main_process(self.cfg_data)
         # TODO: display results
         self.fill_results_table(self.cfg_data['elements'])
 
