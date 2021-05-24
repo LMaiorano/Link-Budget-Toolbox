@@ -163,6 +163,34 @@
          </widget>
         </item>
         <item>
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Minimum</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn_clear_all">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Clear All</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="verticalSpacer_2">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -369,8 +397,8 @@
    <slot>add_element_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>55</x>
-     <y>232</y>
+     <x>66</x>
+     <y>326</y>
     </hint>
     <hint type="destinationlabel">
      <x>97</x>
@@ -385,8 +413,8 @@
    <slot>run_process_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>59</x>
-     <y>561</y>
+     <x>68</x>
+     <y>649</y>
     </hint>
     <hint type="destinationlabel">
      <x>46</x>
@@ -449,12 +477,28 @@
    <slot>delete_element_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>60</x>
-     <y>399</y>
+     <x>71</x>
+     <y>358</y>
     </hint>
     <hint type="destinationlabel">
      <x>61</x>
      <y>331</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_clear_all</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>clear_all_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>87</x>
+     <y>406</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>459</y>
     </hint>
    </hints>
   </connection>
@@ -467,5 +511,6 @@
   <slot>new_clicked()</slot>
   <slot>delete_element_clicked()</slot>
   <slot>input_table_modified()</slot>
+  <slot>clear_all_clicked()</slot>
  </slots>
 </ui>

@@ -137,10 +137,15 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def clear_table_elements(self):
         '''Clears input table'''
         self.tbl_elements.clearContents()
+        self.tbl_elements.setRowCount(0)
 
         self.tbl_results.clearContents()
         self.tbl_results.setRowCount(0)
         self.tbl_results.setColumnCount(0)
+
+
+    def clear_all_clicked(self):
+        self.clear_table_elements()
 
 
     def save_input_table_to_dict(self):
