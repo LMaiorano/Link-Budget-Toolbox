@@ -260,6 +260,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         # Order elements according to their saved index
         elements_ordered = {key: val for key, val in sorted(elements.items(), key=lambda item: item[1]['idx'])}
 
+        # Iterate through elements and add to rows
         row = 0
         for name, data in elements_ordered.items():
             start_row = row
@@ -283,10 +284,11 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                 descr = self.get_attribute_details(data, gain=True)['description']
 
                 self.tbl_elements.setItem(row, self.attribute_col,
-                                          AttributeTableItem('Gain', type='gain_loss',
+                                          AttributeTableItem('Gain',
+                                                             type='gain_loss',
                                                              description=descr))
                 self.tbl_elements.setItem(row, self.value_col,
-                                          QTableWidgetItem(str(data['gain_loss'])))
+                                          ValueTableItem(str(data['gain_loss'])))
                 self.tbl_elements.setItem(row, self.units_col,
                                           UnitsTableItem(units))
                 row +=1
@@ -294,14 +296,18 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             else: # If link element has parameters
             # --------------------- Parameters
                 for param, val in data['parameters'].items():
-                    units = self.get_attribute_details(data, specific_parameter=param)['units']
-                    descr = self.get_attribute_details(data, specific_parameter=param)['description']
+                    # get attribute details
+                    att_details = self.get_attribute_details(data, specific_parameter=param)
+                    units = att_details.get('units')
+                    descr = att_details.get('description')
+                    val_range = att_details.get('range')
 
+                    # Add attribute cells
                     self.tbl_elements.setItem(row, self.attribute_col,
                                               AttributeTableItem(param, description=descr))
 
                     self.tbl_elements.setItem(row, self.value_col,
-                                              QTableWidgetItem(str(val)))
+                                              ValueTableItem(str(val), range=val_range))
 
                     self.tbl_elements.setItem(row, self.units_col,
                                               UnitsTableItem(units))
@@ -496,7 +502,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             return  # Abort saving file
 
         self.result_data = main_process(self.cfg_data)
-        # TODO: display results
+
         self.fill_results_table(self.cfg_data['elements'])
 
         self.sum_results() # Sum the values in the gain column and display in totals
@@ -670,6 +676,74 @@ class AttributeTableItem(QTableWidgetItem):
 
         self.setFlags(QtCore.Qt.ItemIsEnabled) # not selectable or editable
 
+
+class ValueTableItem(QTableWidgetItem):
+    def __init__(self, *args, **kwargs):
+        '''Custom TableWidgetItem to allow other attributes to be stored.
+
+        This is necessary so that additional link element properties can be saved
+        in the data dictionary which is passed to the main process
+        '''
+        self.range_raw = kwargs.pop('range', None)
+        self.range_msg = ''
+        self.bounds = self.eval_range()
+        super().__init__(*args, **kwargs)
+
+
+    def eval_range(self):
+        range_raw = self.range_raw
+        if range_raw is None:
+            return None
+
+        bounds = {}
+        L, R = range_raw.replace(' ', '').split(',')
+
+        # Left bound
+        if L[0] == '(':
+            bounds['left'] = L[1:] + ' <'
+        else:
+            bounds['left'] = L[1:] + ' <='
+
+        # Right Bound
+        if R[-1] == ')':
+            bounds['right'] = '< ' + R[:-1]
+        else:
+            bounds['right'] = '<= ' + R[:-1]
+
+        self.range_msg = self.format_range(bounds.copy()) # this can be used for information dialogs
+
+
+        # convert inf to float("inf") which can be evaluated
+        for k, v in bounds.items():
+            bounds[k] = v.replace('inf', 'float("inf")')
+
+        return bounds
+
+    @staticmethod
+    def format_range(b_dict):
+        for k, v in b_dict.items():
+            if 'inf' in v:
+                b_dict[k] = ''
+
+        return f"{b_dict['left']} Value {b_dict['right']}"
+
+
+    def setData(self, role: int, value) -> None:
+        # check input
+        try:
+            val_in = float(value)
+        except ValueError:
+            showdialog(['Only numerical values are allowed'], level='information')
+        else:
+            if self.bounds is None:
+                super().setData(role, value)
+
+            elif eval(f'{self.bounds["left"]} {val_in}') and eval(f'{val_in} {self.bounds["right"]}'):
+                super().setData(role, value)
+
+            else:
+                showdialog([f'Entered value is not valid \n\n'
+                            f'Required interval:\n{self.range_msg}'], level='information')
 
 
 class UnitsTableItem(QTableWidgetItem):

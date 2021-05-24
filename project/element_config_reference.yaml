@@ -3,9 +3,11 @@ FREE_SPACE:
         distance:
             description:    Distance between spacecraft and ground station
             units:          m
+            range:          "(0, inf)"
         wavelength:
             description:    Radio signal wavelength
             units:          nm
+            range:          "(0, inf)"
     parameter_set_2:
         angle:
             description:    "??????"
@@ -13,38 +15,45 @@ FREE_SPACE:
         distance:
             description:    Distance between spacecraft and ground station
             units:          m
+            range:          "(0, inf)"
         gs_altitude:
             description:    Ground station altitude
-            units:          km
+            units:          m
         sc_altitude:
             description:    Spacecraft altitude
             units:          km
         wavelength:
             description:    Radio signal wavelength
             units:          nm
-            range:          "(0, inf]"
+            range:          "(0, inf)"
 RX:
     parameter_set_1:
         antenna_diameter:
-            description:
+            description:    Diameter of antenna
             units:          m
+            range:          "(0, inf)"
         antenna_efficiency:
-            description:    "??????"
+            description:    Efficiency of antenna
             units:          "-"
+            range:          "(0, 1]"
         wavelength:
             description:    Radio signal wavelength
             units:          nm
+            range:          "(0, inf)"
 TX:
     parameter_set_1:
         antenna_diameter:
             description:    Diameter of antenna
             units:          m
+            range:          "(0, inf)"
         antenna_efficiency:
             description:    Efficiency of antenna
             units:          "-"
+            range:          "(0, 1]"
         wavelength:
             description:    Radio signal wavelength
             units:          nm
+            range:          "(0, inf)"
     parameter_set_2:
         waist_radius:
             description:    "??????"
