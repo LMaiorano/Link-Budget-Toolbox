@@ -31,9 +31,6 @@ class NewElementDialog(QDialog, newelement_form_class):
         # Start with an empty Element Type combobox
         self.cmb_set_param.clear() # Ensures it start empty
 
-        # Initially hide parameters
-        #self.rdl_no.setChecked(True)
-        self.group_parameters.hide()
 
     def accept(self) -> None:
         '''Check that required fields are filled before continuing'''
@@ -65,11 +62,10 @@ class NewElementDialog(QDialog, newelement_form_class):
     def param_set_selected(self):
         param_set = self.cmb_set_param.currentText()
         logger.debug(f'Selected: {param_set}')
-        self.summarize_info()
+        if param_set != '':
+            self.summarize_info()
     
     def yes_gain_clicked(self):
-        self.group_parameters.show()
-
         # Add gain_loss parameters to Parameters Set combobox
         self.cmb_set_param.clear()  # Ensures it start empty
         self.cmb_set_param.addItem("gain_loss")
@@ -77,8 +73,6 @@ class NewElementDialog(QDialog, newelement_form_class):
         self.summarize_info()
     
     def no_gain_clicked(self):
-        self.group_parameters.show()
-
         ''' The user does not know the gain/loss value. The parameter is set based
                 on the available sets that come with the selected Element Type'''
 
@@ -91,6 +85,12 @@ class NewElementDialog(QDialog, newelement_form_class):
     def refresh_param_set(self, selected_elem_type):
         # Add available parameters to Parameters Set combobox
         self.cmb_set_param.clear()  # Ensures it start empty
+
+        for count in range(self.cmb_set_param.count()):
+            logger.debug(f'set_param combobox element: {self.cmb_set_param.itemText(count)}')
+
+
+
         for param_set in self.element_ref[selected_elem_type].keys():
             self.cmb_set_param.addItem(param_set)
         

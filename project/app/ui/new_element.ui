@@ -233,13 +233,13 @@
  <connections>
   <connection>
    <sender>rdl_no</sender>
-   <signal>toggled(bool)</signal>
+   <signal>clicked()</signal>
    <receiver>Dialog</receiver>
    <slot>no_gain_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>490</x>
-     <y>120</y>
+     <x>316</x>
+     <y>86</y>
     </hint>
     <hint type="destinationlabel">
      <x>527</x>
@@ -249,13 +249,13 @@
   </connection>
   <connection>
    <sender>rdl_yes</sender>
-   <signal>toggled(bool)</signal>
+   <signal>clicked()</signal>
    <receiver>Dialog</receiver>
    <slot>yes_gain_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>421</x>
-     <y>120</y>
+     <x>272</x>
+     <y>86</y>
     </hint>
     <hint type="destinationlabel">
      <x>547</x>
@@ -270,8 +270,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>151</x>
-     <y>475</y>
+     <x>160</x>
+     <y>512</y>
     </hint>
     <hint type="destinationlabel">
      <x>514</x>
@@ -286,8 +286,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>83</x>
-     <y>475</y>
+     <x>92</x>
+     <y>512</y>
     </hint>
     <hint type="destinationlabel">
      <x>412</x>
@@ -302,8 +302,8 @@
    <slot>param_set_selected()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>393</x>
-     <y>224</y>
+     <x>521</x>
+     <y>275</y>
     </hint>
     <hint type="destinationlabel">
      <x>136</x>
@@ -318,8 +318,8 @@
    <slot>element_type_selected()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>619</x>
-     <y>82</y>
+     <x>699</x>
+     <y>59</y>
     </hint>
     <hint type="destinationlabel">
      <x>156</x>
