@@ -8,7 +8,7 @@ from project.link_element import LinkElement
 import numpy as np
 # TODO: Populate this element with either the equation given in space instrumentation course or the tables from intelsat in microsat course
 
-class Attenuation_LinkElement(LinkElement):
+class Atmospheric_LinkElement(LinkElement):
     '''Specific type of LinkElement for the Atmospheric loss,
     that can depend a single gain/loss value or on parameters instead. as
     dictated by the input_type value
@@ -18,7 +18,7 @@ class Attenuation_LinkElement(LinkElement):
     '''
     def __init__(self, name, input_type, gain, parameters):
         # Run the initialization of parent LinkElement
-        super().__init__(name, linktype='Attenuation', gain = gain)
+        super().__init__(name, linktype='Atmospheric', gain = gain)
         # Add attributes that are unique to TxElement
         self.input_type = input_type
 
