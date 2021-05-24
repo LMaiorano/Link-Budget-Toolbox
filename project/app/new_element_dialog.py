@@ -32,7 +32,7 @@ class NewElementDialog(QDialog, newelement_form_class):
         self.cmb_set_param.clear() # Ensures it start empty
 
         # Initially hide parameters
-        self.rdl_yes.setChecked(True)
+        #self.rdl_no.setChecked(True)
         self.group_parameters.hide()
 
     def accept(self) -> None:
@@ -47,34 +47,34 @@ class NewElementDialog(QDialog, newelement_form_class):
             super().accept()
 
     def get_element_name(self):
-        element_name = self.txt_element_name.toPlainText()
+        element_name = self.txt_element_name.text()
         return(element_name)
 
 
     def element_type_selected(self):
-        selected_elment_type = self.cmb_element_type.currentText()
-        logger.debug(f'Element type selected {selected_elment_type}')
+        selected_element_type = self.cmb_element_type.currentText()
+        logger.debug(f'Element type selected {selected_element_type}')
 
 
         # Prevents error when starting and type is ''
-        if selected_elment_type in self.element_ref.keys():
-            self.refresh_param_set(selected_elment_type)
+        if selected_element_type in self.element_ref.keys():
+            self.refresh_param_set(selected_element_type)
 
-        return(selected_elment_type)
-
-
+        return(selected_element_type)
 
     def param_set_selected(self):
         param_set = self.cmb_set_param.currentText()
         logger.debug(f'Selected: {param_set}')
-
+        self.summarize_info()
     
     def yes_gain_clicked(self):
-        self.group_parameters.hide()
+        self.group_parameters.show()
 
         # Add gain_loss parameters to Parameters Set combobox
         self.cmb_set_param.clear()  # Ensures it start empty
         self.cmb_set_param.addItem("gain_loss")
+        
+        self.summarize_info()
     
     def no_gain_clicked(self):
         self.group_parameters.show()
@@ -82,9 +82,10 @@ class NewElementDialog(QDialog, newelement_form_class):
         ''' The user does not know the gain/loss value. The parameter is set based
                 on the available sets that come with the selected Element Type'''
 
-        selected_elment_type = self.element_type_selected()
+        selected_element_type = self.element_type_selected()
 
-        self.refresh_param_set(selected_elment_type)
+        self.refresh_param_set(selected_element_type)
+        self.summarize_info()
 
 
     def refresh_param_set(self, selected_elem_type):
@@ -92,11 +93,26 @@ class NewElementDialog(QDialog, newelement_form_class):
         self.cmb_set_param.clear()  # Ensures it start empty
         for param_set in self.element_ref[selected_elem_type].keys():
             self.cmb_set_param.addItem(param_set)
-
+        
     
-    def continue_clicked(self):
+    def summarize_info(self):
         ''' Show all the data the user has selected for the new Element'''
         
         # Gather all the Element parameters
-        element_name = self.get_element_name()  # Get the element name
-    
+        element_name = self.txt_element_name.text()  # Get the element name
+        selected_elem_type = self.cmb_element_type.currentText()   # Get element type
+        param_set = self.cmb_set_param.currentText()   # Get parameter set
+        
+        # Display information in the text box
+        self.txt_summary.setPlainText("")   # Makes sure it starts empty
+        self.txt_summary.insertPlainText(f"Name: {element_name}")
+        self.txt_summary.appendPlainText(f"Type: {selected_elem_type}")
+        self.txt_summary.appendPlainText("Parameters: ")
+        if self.rdl_yes.isChecked():
+            self.txt_summary.appendPlainText("    - gain/loss")
+        else :
+            for parameters in self.element_ref[selected_elem_type][param_set].keys():
+                self.txt_summary.appendPlainText(f"    - {parameters}")
+
+        
+        self.txt_summary.setReadOnly(True)  # Sets the text box as read-only

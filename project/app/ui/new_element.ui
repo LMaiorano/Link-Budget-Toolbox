@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>678</width>
-    <height>402</height>
+    <width>710</width>
+    <height>522</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -206,11 +206,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QTableWidget" name="tbl_parameters">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-       </widget>
+       <widget class="QPlainTextEdit" name="txt_summary"/>
       </item>
      </layout>
     </widget>
@@ -234,33 +230,33 @@
  <connections>
   <connection>
    <sender>rdl_no</sender>
-   <signal>clicked()</signal>
+   <signal>toggled(bool)</signal>
    <receiver>Dialog</receiver>
    <slot>no_gain_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>314</x>
-     <y>73</y>
+     <x>490</x>
+     <y>120</y>
     </hint>
     <hint type="destinationlabel">
-     <x>544</x>
-     <y>201</y>
+     <x>527</x>
+     <y>176</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>rdl_yes</sender>
-   <signal>clicked()</signal>
+   <signal>toggled(bool)</signal>
    <receiver>Dialog</receiver>
    <slot>yes_gain_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>269</x>
-     <y>78</y>
+     <x>421</x>
+     <y>120</y>
     </hint>
     <hint type="destinationlabel">
-     <x>540</x>
-     <y>266</y>
+     <x>547</x>
+     <y>148</y>
     </hint>
    </hints>
   </connection>
@@ -271,12 +267,12 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>138</x>
-     <y>459</y>
+     <x>151</x>
+     <y>475</y>
     </hint>
     <hint type="destinationlabel">
      <x>514</x>
-     <y>456</y>
+     <y>410</y>
     </hint>
    </hints>
   </connection>
@@ -287,12 +283,12 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>70</x>
-     <y>459</y>
+     <x>83</x>
+     <y>475</y>
     </hint>
     <hint type="destinationlabel">
      <x>412</x>
-     <y>456</y>
+     <y>410</y>
     </hint>
    </hints>
   </connection>
@@ -303,8 +299,8 @@
    <slot>param_set_selected()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>211</x>
-     <y>226</y>
+     <x>393</x>
+     <y>224</y>
     </hint>
     <hint type="destinationlabel">
      <x>136</x>
@@ -319,8 +315,8 @@
    <slot>element_type_selected()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>260</x>
-     <y>49</y>
+     <x>619</x>
+     <y>82</y>
     </hint>
     <hint type="destinationlabel">
      <x>156</x>
