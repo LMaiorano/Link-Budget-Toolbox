@@ -25,7 +25,7 @@ class TX_LinkElement(LinkElement):
         self.efficiency = parameters.get('antenna_efficiency', None)
         self.diameter = parameters.get('antenna_diameter', None)
         self.wavelength = parameters.get('wavelength', None)
-
+        self.w0 = parameters.get('waist_radius', None)
         if self.input_type != 'gain_loss':
             self.process()
 
@@ -40,6 +40,9 @@ class TX_LinkElement(LinkElement):
         if self.input_type == "parameter_set_1":
             Gtpeak = self.efficiency*(np.pi*self.diameter/self.wavelength)**2  #[-], peak gain
             self.gain = self.dB(Gtpeak)
+        elif self.input_type == "parameter_set_2":
+            Gt = 2*(2*np.pi*self.w0/self.wavelength)**2
+            self.gain = self.dB(Gt)
         # elif self.input_type == "gain_loss":
         #     self.gain = self.gain
 
@@ -50,7 +53,8 @@ if __name__ == '__main__':
 
     params = {'antenna_efficiency': 8,
               'antenna_diameter': 10,
-              'wavelength': 0}
+              'wavelength': 1550e-9,
+              'waist_radius': 24.7e-3}
     
-    testelement = TX_LinkElement('test', 'parameter_set_1', 10, params).gain
+    testelement = TX_LinkElement('test', 'parameter_set_2', 10, params).gain
     print(testelement)

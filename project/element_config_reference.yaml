@@ -44,6 +44,13 @@ TX:
         wavelength:
             description:    Radio signal wavelength
             units:          nm
+    parameter_set_2:
+        waist_radius:
+            description:
+            units:          m
+        wavelength:
+            description:    Radio signal wavelength
+            units:          nm
 GENERIC:
     gain_loss:
         description:        "Overall gain of the Link Element. \n\tPositive = Gain \n\tNegative = Loss" # Must use double quotes to recognize line-break: \n

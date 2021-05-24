@@ -95,42 +95,42 @@ def read_user_data(user_data):
 
     return df_user_data
 
-def update_params_from_genval(user_data, df_user_data):
-    '''Use the user-given generic values to update the matching parameters within all link elements
+# def update_params_from_genval(user_data, df_user_data):
+#     '''Use the user-given generic values to update the matching parameters within all link elements
+#
+#     Parameters
+#     ----------
+#     user_data: dict
+#         Dictionary containing the data and link elements the user has given
+#     df_user_data : df
+#         Dictionary which gives along its rows per link element the link element name, link type, input type,
+#         gain/loss and parameters, based on the user input in the dictionary user_data
+#
+#     Returns
+#     -------
+#     user_data: dict
+#         Dictionary containing the data and link elements the user has given
+#
+#     '''
+#
+#     df_generic_values = pd.DataFrame.from_dict(user_data['generic_values'], orient='index').reset_index()\
+#         .rename(columns={'index' : 'variable', 0 : 'value'})
+#
+#     for i in range(len(df_generic_values)):
+#         for j in range(len(df_user_data)):
+#             try:
+#                 if df_generic_values.iloc[i]['variable'] in \
+#                         user_data['elements'][df_user_data.get("name")[j]]['parameters']:
+#
+#                     user_data['elements'][df_user_data.get("name")[j]]['parameters']\
+#                         .update({df_generic_values.iloc[i]['variable'] : df_generic_values.iloc[i]['value']})
+#
+#             except KeyError as KE:
+#                 logger.debug(f'user_data missing key: "{KE}"')
+#
+#     return user_data
 
-    Parameters
-    ----------
-    user_data: dict
-        Dictionary containing the data and link elements the user has given
-    df_user_data : df
-        Dictionary which gives along its rows per link element the link element name, link type, input type,
-        gain/loss and parameters, based on the user input in the dictionary user_data
-
-    Returns
-    -------
-    user_data: dict
-        Dictionary containing the data and link elements the user has given
-
-    '''
-
-    df_generic_values = pd.DataFrame.from_dict(user_data['generic_values'], orient='index').reset_index()\
-        .rename(columns={'index' : 'variable', 0 : 'value'})
-
-    for i in range(len(df_generic_values)):
-        for j in range(len(df_user_data)):
-            try:
-                if df_generic_values.iloc[i]['variable'] in \
-                        user_data['elements'][df_user_data.get("name")[j]]['parameters']:
-
-                    user_data['elements'][df_user_data.get("name")[j]]['parameters']\
-                        .update({df_generic_values.iloc[i]['variable'] : df_generic_values.iloc[i]['value']})
-
-            except KeyError as KE:
-                logger.debug(f'user_data missing key: "{KE}"')
-
-    return user_data
-
-def fill_results_data(df_user_data):
+def fill_results_data(df_user_data, user_data):
     '''Get the gain/loss of each link element and write it to the results_data dictionary
 
     Parameters
@@ -149,11 +149,20 @@ def fill_results_data(df_user_data):
 
     for i in range(len(df_user_data)):
         # calculation step
-        result_gain_loss = (eval('le.'+ df_user_data.get("link_type")[i] + '_LinkElement' +
-                                 '(df_user_data.get("name")[i], \
-                                 df_user_data.get("input_type")[i],\
-                                 df_user_data.get("gain_loss")[i], \
-                                 df_user_data.get("parameters")[i])')).gain
+
+        if df_user_data.get("parameters")[i] == None:
+            result_gain_loss = (eval('le.' + df_user_data.get("link_type")[i] + '_LinkElement' +
+                                     '(df_user_data.get("name")[i], \
+                                     df_user_data.get("input_type")[i],\
+                                     df_user_data.get("gain_loss")[i], \
+                                     dict())')).gain
+
+        else:
+            result_gain_loss = (eval('le.' + df_user_data.get("link_type")[i] + '_LinkElement' +
+                                     '(df_user_data.get("name")[i], \
+                                     df_user_data.get("input_type")[i],\
+                                     df_user_data.get("gain_loss")[i], \
+                                     df_user_data.get("parameters")[i])')).gain
 
         #update step
         results_data['elements'][df_user_data.get("name")[i]]["gain_loss"] = result_gain_loss
@@ -175,7 +184,8 @@ def main_process(user_data):
         User_data dictionary which has been updated with the calculated gains/losses
     '''
 
-    results_data = fill_results_data(read_user_data(update_params_from_genval(user_data, read_user_data(user_data))))
+    # results_data = fill_results_data(read_user_data(update_params_from_genval(user_data, read_user_data(user_data))))
+    results_data = fill_results_data(read_user_data(user_data), user_data)
 
     return results_data
 

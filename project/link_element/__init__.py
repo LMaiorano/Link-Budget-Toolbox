@@ -3,4 +3,4 @@ from .EIRP_link_element import EIRPElement
 from .RX_link_element import RX_LinkElement
 from .TX_link_element import TX_LinkElement
 from .FREE_SPACE_link_element import FREE_SPACE_LinkElement
-from .Attenuation_link_element import Attenuation_LinkElement
+from .Atmospheric_link_element import Atmospheric_LinkElement
