@@ -107,6 +107,9 @@
          <property name="text">
           <string>Yes</string>
          </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
          <property name="checked">
           <bool>false</bool>
          </property>
@@ -238,8 +241,8 @@
    <slot>no_gain_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>86</y>
+     <x>490</x>
+     <y>120</y>
     </hint>
     <hint type="destinationlabel">
      <x>527</x>
@@ -254,8 +257,8 @@
    <slot>yes_gain_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>272</x>
-     <y>86</y>
+     <x>424</x>
+     <y>120</y>
     </hint>
     <hint type="destinationlabel">
      <x>547</x>
@@ -270,8 +273,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>160</x>
-     <y>512</y>
+     <x>173</x>
+     <y>508</y>
     </hint>
     <hint type="destinationlabel">
      <x>514</x>
@@ -286,8 +289,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>92</x>
-     <y>512</y>
+     <x>105</x>
+     <y>508</y>
     </hint>
     <hint type="destinationlabel">
      <x>412</x>
@@ -302,12 +305,12 @@
    <slot>param_set_selected()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>521</x>
-     <y>275</y>
+     <x>682</x>
+     <y>250</y>
     </hint>
     <hint type="destinationlabel">
-     <x>136</x>
-     <y>147</y>
+     <x>135</x>
+     <y>144</y>
     </hint>
    </hints>
   </connection>
@@ -318,8 +321,8 @@
    <slot>element_type_selected()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>699</x>
-     <y>59</y>
+     <x>695</x>
+     <y>82</y>
     </hint>
     <hint type="destinationlabel">
      <x>156</x>

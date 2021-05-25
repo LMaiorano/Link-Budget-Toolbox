@@ -28,7 +28,7 @@ class NewElementDialog(QDialog, newelement_form_class):
         for input_type in self.element_ref.keys():
             self.cmb_element_type.addItem(input_type)
             
-        # Start with an empty Element Type combobox
+        # Start with an empty Parameters combobox
         self.cmb_set_param.clear() # Ensures it start empty
 
 
@@ -55,58 +55,48 @@ class NewElementDialog(QDialog, newelement_form_class):
         if conditions_met == 2:
             super().accept()
 
-    def get_element_name(self):
-        element_name = self.txt_element_name.text()
-        return(element_name)
-
-
     def element_type_selected(self):
         selected_element_type = self.cmb_element_type.currentText()
         logger.debug(f'Element type selected {selected_element_type}')
 
-
         # Prevents error when starting and type is ''
         if selected_element_type in self.element_ref.keys():
             self.refresh_param_set(selected_element_type)
-
-        return(selected_element_type)
-
+        #return(selected_element_type)
+    
     def param_set_selected(self):
         param_set = self.cmb_set_param.currentText()
         logger.debug(f'Selected: {param_set}')
-        if param_set != '':
-            self.summarize_info()
+        if (param_set != '') and (self.rdl_yes.isChecked() or self.rdl_no.isChecked()):
+            self.summarize_info()    
+
+    def refresh_param_set(self, selected_elem_type):
+        # Add available parameters to Parameters Set combobox
+        self.cmb_set_param.clear()  # Ensures it start empty
+        
+        if self.rdl_yes.isChecked():
+            self.cmb_set_param.addItem("gain_loss")
+        
+        elif self.rdl_no.isChecked():
+            for count in range(self.cmb_set_param.count()):
+                logger.debug(f'set_param combobox element: {self.cmb_set_param.itemText(count)}')
+    
+            for param_set in self.element_ref[selected_elem_type].keys():
+                self.cmb_set_param.addItem(param_set)  
     
     def yes_gain_clicked(self):
         # Add gain_loss parameters to Parameters Set combobox
         self.cmb_set_param.clear()  # Ensures it start empty
         self.cmb_set_param.addItem("gain_loss")
-        
-        self.summarize_info()
     
     def no_gain_clicked(self):
         ''' The user does not know the gain/loss value. The parameter is set based
                 on the available sets that come with the selected Element Type'''
 
-        selected_element_type = self.element_type_selected()
+        # selected_element_type = self.element_type_selected()
+        # self.refresh_param_set(selected_element_type)
+        self.element_type_selected()
 
-        self.refresh_param_set(selected_element_type)
-        self.summarize_info()
-
-
-    def refresh_param_set(self, selected_elem_type):
-        # Add available parameters to Parameters Set combobox
-        self.cmb_set_param.clear()  # Ensures it start empty
-
-        for count in range(self.cmb_set_param.count()):
-            logger.debug(f'set_param combobox element: {self.cmb_set_param.itemText(count)}')
-
-
-
-        for param_set in self.element_ref[selected_elem_type].keys():
-            self.cmb_set_param.addItem(param_set)
-        
-    
     def summarize_info(self):
         ''' Show all the data the user has selected for the new Element'''
         
@@ -117,7 +107,7 @@ class NewElementDialog(QDialog, newelement_form_class):
         
         # Display information in the text box
         self.txt_summary.setPlainText("")   # Makes sure it starts empty
-        self.txt_summary.insertPlainText(f"Name: {element_name}")
+        #self.txt_summary.insertPlainText(f"Name: {element_name}")
         self.txt_summary.appendPlainText(f"Type: {selected_elem_type}")
         self.txt_summary.appendPlainText("Parameters: ")
         if self.rdl_yes.isChecked():
@@ -125,6 +115,5 @@ class NewElementDialog(QDialog, newelement_form_class):
         else :
             for parameters in self.element_ref[selected_elem_type][param_set].keys():
                 self.txt_summary.appendPlainText(f"    - {parameters}")
-
         
         self.txt_summary.setReadOnly(True)  # Sets the text box as read-only
