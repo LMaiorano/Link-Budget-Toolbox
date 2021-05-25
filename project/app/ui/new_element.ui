@@ -207,7 +207,7 @@
          <bool>true</bool>
         </property>
         <property name="text">
-         <string>Example:</string>
+         <string>Required Inputs:</string>
         </property>
        </widget>
       </item>
