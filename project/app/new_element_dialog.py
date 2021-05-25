@@ -90,8 +90,6 @@ class NewElementDialog(QDialog, newelement_form_class):
         ''' The user does not know the gain/loss value. The parameter is set based
                 on the available sets that come with the selected Element Type'''
 
-        # selected_element_type = self.element_type_selected()
-        # self.refresh_param_set(selected_element_type)
         self.element_type_selected()
 
     def summarize_info(self):
