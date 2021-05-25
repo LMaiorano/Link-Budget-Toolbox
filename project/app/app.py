@@ -529,8 +529,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.txt_total.setText(f'{sum:.1f}')
 
 
-
-
     def save_config_clicked(self):
         '''Save current configuration to yaml file'''
 
@@ -758,10 +756,21 @@ class UnitsTableItem(QTableWidgetItem):
 
 
 
+def set_log_level(log_level='INFO'):
+    logger.remove()
+    format_clean = '<cyan>{time:HH:mm:ss}</cyan> | ' \
+                   '<level>{level: <8}</level> | ' \
+                   '<level>{message}</level>'
+
+    if log_level in ['INFO', 'SUCCESS']:
+        logger.add(sys.stderr, level=log_level, format=format_clean)
+    else:
+        logger.add(sys.stderr, level="DEBUG")
+
 
 
 if __name__ == '__main__':
-
+    set_log_level('DEBUG')
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle('Fusion')
     window = MainWindow()

@@ -62,7 +62,7 @@ class NewElementDialog(QDialog, newelement_form_class):
         # Prevents error when starting and type is ''
         if selected_element_type in self.element_ref.keys():
             self.refresh_param_set(selected_element_type)
-        #return(selected_element_type)
+
     
     def param_set_selected(self):
         param_set = self.cmb_set_param.currentText()
@@ -78,9 +78,6 @@ class NewElementDialog(QDialog, newelement_form_class):
             self.cmb_set_param.addItem("gain_loss")
         
         elif self.rdl_no.isChecked():
-            for count in range(self.cmb_set_param.count()):
-                logger.debug(f'set_param combobox element: {self.cmb_set_param.itemText(count)}')
-    
             for param_set in self.element_ref[selected_elem_type].keys():
                 self.cmb_set_param.addItem(param_set)  
     
