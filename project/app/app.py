@@ -16,6 +16,8 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem, \
     QHeaderView
 from loguru import logger
+# DO NOT REMOVE astropy
+from astropy import units as u
 import numpy as np
 
 from project.app.new_element_dialog import NewElementDialog
@@ -35,6 +37,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         default_cfg = kwargs.pop('default_config_yaml', '../configs/default_config.yaml')
         element_ref = kwargs.pop('element_reference_yaml', '../element_config_reference.yaml')
+        self.decimals = kwargs.pop('UI_decimal_accuracy', 2)
 
         # Set initial values and general attributes
         self.cfg_file = Path(default_cfg)
@@ -149,16 +152,27 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.clear_table_elements()
 
 
-    def save_input_table_to_dict(self):
+    def save_input_table_to_dict(self, convert_SI_units=False):
         '''Convert PyQt Table to an 'elements' dictionary of the same format
         as the input config file. This can be passed to the main process
 
-        Note: This must be called explicitly and cannot be bound to a cell-changed event,
-        because of how new elements are generated
+        NOTE: This method must be called explicitly by other methods and cannot
+        be bound to a cell-changed event, because of how new elements are generated
+
+        Parameters
+        ----------
+        convert_SI_units : bool
+            Whether to convert values to standard SI units. This is used exclusively
+            when called by self.run_process()
+
+        Returns
+        -------
+
         '''
         def wrap_up_previous_element(elem_name, params):
+            '''Saves previous parameters if they exist to overall element dictionary'''
             if elem_name:  # Does not run for first element in table
-                # Save previous parameters if they exist
+
                 if len(params) > 0:  # Checks if parameters contain any values
                     data[elem_name]['parameters'] = params
                 else:
@@ -197,7 +211,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                                       'link_type': link_type,
                                       'idx': idx}
 
-            # Use last defined element name for the remaining parameters, skip if not defined
+            # Use last defined element name for the remaining parameters, skip if not yet defined
             if element_name:
                 attribute = self.tbl_elements.item(r, self.attribute_col)
 
@@ -214,6 +228,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                     value = 0
                 value = float(value)
 
+
                 # Decide where to save name:value
                 if attribute_type == 'parameter':
                     parameters[name] = value
@@ -222,7 +237,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
 
         wrap_up_previous_element(element_name, parameters)
-
 
         self.cfg_data['elements'] = data
 
@@ -307,7 +321,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                                               AttributeTableItem(param, description=descr))
 
                     self.tbl_elements.setItem(row, self.value_col,
-                                              ValueTableItem(str(val), range=val_range))
+                                              ValueTableItem(f"{val:.{self.decimals}f}", range=val_range))
 
                     self.tbl_elements.setItem(row, self.units_col,
                                               UnitsTableItem(units))
@@ -359,7 +373,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             units = self.get_attribute_details(data, gain=True)['units']
             descr = self.get_attribute_details(data, gain=True)['description']
 
-            gain_item = QTableWidgetItem(str(data['gain_loss']))
+            gain_item = QTableWidgetItem(f"{data['gain_loss']:.{self.decimals}f}")
             gain_item.setFlags(QtCore.Qt.ItemIsEnabled)
 
             title = AttributeTableItem(f'{name} Gain', description=descr)
@@ -770,9 +784,9 @@ def set_log_level(log_level='INFO'):
 
 
 if __name__ == '__main__':
-    set_log_level('DEBUG')
+    set_log_level('INFO')
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle('Fusion')
-    window = MainWindow()
+    window = MainWindow(UI_decimal_accuracy=2)
     window.show()
     app.exec()

@@ -1,3 +1,11 @@
+# This is the configuration file for the user-interface.
+#
+# NOTE: ALL CALCULATIONS ARE EXECUTED IN SI STANDARD UNITS.
+#
+# The units listed here (and displayed in the UI) are for ease of use,
+#   but the values are converted when the analysis is run
+#
+#
 FREE_SPACE:
     parameter_set_1:
         distance:
@@ -19,9 +27,11 @@ FREE_SPACE:
         gs_altitude:
             description:    Ground station altitude
             units:          m
+            range:          "(0, inf)"
         sc_altitude:
             description:    Spacecraft altitude
             units:          km
+            range:          "(0, inf)"
         wavelength:
             description:    Radio signal wavelength
             units:          nm

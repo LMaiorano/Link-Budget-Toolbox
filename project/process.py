@@ -13,39 +13,9 @@ from pathlib import Path
 import yaml
 import pandas as pd
 from loguru import logger
+import copy
+from astropy import units as u
 
-#TODO: Import dictionary automatically from GUI
-
-# This is a temporary dictionary. In the end the dictionary should be filled in automatically based on user input.
-
-# user_data = {'settings'         : {'case_type'      : 'nominal'},
-#              'generic_values'   : {'sc_altitude'    : 800,                # [m]
-#                                    'wavelength'     : 1500*10**(-9)},     # [m]
-#              'elements'         : {'TX_SC'      :     {'link_type'  :   'TX',
-#                                                        'idx'        :    0,
-#                                                        'input_type' :   'gain_loss',
-#                                                        'gain_loss'  :    10,            # [dB]
-#                                                        'parameters' :  {'antenna_efficiency'    : None,     # [-]
-#                                                                         'antenna_diameter'      : None,     # [m]
-#                                                                         'wavelength'            : None}},   # [m]
-#                                    'FREE_SPACE' :     {'link_type' :    'FREE_SPACE',
-#                                                        'idx'        :    1,
-#                                                        'input_type' :   'gain_loss',
-#                                                        'gain_loss' :     -8,
-#                                                        'parameters' :  {'distance'      : None,     # [m]
-#                                                                         'sc_altitude'   : None,     # [m]
-#                                                                         'gs_altitude'   : None,     # [m]
-#                                                                         'angle'         : None,     # [deg]
-#                                                                         'wavelength'    : None}},   # [m]
-#                                    'RX_GS    ':       {'link_type'  :   'RX',
-#                                                        'idx'        :    2,
-#                                                        'input_type' :   'gain_loss',
-#                                                        'gain_loss'  :    2,             # [dB]
-#                                                        'parameters' :  {'antenna_efficiency'    : None,     # [-]
-#                                                                         'antenna_diameter'      : None,     # [m]
-#                                                                         'wavelength'            : None}},   # [m]
-#                            }
-#              }
 
 def load_from_yaml(file):
     with open(file, 'r') as f:
@@ -95,40 +65,6 @@ def read_user_data(user_data):
 
     return df_user_data
 
-# def update_params_from_genval(user_data, df_user_data):
-#     '''Use the user-given generic values to update the matching parameters within all link elements
-#
-#     Parameters
-#     ----------
-#     user_data: dict
-#         Dictionary containing the data and link elements the user has given
-#     df_user_data : df
-#         Dictionary which gives along its rows per link element the link element name, link type, input type,
-#         gain/loss and parameters, based on the user input in the dictionary user_data
-#
-#     Returns
-#     -------
-#     user_data: dict
-#         Dictionary containing the data and link elements the user has given
-#
-#     '''
-#
-#     df_generic_values = pd.DataFrame.from_dict(user_data['generic_values'], orient='index').reset_index()\
-#         .rename(columns={'index' : 'variable', 0 : 'value'})
-#
-#     for i in range(len(df_generic_values)):
-#         for j in range(len(df_user_data)):
-#             try:
-#                 if df_generic_values.iloc[i]['variable'] in \
-#                         user_data['elements'][df_user_data.get("name")[j]]['parameters']:
-#
-#                     user_data['elements'][df_user_data.get("name")[j]]['parameters']\
-#                         .update({df_generic_values.iloc[i]['variable'] : df_generic_values.iloc[i]['value']})
-#
-#             except KeyError as KE:
-#                 logger.debug(f'user_data missing key: "{KE}"')
-#
-#     return user_data
 
 def fill_results_data(df_user_data, user_data):
     '''Get the gain/loss of each link element and write it to the results_data dictionary
@@ -169,7 +105,73 @@ def fill_results_data(df_user_data, user_data):
 
     return results_data
 
-# TODO: Make user_data an input of main_process()
+def decompose_SI(val, unit_str, **kwargs):
+    '''Converts a value with specified unit to its base SI unit
+
+    Parameters
+    ----------
+    val : float
+        Quantity to convert
+    unit_str : str
+        Unit to convert from. For available units, see:
+         https://docs.astropy.org/en/stable/units/index.html
+    skip_units : list of str
+        Units to skip conversion (Default: ['dB', 'deg', '-', ''])
+
+    Returns
+    -------
+    tuple
+        Quantity converted to base unit,
+        Base unit string representation
+    '''
+    # Default units to skip, unless specified otherwise
+    default_skip = ['dB', 'deg', '-', '']
+    skip_units = kwargs.pop('skip_units', default_skip)
+
+    # Check if unit is excluded
+    if unit_str in skip_units:
+        return val, unit_str            # Return same as what is given
+
+    try:
+        x_u = eval(f'u.{unit_str}')     # Given units
+        x = val * x_u                   # Create unit-quantity
+        x_si = x.decompose()            # Convert quantity to the base-unit of u
+        return float(x_si.value), str(x_si.unit)  # convert numpy float64 (precision not necessary)
+
+    except AttributeError:
+        logger.debug(f'Error decomposing units. "{unit_str}" is not a recognized unit')
+        return None, None
+
+
+def convert_to_standard_units(data):
+    '''Convert units to standard SI units
+
+    References:
+        'element_config_reference.yaml' for the given units per parameter
+
+    Parameters
+    ----------
+    data : dict
+        Link Budget configuration dictionary as passed from UI or config file
+    '''
+    elem_cfg_path = Path(Path(__file__).parent, 'element_config_reference.yaml')
+    param_ref = load_from_yaml(elem_cfg_path)
+
+    for element, attributes in data['elements'].items():
+        if attributes['parameters'] is None:
+            continue  # move on to next element since no parameters to convert
+
+        link_type = attributes['link_type']
+        input_type = attributes['input_type']
+
+        for param, value in attributes['parameters'].items():
+            unit = param_ref[link_type][input_type][param]['units'] # Determine unit
+            si_value = decompose_SI(value, unit)[0]      # Convert value to base SI
+
+            # Replace value in dictionary
+            data['elements'][element]['parameters'][param] = si_value
+
+
 def main_process(user_data):
     '''Use user_data dictionary to calculate gains/losses to create a results_data dictionary
 
@@ -183,6 +185,8 @@ def main_process(user_data):
     results_data : dict
         User_data dictionary which has been updated with the calculated gains/losses
     '''
+    # Convert parameter units to standard SI base units
+    convert_to_standard_units(user_data)
 
     # results_data = fill_results_data(read_user_data(update_params_from_genval(user_data, read_user_data(user_data))))
     results_data = fill_results_data(read_user_data(user_data), user_data)
