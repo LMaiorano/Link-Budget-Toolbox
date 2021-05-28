@@ -656,7 +656,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
 
 
-
 class ElementTableItem(QTableWidgetItem):
     def __init__(self, *args, **kwargs):
         '''Custom TableWidgetItem to allow other attributes to be stored.
@@ -671,7 +670,6 @@ class ElementTableItem(QTableWidgetItem):
 
         # not directly editable to prevent duplicate naming
         self.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
-
 
 
 class AttributeTableItem(QTableWidgetItem):

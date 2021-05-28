@@ -2,11 +2,12 @@
 #
 # NOTE: ALL CALCULATIONS ARE EXECUTED IN SI STANDARD UNITS.
 #
-# The units listed here (and displayed in the UI) are for ease of use,
+# The units listed here (displayed in the UI and saved in yaml files) are for ease of use,
 #   but the values are converted when the analysis is run
 #
 #
 FREE_SPACE:
+    overall_description:    Summary of element
     parameter_set_1:
         distance:
             description:    Distance between spacecraft and ground station
@@ -37,6 +38,7 @@ FREE_SPACE:
             units:          nm
             range:          "(0, inf)"
 RX:
+    overall_description:    Summary of element
     parameter_set_1:
         antenna_diameter:
             description:    Diameter of antenna
@@ -51,6 +53,7 @@ RX:
             units:          nm
             range:          "(0, inf)"
 TX:
+    overall_description:    Summary of element
     parameter_set_1:
         antenna_diameter:
             description:    Diameter of antenna
@@ -72,11 +75,13 @@ TX:
             description:    Radio signal wavelength
             units:          nm
 GENERIC:
+    overall_description:    Summary of element
     gain_loss:
         description:        "Overall gain of the Link Element. \n\tPositive = Gain \n\tNegative = Loss" # Must use double quotes to recognize line-break: \n
         units:              dB
 
 #LINK_TYPE:
+#    overall_description:    Summary of element
 #    parameter_set_1:
 #        parameter_1:
 #            description:    useful description here
