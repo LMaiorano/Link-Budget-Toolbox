@@ -79,7 +79,8 @@ class NewElementDialog(QDialog, newelement_form_class):
         
         elif self.rdl_no.isChecked():
             for param_set in self.element_ref[selected_elem_type].keys():
-                self.cmb_set_param.addItem(param_set)  
+                if param_set != 'overall_description':
+                    self.cmb_set_param.addItem(param_set)
     
     def yes_gain_clicked(self):
         # Add gain_loss parameters to Parameters Set combobox
@@ -107,7 +108,7 @@ class NewElementDialog(QDialog, newelement_form_class):
         self.txt_summary.appendPlainText("Parameters: ")
         if self.rdl_yes.isChecked():
             self.txt_summary.appendPlainText("    - gain/loss")
-        else :
+        else:
             for parameters in self.element_ref[selected_elem_type][param_set].keys():
                 self.txt_summary.appendPlainText(f"    - {parameters}")
         

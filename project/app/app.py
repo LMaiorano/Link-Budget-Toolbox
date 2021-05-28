@@ -316,12 +316,19 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                     descr = att_details.get('description')
                     val_range = att_details.get('range')
 
+                    try:
+                        value_text = f"{val:.{self.decimals}f}"
+                    except ValueError:
+                        # Occurs with new element where default value is '??'
+                        value_text = val
+
+
                     # Add attribute cells
                     self.tbl_elements.setItem(row, self.attribute_col,
                                               AttributeTableItem(param, description=descr))
 
                     self.tbl_elements.setItem(row, self.value_col,
-                                              ValueTableItem(f"{val:.{self.decimals}f}", range=val_range))
+                                              ValueTableItem(value_text, range=val_range))
 
                     self.tbl_elements.setItem(row, self.units_col,
                                               UnitsTableItem(units))
