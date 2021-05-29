@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>749</width>
+    <width>761</width>
     <height>683</height>
    </rect>
   </property>
@@ -144,7 +144,7 @@
       </item>
       <item row="3" column="0" colspan="2">
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="1" column="4">
+        <item row="1" column="5">
          <widget class="QLineEdit" name="txt_threshold_dbm">
           <property name="font">
            <font>
@@ -166,12 +166,15 @@
           <property name="text">
            <string>Input Power:</string>
           </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
           <property name="buddy">
            <cstring>txt_in_power_W</cstring>
           </property>
          </widget>
         </item>
-        <item row="1" column="2">
+        <item row="1" column="3">
          <widget class="QLabel" name="label_8">
           <property name="font">
            <font>
@@ -183,7 +186,7 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="2">
+        <item row="0" column="3">
          <widget class="QLabel" name="label_7">
           <property name="font">
            <font>
@@ -195,6 +198,22 @@
           </property>
          </widget>
         </item>
+        <item row="0" column="4" rowspan="2">
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>10</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item row="1" column="0">
          <widget class="QLabel" name="label_5">
           <property name="font">
@@ -205,6 +224,9 @@
           <property name="text">
            <string>Receiver System Threshold:</string>
           </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
           <property name="wordWrap">
            <bool>false</bool>
           </property>
@@ -213,7 +235,7 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="5">
+        <item row="0" column="6">
          <widget class="QLabel" name="label_9">
           <property name="font">
            <font>
@@ -225,7 +247,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="5">
+        <item row="1" column="6">
          <widget class="QLabel" name="label_10">
           <property name="font">
            <font>
@@ -237,7 +259,7 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
+        <item row="0" column="2">
          <widget class="QLineEdit" name="txt_in_power_W">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -267,7 +289,7 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="4">
+        <item row="0" column="5">
          <widget class="QLineEdit" name="txt_in_power_dbm">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -288,7 +310,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
+        <item row="1" column="2">
          <widget class="QLineEdit" name="txt_threshold_W">
           <property name="font">
            <font>
@@ -300,17 +322,14 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="3" rowspan="2">
-         <spacer name="horizontalSpacer_3">
+        <item row="0" column="1" rowspan="2">
+         <spacer name="horizontalSpacer_7">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::MinimumExpanding</enum>
-          </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>10</width>
+            <width>40</width>
             <height>20</height>
            </size>
           </property>
@@ -494,7 +513,7 @@
       </item>
       <item row="3" column="3">
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="3">
+        <item row="0" column="4">
          <widget class="QLabel" name="label_2">
           <property name="font">
            <font>
@@ -509,13 +528,29 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="2">
+        <item row="0" column="0" rowspan="2">
+         <spacer name="horizontalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="3">
          <widget class="QLineEdit" name="txt_total">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
+            <weight>50</weight>
+            <bold>false</bold>
            </font>
           </property>
           <property name="alignment">
@@ -526,7 +561,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="3">
+        <item row="1" column="4">
          <widget class="QLabel" name="label_6">
           <property name="font">
            <font>
@@ -541,49 +576,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_4">
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Margin:</string>
-          </property>
-          <property name="buddy">
-           <cstring>txt_margin</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QLineEdit" name="txt_margin">
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label">
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Total Gain/Loss:</string>
-          </property>
-          <property name="buddy">
-           <cstring>txt_total</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
+        <item row="0" column="2" rowspan="2">
          <spacer name="horizontalSpacer_4">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -593,7 +586,74 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>100</width>
+            <width>30</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="label_4">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Margin:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="buddy">
+           <cstring>txt_margin</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QLineEdit" name="txt_margin">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="label">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Total Gain/Loss:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="buddy">
+           <cstring>txt_total</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5" rowspan="2">
+         <spacer name="horizontalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
             <height>20</height>
            </size>
           </property>
@@ -635,7 +695,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>749</width>
+     <width>761</width>
      <height>21</height>
     </rect>
    </property>
@@ -702,13 +762,15 @@
   <tabstop>btn_delete_element</tabstop>
   <tabstop>btn_clear_all</tabstop>
   <tabstop>txt_in_power_W</tabstop>
-  <tabstop>txt_threshold_W</tabstop>
+  <tabstop>txt_threshold_dbm</tabstop>
   <tabstop>btn_run_process</tabstop>
   <tabstop>btn_save_results</tabstop>
   <tabstop>txt_total</tabstop>
   <tabstop>txt_margin</tabstop>
   <tabstop>tbl_elements</tabstop>
   <tabstop>tbl_results</tabstop>
+  <tabstop>txt_in_power_dbm</tabstop>
+  <tabstop>txt_threshold_W</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -724,7 +786,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>130</x>
-     <y>-9</y>
+     <y>0</y>
     </hint>
    </hints>
   </connection>
@@ -752,7 +814,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>77</x>
-     <y>304</y>
+     <y>302</y>
     </hint>
     <hint type="destinationlabel">
      <x>97</x>
@@ -832,7 +894,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>82</x>
-     <y>336</y>
+     <y>334</y>
     </hint>
     <hint type="destinationlabel">
      <x>61</x>
@@ -848,7 +910,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>98</x>
-     <y>394</y>
+     <y>392</y>
     </hint>
     <hint type="destinationlabel">
      <x>99</x>
@@ -863,8 +925,8 @@
    <slot>input_power_W_edited()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>278</x>
-     <y>578</y>
+     <x>196</x>
+     <y>574</y>
     </hint>
     <hint type="destinationlabel">
      <x>76</x>
@@ -879,8 +941,8 @@
    <slot>threshold_W_edited()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>300</x>
-     <y>601</y>
+     <x>218</x>
+     <y>597</y>
     </hint>
     <hint type="destinationlabel">
      <x>59</x>
@@ -895,8 +957,8 @@
    <slot>input_power_dbm_edited()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>401</x>
-     <y>572</y>
+     <x>323</x>
+     <y>568</y>
     </hint>
     <hint type="destinationlabel">
      <x>363</x>
@@ -911,8 +973,8 @@
    <slot>threshold_dbm_edited()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>409</x>
-     <y>595</y>
+     <x>331</x>
+     <y>591</y>
     </hint>
     <hint type="destinationlabel">
      <x>496</x>

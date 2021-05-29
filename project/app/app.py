@@ -16,13 +16,13 @@ from PyQt5.QtGui import QFont, QDoubleValidator
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem, \
     QHeaderView, QLineEdit
 from loguru import logger
-# DO NOT REMOVE astropy
-from astropy import units as u
+# # DO NOT REMOVE astropy
+# from astropy import units as u
 import numpy as np
 
 from project.app.new_element_dialog import NewElementDialog
-from project.app.notification_dialog import showdialog
 from project.process import main_process
+from project.app.custom_objects import *
 
 
 
@@ -46,27 +46,27 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     Signals/Slots:
     --------------
     Connections between UI objects and their corresponding functions is done using signals/slots.
-    With few exceptions, the majority of these are specified in QtDesigner, where the slot is the
-    <class method name>+() added manually in the 'Signals/Slots of MainWindow - Qt Designer' editor.
+    ALL of these are specified in QtDesigner, where the slot is the <class method name>+() added
+    manually in the 'Signals/Slots of MainWindow - Qt Designer' editor.
     Any action by the user that should trigger a function is linked in this way. A regular naming
     scheme is used for these class methods: '_clicked' or '_edited' as the suffix of the method name.
     This clarifies for the developer which class methods are run by signals/slots and which are
     purely program logic.
 
-    The only exception in defining the signals/slots are those used purely for the program logic.
-    These are defined in the __init__(). For example: 'self.txt_in_power_dbm.textChanged' which
-    is triggered by both user actions AND program logic.
 
     '''
-    def __init__(self, parent=None, **kwargs):
-        '''
+    def __init__(self, **kwargs):
+        '''Initialization of the Main Window
 
         Parameters
         ----------
-        parent
-        kwargs
+        **kwargs : dict, optional
+            Extra arguments to 'MainWindow'.
+            | 'default_config_yaml': Default configuration file to load at startup
+            | 'element_reference_yaml': Element reference file
+            | 'UI_decimal_accuracy': (Default = 2) Decimals to show in UI
         '''
-        QMainWindow.__init__(self, parent)
+        QMainWindow.__init__(self, parent=None)
         self.setupUi(self)
 
         default_cfg = kwargs.pop('default_config_yaml', '../configs/default_config.yaml')
@@ -102,9 +102,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.txt_threshold_W.setValidator(NotEmptyNumericValidator())
         self.txt_threshold_dbm.setValidator(NotEmptyNumericValidator())
 
-        # Internal signals/slots (triggers NOT EXPLICITLY dependent on User actions)
-        self.txt_in_power_dbm.textChanged.connect(self.txt_in_power_dbm_changed)
-        self.txt_threshold_dbm.textChanged.connect(self.txt_threshold_dbm_changed)
 
 
     def open_config_clicked(self):
@@ -127,6 +124,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             self.cfg_data = self.read_config()
             self.clear_table_elements()
             self.fill_input_table()
+            self.fill_general_values()
         except Exception as E:
             logger.debug(f'Error loading file: {E}')
 
@@ -168,7 +166,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         # verify basic elements
         if file == self.cfg_file:
-            required_sections = ['elements', 'settings']
+            required_sections = ['elements', 'general_values' ,'settings']
             for sect in required_sections:
                 if sect not in data.keys():
                     raise KeyError(f'Configuration file missing required section: "{sect}"')
@@ -195,23 +193,33 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def clear_all_clicked(self):
         self.clear_table_elements()
 
+    def validate_input_values(self):
+        '''Check whether all values in input table can be converted to float
 
-    def save_input_table_to_dict(self, convert_SI_units=False):
-        '''Convert PyQt Table to an 'elements' dictionary of the same format
+        Returns
+        -------
+        bool
+        '''
+        try:
+            for r in range(self.tbl_elements.rowCount()):
+                float(self.tbl_elements.item(r, self.value_col).text())
+            return True
+        except ValueError:
+            showdialog(['Please check that only numerical values are entered in the table'])
+            return False
+
+    def save_input_table(self):
+        '''Save contents of Input Table to self.cfg_data dictionary
+
+        Converts PyQt Table to an 'elements' dictionary of the same format
         as the input config file. This can be passed to the main process
 
         NOTE: This method must be called explicitly by other methods and cannot
         be bound to a cell-changed event, because of how new elements are generated
 
-        Parameters
-        ----------
-        convert_SI_units : bool
-            Whether to convert values to standard SI units. This is used exclusively
-            when called by self.run_process()
-
         Returns
         -------
-
+        None
         '''
         def wrap_up_previous_element(elem_name, params):
             '''Saves previous parameters if they exist to overall element dictionary'''
@@ -234,6 +242,10 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         element_name = None     # The current element being read, initialized to none
         idx = 0                 # The position in the table of the element (1 = top element)
 
+        # Check if data in table is valid
+        valid_data = self.validate_input_values()
+        if not valid_data:
+            return
 
         # Walk through each row of the table to detect new elements and read attributes
         for r in range(self.tbl_elements.rowCount()):
@@ -386,6 +398,20 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.tbl_elements.show()
 
 
+    def fill_general_values(self):
+        in_power  = self.cfg_data['general_values']['input_power']
+        threshold = self.cfg_data['general_values']['rx_sys_threshold']
+
+        self.txt_in_power_dbm.setText(f'{in_power}')
+        self.txt_threshold_dbm.setText(f'{threshold}')
+
+        # Update Watt Fields
+        self.sync_input_fields(self.txt_in_power_dbm, self.txt_in_power_W,
+                               self.dBm_to_W, sigfigs=5)
+        self.sync_input_fields(self.txt_threshold_dbm, self.txt_threshold_W,
+                               self.dBm_to_W, sigfigs=5)
+
+
     def fill_results_table(self, results_data):
 
         # Determine number of rows needed for table. Stored to dict of element_name: rows
@@ -487,8 +513,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
     def add_element_clicked(self):
         '''Adds new row to column, could be expanded to add a preset number of rows'''
-        # self.tbl_elements.insertRow(self.tbl_elements.rowCount())
-        # self.tbl_elements.show()
+        self.save_input_table()
 
         # Get existing names, (cannot have a dupicate, due to dictionary structure)
         existing_element_names = [name.lower() for name in self.cfg_data['elements'].keys()]
@@ -527,12 +552,12 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         # get exact parameters from reference (if not a basic gain_loss element)
         if input_type == 'gain_loss':
-            data['gain_loss'] = '??'
+            data['gain_loss'] = ''
         else:
             param_set_details = self.get_attribute_details(data)
             data['parameters'] = {}
             for param in param_set_details.keys():
-                data['parameters'][param] = '??'
+                data['parameters'][param] = ''
 
         return data
 
@@ -553,6 +578,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             for row in reversed(rows): # Must remove from bottom up, else indexes gets confused
                 self.tbl_elements.removeRow(row)
 
+        self.save_input_table()
+
 
     def run_process_clicked(self):
         '''Run Analysis button clicked in UI, which calculates the link budget'''
@@ -560,7 +587,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         # Update cfg_data elements
         try:
-            self.save_input_table_to_dict()
+            self.save_input_table()
         except ValueError:
             showdialog(['Please check that only numerical values are entered'])
             return  # Abort saving file
@@ -575,8 +602,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
 
     def sum_results(self):
+        # Calculate gain/loss sum
         sum = 0
-
         for r in range(self.tbl_results.rowCount()):
             gain_item = self.tbl_results.item(r, 1)
             if isinstance(gain_item, QTableWidgetItem):
@@ -589,19 +616,27 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                     showdialog([f'An error has occurred during the analysis:', 'One or more elements '
                                 f'are missing a total gain'])
 
-        # self.txt_total = QtWidgets.QLineEdit()
-        self.txt_total.setText(f'{sum:.1f}')
+        # Calculate margin
+        margin = self.cfg_data['general_values']['rx_sys_threshold'] \
+                 - (self.cfg_data['general_values']['input_power'] + sum )
+
+        # Display Values
+        self.txt_total.setText(f'{sum:.{self.decimals}f}')
+        self.txt_margin.setText(f'{margin:.{self.decimals}f}')
+
+        # Save Values
+        self.cfg_data['general_values']['total_gain'] = sum
+        self.cfg_data['general_values']['total_margin'] = margin
+
 
 
     def save_config_clicked(self):
         '''Save current configuration to yaml file'''
 
         # Update cfg_data elements
-        try:
-            self.save_input_table_to_dict()
-        except ValueError:
-            showdialog(['Please check that only numerical values are entered'])
-            return # Abort saving file
+        valid_data = self.validate_input_values()
+        if not valid_data:
+            return  # Abort saving, values must first be fixed
 
 
         # Create file dialog to get save location
@@ -712,7 +747,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         Parameters
         ----------
         W   : float
-            Watts
+            Watts to convert
         Returns
         -------
         float
@@ -726,7 +761,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         Parameters
         ----------
         dBm : float
-            Decibel-milliwatts
+            Decibel-milliwatts to convert
         Returns
         -------
         float
@@ -763,18 +798,22 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def input_power_W_edited(self):
         self.sync_input_fields(self.txt_in_power_W, self.txt_in_power_dbm,
                                self.W_to_dBm)
+        self.txt_in_power_dbm_changed()
 
     def input_power_dbm_edited(self):
         self.sync_input_fields(self.txt_in_power_dbm, self.txt_in_power_W,
                                self.dBm_to_W, sigfigs=5)
+        self.txt_in_power_dbm_changed()
 
     def threshold_W_edited(self):
         self.sync_input_fields(self.txt_threshold_W, self.txt_threshold_dbm,
                                self.W_to_dBm)
+        self.txt_threshold_dbm_changed()
 
     def threshold_dbm_edited(self):
         self.sync_input_fields(self.txt_threshold_dbm, self.txt_threshold_W,
                                self.dBm_to_W, sigfigs=5)
+        self.txt_threshold_dbm_changed()
 
     def txt_threshold_dbm_changed(self):
         threshold = float(self.txt_threshold_dbm.text())
@@ -783,145 +822,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def txt_in_power_dbm_changed(self):
         power = float(self.txt_in_power_dbm.text())
         self.cfg_data['general_values']['input_power'] = power
-
-
-class NotEmptyNumericValidator(QDoubleValidator):
-    '''Custom Validator to ensure only numeric and non-empty values are entered
-
-    This customizes the default behavior, such that if the line is left empty, the text
-    is changed to an empty string and the state is returned as acceptable.
-
-    The state change is necessary, to ensure that the editingFinished() signal is emitted. This
-    triggers the slots in the mainwindow to update other fields (The editingFinished() signal
-    is not emitted for Intermediate State)
-    '''
-    def validate(self, text, pos):
-        #skip validation if negative number is being typed
-        if text == '-':
-            return QtGui.QValidator.Acceptable, text, pos
-
-        # Otherwise, run standard validation for a float
-        state, text, pos = super().validate(text, pos)
-
-        # Modify possible Intermediate state to acceptable
-        if (state == QtGui.QValidator.Intermediate) and \
-                ('e' not in text): # allow entering scienfic notation
-            text = ''
-            state = QtGui.QValidator.Acceptable
-        return state, text, pos
-
-
-
-
-class ElementTableItem(QTableWidgetItem):
-    def __init__(self, *args, **kwargs):
-        '''Custom TableWidgetItem to allow other attributes to be stored.
-
-        This is necessary so that additional link element properties can be saved
-        in the data dictionary which is passed to the main process
-        '''
-        self.link_type = kwargs.pop('link_type', 'gain_loss')
-        self.input_type = kwargs.pop('input_type', 'GENERIC')
-        super().__init__(*args, **kwargs)
-        self.setToolTip(f'Type: {self.link_type}')
-
-        # not directly editable to prevent duplicate naming
-        self.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
-
-
-class AttributeTableItem(QTableWidgetItem):
-    def __init__(self, *args, **kwargs):
-        '''Custom TableWidgetItem to allow other attributes to be stored.
-
-        This is necessary so that additional link element properties can be saved
-        in the data dictionary which is passed to the main process
-        '''
-        self.type = kwargs.pop('type', 'parameter')
-        self.description = kwargs.pop('description', 'Link element attribute')
-        super().__init__(*args, **kwargs)
-        self.setToolTip(self.description)
-
-        self.setFlags(QtCore.Qt.ItemIsEnabled) # not selectable or editable
-
-
-class ValueTableItem(QTableWidgetItem):
-    def __init__(self, *args, **kwargs):
-        '''Custom TableWidgetItem to allow other attributes to be stored.
-
-        This is necessary so that additional link element properties can be saved
-        in the data dictionary which is passed to the main process
-        '''
-        self.range_raw = kwargs.pop('range', None)
-        self.range_msg = ''
-        self.bounds = self.eval_range()
-        super().__init__(*args, **kwargs)
-
-
-    def eval_range(self):
-        range_raw = self.range_raw
-        if range_raw is None:
-            return None
-
-        bounds = {}
-        L, R = range_raw.replace(' ', '').split(',')
-
-        # Left bound
-        if L[0] == '(':
-            bounds['left'] = L[1:] + ' <'
-        else:
-            bounds['left'] = L[1:] + ' <='
-
-        # Right Bound
-        if R[-1] == ')':
-            bounds['right'] = '< ' + R[:-1]
-        else:
-            bounds['right'] = '<= ' + R[:-1]
-
-        self.range_msg = self.format_range(bounds.copy()) # this can be used for information dialogs
-
-
-        # convert inf to float("inf") which can be evaluated
-        for k, v in bounds.items():
-            bounds[k] = v.replace('inf', 'float("inf")')
-
-        return bounds
-
-    @staticmethod
-    def format_range(b_dict):
-        for k, v in b_dict.items():
-            if 'inf' in v:
-                b_dict[k] = ''
-
-        return f"{b_dict['left']} Value {b_dict['right']}"
-
-
-    def setData(self, role: int, value) -> None:
-        # check input
-        try:
-            val_in = float(value)
-        except ValueError:
-            showdialog(['Only numerical values are allowed'], level='information')
-        else:
-            if self.bounds is None:
-                super().setData(role, value)
-
-            elif eval(f'{self.bounds["left"]} {val_in}') and eval(f'{val_in} {self.bounds["right"]}'):
-                super().setData(role, value)
-
-            else:
-                showdialog([f'Entered value is not valid \n\n'
-                            f'Required interval:\n{self.range_msg}'], level='information')
-
-
-class UnitsTableItem(QTableWidgetItem):
-    def __init__(self, *args, **kwargs):
-        '''Custom TableWidgetItem to allow other attributes to be stored.
-
-        This is necessary so that additional link element properties can be saved
-        in the data dictionary which is passed to the main process
-        '''
-        super().__init__(*args, **kwargs)
-        self.setFlags(QtCore.Qt.ItemIsEnabled) # not selectable or editable
 
 
 

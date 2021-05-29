@@ -9,7 +9,7 @@ author: nicolas Fosseprez
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QDialog
-from project.app.notification_dialog import showdialog
+from project.app.custom_objects import showdialog
 from loguru import logger
 
 

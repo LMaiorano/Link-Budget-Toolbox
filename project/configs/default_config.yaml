@@ -6,7 +6,7 @@ elements:
     link_type: FREE_SPACE
     parameters:
       angle: 10.0
-      distance: 1500.0083
+      distance: 1500.01
       gs_altitude: 0.0
       sc_altitude: 300.0
       wavelength: 10.0
@@ -26,8 +26,8 @@ elements:
     link_type: TX
     parameters: null
 general_values:
-  input_power: null
-  rx_sys_threshold: null
+  input_power: 30.0
+  rx_sys_threshold: -30.0
   total_gain: null
   total_margin: null
 settings:

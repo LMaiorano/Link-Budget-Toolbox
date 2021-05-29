@@ -24,10 +24,6 @@ class LinkElement:
         #Return value in decibels (used in all elements for defining the gain)
         return 10*np.log10(value/1)
 
-    def get_gain(self):
-        # Return net gain (used by final process step)
-        return self.gain
-
 
 
 # We would create as 
@@ -35,7 +31,7 @@ class LinkElement:
 if __name__ == '__main__':
 
     # Example Usage
-    basic_elem = LinkElement('Cable', gain=5, linktype="CABLE")
+    basic_elem = LinkElement('Cable', linktype="CABLE",  gain=5)
 
     # tx_elem = TxElement("Ground to S/C", parameters=tx_parameters)
     #

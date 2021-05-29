@@ -13,7 +13,6 @@ from pathlib import Path
 import yaml
 import pandas as pd
 from loguru import logger
-import copy
 from astropy import units as u
 
 
@@ -86,15 +85,26 @@ def fill_results_data(df_user_data, user_data):
     for i in range(len(df_user_data)):
         # calculation step
 
-        if df_user_data.get("parameters")[i] == None:
-            result_gain_loss = (eval('le.' + df_user_data.get("link_type")[i] + '_LinkElement' +
+        link_type = df_user_data.get("link_type")[i]
+        link_class = f'{link_type}_LinkElement'
+
+
+        if link_type == 'GENERIC':     # Generic (parent) link element class, takes 3 arguments
+            link_class = f'LinkElement'
+            result_gain_loss = (eval('le.' + link_class +
+                                     '(df_user_data.get("name")[i], \
+                                     df_user_data.get("input_type")[i],\
+                                     df_user_data.get("gain_loss")[i])')).gain
+
+        elif df_user_data.get("parameters")[i] == None: # Specific Link element, no parameters
+            result_gain_loss = (eval('le.' + link_class +
                                      '(df_user_data.get("name")[i], \
                                      df_user_data.get("input_type")[i],\
                                      df_user_data.get("gain_loss")[i], \
                                      dict())')).gain
 
-        else:
-            result_gain_loss = (eval('le.' + df_user_data.get("link_type")[i] + '_LinkElement' +
+        else:           # All other link elements with parameters given
+            result_gain_loss = (eval('le.' + link_class +
                                      '(df_user_data.get("name")[i], \
                                      df_user_data.get("input_type")[i],\
                                      df_user_data.get("gain_loss")[i], \
