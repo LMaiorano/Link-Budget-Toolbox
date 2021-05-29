@@ -21,6 +21,7 @@ from loguru import logger
 import numpy as np
 
 from project.app.new_element_dialog import NewElementDialog
+from project.app.rename_element_dialog import RenameElementDialog
 from project.process import main_process
 from project.app.custom_objects import *
 
@@ -90,6 +91,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         # Load default configuration
         self.fill_input_table()
+        self.fill_general_values()
         header = self.tbl_elements.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
@@ -402,6 +404,11 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         in_power  = self.cfg_data['general_values']['input_power']
         threshold = self.cfg_data['general_values']['rx_sys_threshold']
 
+        if in_power is None:
+            in_power = 0
+        if threshold is None:
+            threshold = 0
+
         self.txt_in_power_dbm.setText(f'{in_power}')
         self.txt_threshold_dbm.setText(f'{threshold}')
 
@@ -453,7 +460,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             gain_item = QTableWidgetItem(f"{data['gain_loss']:.{self.decimals}f}")
             gain_item.setFlags(QtCore.Qt.ItemIsEnabled)
 
-            title = AttributeTableItem(f'{name} Gain', description=descr)
+            title = AttributeTableItem(f'{name}', description=descr)
             title.setFont(title_font)
             self.tbl_results.setItem(row, 0, title)
             self.tbl_results.setItem(row, 1, gain_item)
@@ -581,6 +588,32 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.save_input_table()
 
 
+    def input_table_double_clicked(self, row, column):
+        if column == self.name_col:
+            self.rename_element()
+
+    def rename_element(self):
+        selected = self.tbl_elements.selectedRanges()
+        if len(selected) == 0:
+            return  # quit because no rows selected
+
+        # Get existing names, (cannot have a dupicate, due to dictionary structure)
+        existing_element_names = [name.lower() for name in self.cfg_data['elements'].keys()]
+
+        col_L = selected[0].leftColumn()
+        if col_L == 0:  # Element name must be selected
+            old_name = self.tbl_elements.item(selected[0].topRow(), self.name_col).text()
+            dlg = RenameElementDialog(old_name, existing_element_names)
+            accepted = dlg.exec()
+
+            if accepted:
+                new_name = dlg.txt_name.text()
+
+                old_elem = self.cfg_data['elements'].pop(old_name)
+                self.cfg_data['elements'][new_name] = old_elem
+
+                self.fill_input_table()
+
     def run_process_clicked(self):
         '''Run Analysis button clicked in UI, which calculates the link budget'''
         logger.info('Running main process')
@@ -593,6 +626,17 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             return  # Abort saving file
 
         self.result_data = main_process(self.cfg_data)
+
+        # FIXME: result_data returned by main process is in base SI units,
+        #  overwriting those in UI easy-units
+
+        # Convert any possible float64 values to float
+        for elem, data in self.result_data['elements'].items():
+            for attr, val in data.items():
+                if isinstance(val, np.float64):
+                    self.result_data['elements'][elem][attr] = float(val)
+
+
 
         self.fill_results_table(self.cfg_data['elements'])
 
@@ -627,7 +671,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         # Save Values
         self.cfg_data['general_values']['total_gain'] = sum
         self.cfg_data['general_values']['total_margin'] = margin
-
 
 
     def save_config_clicked(self):

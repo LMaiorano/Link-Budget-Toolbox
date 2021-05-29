@@ -34,7 +34,7 @@ class NewElementDialog(QDialog, newelement_form_class):
 
     def accept(self) -> None:
         '''Check that required fields are filled before continuing'''
-        conditions_met = 0
+        conditions_unmet = 2
 
         # Check Name
         name = self.txt_element_name.text()
@@ -43,16 +43,16 @@ class NewElementDialog(QDialog, newelement_form_class):
         elif name.lower() in self.existing_names:
             showdialog(['This element name already exists'])
         else:
-            conditions_met += 1
+            conditions_unmet -= 1
 
         # Check Radio button
         if self.rdl_yes.isChecked() or self.rdl_no.isChecked():
-            conditions_met +=1
+            conditions_unmet -=1
         else:
             showdialog(['Please select an option for total Gain/Loss'])
 
         # Do its normal accept stuff
-        if conditions_met == 2:
+        if conditions_unmet == 0:
             super().accept()
 
     def element_type_selected(self):

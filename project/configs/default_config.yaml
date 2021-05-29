@@ -1,26 +1,48 @@
 elements:
-  Free Space:
-    gain_loss: null
+  Additional Divergence Loss:
+    gain_loss: -2.0
     idx: 3
-    input_type: parameter_set_2
+    input_type: gain_loss
+    link_type: TX
+    parameters: null
+  Atmospheric Propagation Loss:
+    gain_loss: -2.0
+    idx: 5
+    input_type: gain_loss
     link_type: FREE_SPACE
-    parameters:
-      angle: 10.0
-      distance: 1500.01
-      gs_altitude: 0.0
-      sc_altitude: 300.0
-      wavelength: 10.0
-  GS RX Ant:
-    gain_loss: null
-    idx: 1
-    input_type: parameter_set_1
+    parameters: null
+  Atmospheric turbulence losses:
+    gain_loss: -15.0
+    idx: 6
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  Free Space Loss:
+    gain_loss: -257.0
+    idx: 4
+    input_type: gain_loss
+    link_type: FREE_SPACE
+    parameters: null
+  Rx Antenna Gain:
+    gain_loss: 126.0
+    idx: 7
+    input_type: gain_loss
     link_type: RX
-    parameters:
-      antenna_diameter: 1.0
-      antenna_efficiency: 0.8
-      wavelength: 100.0
-  SC TX Ant:
-    gain_loss: 10.0
+    parameters: null
+  Rx Transmission Loss:
+    gain_loss: -3.0
+    idx: 8
+    input_type: gain_loss
+    link_type: RX
+    parameters: null
+  Tx Antenna Gain:
+    gain_loss: 103.0
+    idx: 1
+    input_type: gain_loss
+    link_type: TX
+    parameters: null
+  Tx Tranmission Loss:
+    gain_loss: -3.0
     idx: 2
     input_type: gain_loss
     link_type: TX

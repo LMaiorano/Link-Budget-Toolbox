@@ -26,8 +26,8 @@ elements:
     link_type: TX
     parameters: null
 general_values:
-  input_power: null
-  rx_sys_threshold: null
+  input_power: 65
+  rx_sys_threshold: 6
   total_gain: null
   total_margin: null
 settings:

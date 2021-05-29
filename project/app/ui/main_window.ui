@@ -814,7 +814,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>77</x>
-     <y>302</y>
+     <y>286</y>
     </hint>
     <hint type="destinationlabel">
      <x>97</x>
@@ -894,7 +894,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>82</x>
-     <y>334</y>
+     <y>376</y>
     </hint>
     <hint type="destinationlabel">
      <x>61</x>
@@ -982,6 +982,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>tbl_elements</sender>
+   <signal>cellDoubleClicked(int,int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>input_table_double_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>288</x>
+     <y>244</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>391</x>
+     <y>78</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_config_clicked()</slot>
@@ -996,5 +1012,7 @@
   <slot>input_power_dbm_edited()</slot>
   <slot>threshold_W_edited()</slot>
   <slot>threshold_dbm_edited()</slot>
+  <slot>rename_element_clicked()</slot>
+  <slot>input_table_double_clicked()</slot>
  </slots>
 </ui>
