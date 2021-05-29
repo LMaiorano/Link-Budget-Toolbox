@@ -14,7 +14,7 @@ import yaml
 from PyQt5 import QtWidgets, uic, QtCore, QtGui
 from PyQt5.QtGui import QFont, QDoubleValidator
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem, \
-    QHeaderView
+    QHeaderView, QLineEdit
 from loguru import logger
 # DO NOT REMOVE astropy
 from astropy import units as u
@@ -31,7 +31,41 @@ from project.process import main_process
 mainwindow_form_class = uic.loadUiType('ui/main_window.ui')[0]
 
 class MainWindow(QMainWindow, mainwindow_form_class):
+    '''Main window of the LinkBudget Toolbox
+
+    All user-interface logic is defined here.
+
+    User Interface Design:
+    ----------------------------
+    The layout and construction of each window or dialog is stored in the *.ui files,
+    which are generated and modified using QtDesigner. The object names defined in QtDesigner
+    automatically become class attributes here in Python, and can be used accordingly. These ui
+    files are dynamically loaded at each run and SHOULD NEVER BE MODIFIED DIRECTLY. Modifications
+    will be overwritten by QtDesigner.
+
+    Signals/Slots:
+    --------------
+    Connections between UI objects and their corresponding functions is done using signals/slots.
+    With few exceptions, the majority of these are specified in QtDesigner, where the slot is the
+    <class method name>+() added manually in the 'Signals/Slots of MainWindow - Qt Designer' editor.
+    Any action by the user that should trigger a function is linked in this way. A regular naming
+    scheme is used for these class methods: '_clicked' or '_edited' as the suffix of the method name.
+    This clarifies for the developer which class methods are run by signals/slots and which are
+    purely program logic.
+
+    The only exception in defining the signals/slots are those used purely for the program logic.
+    These are defined in the __init__(). For example: 'self.txt_in_power_dbm.textChanged' which
+    is triggered by both user actions AND program logic.
+
+    '''
     def __init__(self, parent=None, **kwargs):
+        '''
+
+        Parameters
+        ----------
+        parent
+        kwargs
+        '''
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
 
@@ -67,6 +101,10 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.txt_in_power_dbm.setValidator(NotEmptyNumericValidator())
         self.txt_threshold_W.setValidator(NotEmptyNumericValidator())
         self.txt_threshold_dbm.setValidator(NotEmptyNumericValidator())
+
+        # Internal signals/slots (triggers NOT EXPLICITLY dependent on User actions)
+        self.txt_in_power_dbm.textChanged.connect(self.txt_in_power_dbm_changed)
+        self.txt_threshold_dbm.textChanged.connect(self.txt_threshold_dbm_changed)
 
 
     def open_config_clicked(self):
@@ -516,7 +554,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                 self.tbl_elements.removeRow(row)
 
 
-
     def run_process_clicked(self):
         '''Run Analysis button clicked in UI, which calculates the link budget'''
         logger.info('Running main process')
@@ -667,16 +704,55 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         self.fill_input_table()  # reload table with saved values (fills empty cells with 0)
 
+
     @staticmethod
     def W_to_dBm(W):
+        '''Converts Watts to Decibel-milliwatts
+
+        Parameters
+        ----------
+        W   : float
+            Watts
+        Returns
+        -------
+        float
+        '''
         return 30 + 10 * np.log10(W)
 
     @staticmethod
     def dBm_to_W(dBm):
+        '''Converts Decibel-milliwatts to Watts
+
+        Parameters
+        ----------
+        dBm : float
+            Decibel-milliwatts
+        Returns
+        -------
+        float
+        '''
         return 10 ** ((dBm - 30) / 10)
 
     @staticmethod
     def sync_input_fields(in_field, out_field, convert_fn, sigfigs=4):
+        '''Updates the text in one QLineEdit field based on another field
+
+        Parameters
+        ----------
+        in_field : QLineEdit
+            QLineEdit to source the value from
+        out_field : QLineEdit
+             QLineEdit to write the converted value to
+        convert_fn : function
+            Function used to convert the value from in_field to out_field
+        sigfigs : int, optional
+            Number of significant figures to display in out_field
+
+        Returns
+        -------
+        None
+            Modifies out_field directly
+        '''
         if in_field.text() in ['', '-']:
             in_field.setText('0.0')
 
@@ -699,6 +775,14 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def threshold_dbm_edited(self):
         self.sync_input_fields(self.txt_threshold_dbm, self.txt_threshold_W,
                                self.dBm_to_W, sigfigs=5)
+
+    def txt_threshold_dbm_changed(self):
+        threshold = float(self.txt_threshold_dbm.text())
+        self.cfg_data['general_values']['rx_sys_threshold'] = threshold
+
+    def txt_in_power_dbm_changed(self):
+        power = float(self.txt_in_power_dbm.text())
+        self.cfg_data['general_values']['input_power'] = power
 
 
 class NotEmptyNumericValidator(QDoubleValidator):
