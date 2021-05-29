@@ -11,8 +11,8 @@ import sys
 from pathlib import Path
 
 import yaml
-from PyQt5 import QtWidgets, uic, QtCore
-from PyQt5.QtGui import QFont
+from PyQt5 import QtWidgets, uic, QtCore, QtGui
+from PyQt5.QtGui import QFont, QDoubleValidator
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem, \
     QHeaderView
 from loguru import logger
@@ -61,6 +61,12 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.Stretch)
         header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
+
+        # Ensure only numerical values are entered in input fields
+        self.txt_in_power_W.setValidator(NotEmptyNumericValidator())
+        self.txt_in_power_dbm.setValidator(NotEmptyNumericValidator())
+        self.txt_threshold_W.setValidator(NotEmptyNumericValidator())
+        self.txt_threshold_dbm.setValidator(NotEmptyNumericValidator())
 
 
     def open_config_clicked(self):
@@ -661,6 +667,50 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         self.fill_input_table()  # reload table with saved values (fills empty cells with 0)
 
+    @staticmethod
+    def W_to_dBm(W):
+        return 30 + 10 * np.log10(W)
+
+    @staticmethod
+    def dBm_to_W(dBm):
+        return 10 ** ((dBm - 30) / 10)
+
+    @staticmethod
+    def sync_input_fields(in_field, out_field, convert_fn, sigfigs=3):
+        if in_field.text() == '':
+            in_field.setText('0.0')
+
+        val_in = float(in_field.text())
+        out_field.setText(f'{convert_fn(val_in):.{sigfigs}g}')
+
+
+    def input_power_W_edited(self):
+        self.sync_input_fields(self.txt_in_power_W, self.txt_in_power_dbm,
+                               self.W_to_dBm)
+
+    def input_power_dbm_edited(self):
+        self.sync_input_fields(self.txt_in_power_dbm, self.txt_in_power_W,
+                               self.dBm_to_W, sigfigs=5)
+
+    def threshold_W_edited(self):
+        self.sync_input_fields(self.txt_threshold_W, self.txt_threshold_dbm,
+                               self.W_to_dBm, sigfigs=5)
+
+    def threshold_dbm_edited(self):
+        self.sync_input_fields(self.txt_threshold_dbm, self.txt_threshold_W,
+                               self.dBm_to_W)
+
+
+class NotEmptyNumericValidator(QDoubleValidator):
+    '''Custom Validator to ensure only numeric and non-empty values are entered'''
+    def validate(self, text, pos):
+        state, text, pos = super().validate(text, pos)
+        if state == QtGui.QValidator.Intermediate and 'e' not in text: # allow entering scienfic notation
+            text = ''
+            state = QtGui.QValidator.Acceptable
+        return state, text, pos
+
+
 
 
 class ElementTableItem(QTableWidgetItem):
@@ -772,6 +822,7 @@ class UnitsTableItem(QTableWidgetItem):
         '''
         super().__init__(*args, **kwargs)
         self.setFlags(QtCore.Qt.ItemIsEnabled) # not selectable or editable
+
 
 
 
