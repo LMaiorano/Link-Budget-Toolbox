@@ -676,8 +676,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         return 10 ** ((dBm - 30) / 10)
 
     @staticmethod
-    def sync_input_fields(in_field, out_field, convert_fn, sigfigs=3):
-        if in_field.text() == '':
+    def sync_input_fields(in_field, out_field, convert_fn, sigfigs=4):
+        if in_field.text() in ['', '-']:
             in_field.setText('0.0')
 
         val_in = float(in_field.text())
@@ -694,18 +694,34 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
     def threshold_W_edited(self):
         self.sync_input_fields(self.txt_threshold_W, self.txt_threshold_dbm,
-                               self.W_to_dBm, sigfigs=5)
+                               self.W_to_dBm)
 
     def threshold_dbm_edited(self):
         self.sync_input_fields(self.txt_threshold_dbm, self.txt_threshold_W,
-                               self.dBm_to_W)
+                               self.dBm_to_W, sigfigs=5)
 
 
 class NotEmptyNumericValidator(QDoubleValidator):
-    '''Custom Validator to ensure only numeric and non-empty values are entered'''
+    '''Custom Validator to ensure only numeric and non-empty values are entered
+
+    This customizes the default behavior, such that if the line is left empty, the text
+    is changed to an empty string and the state is returned as acceptable.
+
+    The state change is necessary, to ensure that the editingFinished() signal is emitted. This
+    triggers the slots in the mainwindow to update other fields (The editingFinished() signal
+    is not emitted for Intermediate State)
+    '''
     def validate(self, text, pos):
+        #skip validation if negative number is being typed
+        if text == '-':
+            return QtGui.QValidator.Acceptable, text, pos
+
+        # Otherwise, run standard validation for a float
         state, text, pos = super().validate(text, pos)
-        if state == QtGui.QValidator.Intermediate and 'e' not in text: # allow entering scienfic notation
+
+        # Modify possible Intermediate state to acceptable
+        if (state == QtGui.QValidator.Intermediate) and \
+                ('e' not in text): # allow entering scienfic notation
             text = ''
             state = QtGui.QValidator.Acceptable
         return state, text, pos

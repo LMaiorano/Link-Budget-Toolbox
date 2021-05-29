@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>803</width>
-    <height>687</height>
+    <width>749</width>
+    <height>683</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -54,24 +54,6 @@
     </item>
     <item>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="5" column="1">
-       <widget class="QPushButton" name="btn_run_process">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>13</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Run Analysis</string>
-        </property>
-       </widget>
-      </item>
       <item row="5" column="3">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
@@ -133,14 +115,34 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="3">
-       <widget class="Line" name="line">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="lbl_elements">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string> Inputs</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="3" column="0" colspan="2">
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="1" column="4">
          <widget class="QLineEdit" name="txt_threshold_dbm">
@@ -162,7 +164,7 @@
            </font>
           </property>
           <property name="text">
-           <string>Input Power</string>
+           <string>Input Power:</string>
           </property>
           <property name="buddy">
            <cstring>txt_in_power_W</cstring>
@@ -201,7 +203,7 @@
            </font>
           </property>
           <property name="text">
-           <string>Receiver System Threshold</string>
+           <string>Receiver System Threshold:</string>
           </property>
           <property name="wordWrap">
            <bool>false</bool>
@@ -243,6 +245,12 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <pointsize>10</pointsize>
@@ -262,14 +270,14 @@
         <item row="0" column="4">
          <widget class="QLineEdit" name="txt_in_power_dbm">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
           <property name="minimumSize">
            <size>
-            <width>0</width>
+            <width>50</width>
             <height>0</height>
            </size>
           </property>
@@ -302,13 +310,27 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>30</width>
+            <width>10</width>
             <height>20</height>
            </size>
           </property>
          </spacer>
         </item>
        </layout>
+      </item>
+      <item row="1" column="3">
+       <widget class="Line" name="line_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="Line" name="line_5">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
       </item>
       <item row="2" column="1">
        <widget class="QTableWidget" name="tbl_elements">
@@ -320,7 +342,7 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>290</width>
+          <width>300</width>
           <height>0</height>
          </size>
         </property>
@@ -429,34 +451,14 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="lbl_elements">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string> Inputs</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+      <item row="1" column="0" colspan="2">
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
-      <item row="4" column="1" colspan="3">
+      <item row="4" column="0" colspan="2">
        <widget class="Line" name="line_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -492,7 +494,7 @@
       </item>
       <item row="3" column="3">
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="2">
+        <item row="0" column="3">
          <widget class="QLabel" name="label_2">
           <property name="font">
            <font>
@@ -504,6 +506,65 @@
           </property>
           <property name="buddy">
            <cstring>txt_total</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QLineEdit" name="txt_total">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QLabel" name="label_6">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>dB</string>
+          </property>
+          <property name="buddy">
+           <cstring>txt_margin</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Margin:</string>
+          </property>
+          <property name="buddy">
+           <cstring>txt_margin</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLineEdit" name="txt_margin">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -523,67 +584,42 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="txt_total">
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
           </property>
-          <property name="readOnly">
-           <bool>true</bool>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>100</width>
+            <height>20</height>
+           </size>
           </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_4">
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Margin</string>
-          </property>
-          <property name="buddy">
-           <cstring>txt_margin</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QLabel" name="label_6">
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>dB</string>
-          </property>
-          <property name="buddy">
-           <cstring>txt_margin</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="txt_margin">
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
+         </spacer>
         </item>
        </layout>
       </item>
-      <item row="2" column="2" rowspan="2">
+      <item row="5" column="0" colspan="2">
+       <widget class="QPushButton" name="btn_run_process">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>13</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Run Analysis</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" rowspan="6">
        <widget class="Line" name="line_3">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -599,7 +635,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>803</width>
+     <width>749</width>
      <height>21</height>
     </rect>
    </property>
