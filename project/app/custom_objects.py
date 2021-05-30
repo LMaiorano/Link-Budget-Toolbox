@@ -173,7 +173,7 @@ class ValueTableItem(QTableWidgetItem):
         return f"{b_dict['left']} Value {b_dict['right']}"
 
 
-    def setData(self, role, value) -> None:
+    def setData(self, role: int, value) -> None:
         # check input
         try:
             val_in = float(value)

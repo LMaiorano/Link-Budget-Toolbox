@@ -187,18 +187,20 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         return data
 
 
-    def clear_table_elements(self):
+    def clear_table_elements(self, results=True):
         '''Clears input table'''
         self.tbl_elements.clearContents()
         self.tbl_elements.setRowCount(0)
 
-        self.tbl_results.clearContents()
-        self.tbl_results.setRowCount(0)
-        self.tbl_results.setColumnCount(0)
+        if results:
+            self.tbl_results.clearContents()
+            self.tbl_results.setRowCount(0)
+            self.tbl_results.setColumnCount(0)
 
 
     def clear_all_clicked(self):
         self.clear_table_elements()
+
 
     def validate_input_values(self, allow_blank=False):
         '''Check whether all values in input table can be converted to float
@@ -223,6 +225,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         except ValueError:
             showdialog(['Please check that only numerical values are entered in the table'])
             return False
+
 
     def save_input_table(self, **kwargs):
         '''Save contents of Input Table to self.cfg_data dictionary
@@ -322,6 +325,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         This converts the data dictionary elements to the necessary table items
         The table consists of four columns: Element, Attribute, Value, Units
         '''
+
         elements = self.cfg_data['elements']       # Select sub-dictionary of elements from config
 
         # Determine number of rows needed for table  rows are: name + gainloss + each parameter
@@ -593,15 +597,12 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         '''Deletes the selected table element'''
 
         selected = self.tbl_elements.selectedItems()
-        logger.debug(f'Num selected: {len(selected)}')
         if len(selected) == 0:
             return # quit because no rows selected
 
-
         col_L = selected[0].column()
-
-        if col_L == 0: # Element name must be selected, so you cant remove individual attributes
-            rows = sorted([cell.row() for cell in selected])
+        if col_L == 0: # Element name must be selected, so user cant remove individual attributes
+            rows = sorted({cell.row() for cell in selected})
             logger.debug(f'Removing rows: {rows}')
 
             for row in reversed(rows): # Must remove from bottom up, else indexes gets confused
@@ -609,10 +610,59 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         self.save_input_table(allow_blank=True)
 
+    def shift_selected_elements(self, up=True):
+        if not self.validate_input_values():
+            return
+
+        self.save_input_table() # Save current table (in case some values have been changed)
+
+
+        selected = self.tbl_elements.selectedRanges()
+
+        self.tbl_elements.clearSpans()
+
+        if len(selected) < 1:
+            return  # quit because no rows selected
+
+        rows = {cell.topRow() for cell in selected}
+
+        # FIXME: using previous locations of items when counting rows
+        for row in rows:
+            elem_item = self.tbl_elements.item(row, self.name_col)
+            if isinstance(elem_item, ElementTableItem):
+                name = elem_item.text()
+
+        for elem in self.cfg_data['elements'].values():
+            elem['idx'] *= 2 # multiply indexes of all by two, to allow space for item to shift
+
+        if up:
+            self.cfg_data['elements'][name]['idx'] -= 3
+        else:
+            self.cfg_data['elements'][name]['idx'] += 3
+
+        # Reset index counting to 1,2,3,4
+        idx = 1
+        for elem_name, attr in sorted(self.cfg_data['elements'].items(), key=lambda item: item[1]['idx']):
+            self.cfg_data['elements'][elem_name]['idx'] = idx
+            print(idx)
+            idx += 1
+
+        self.clear_table_elements(results=False)
+        self.fill_input_table()
+        self.fill_general_values()
+
+
+    def move_up_clicked(self):
+        self.shift_selected_elements(up=True)
+
+    def move_down_clicked(self):
+        self.shift_selected_elements(up=False)
+
 
     def input_table_double_clicked(self, row, column):
         if column == self.name_col:
             self.rename_element()
+
 
     def rename_element(self):
         selected = self.tbl_elements.selectedRanges()
@@ -635,6 +685,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                 self.cfg_data['elements'][new_name] = old_elem
 
                 self.fill_input_table()
+
 
     def run_process_clicked(self):
         '''Run Analysis button clicked in UI, which calculates the link budget'''
@@ -676,6 +727,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.txt_margin.setText(f'{margin:.{self.decimals}f}')
 
         self.btn_save_results.setEnabled(True)
+
 
     def save_config_clicked(self):
         '''Save current configuration to yaml file'''
@@ -793,6 +845,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def txt_in_power_dbm_changed(self):
         power = float(self.txt_in_power_dbm.text())
         self.cfg_data['general_values']['input_power'] = power
+
+
 
 
 

@@ -381,7 +381,7 @@
          <bool>false</bool>
         </property>
         <property name="selectionMode">
-         <enum>QAbstractItemView::ExtendedSelection</enum>
+         <enum>QAbstractItemView::SingleSelection</enum>
         </property>
         <attribute name="horizontalHeaderStretchLastSection">
          <bool>false</bool>
@@ -422,14 +422,32 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btn_delete_element">
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-           </font>
+         <spacer name="verticalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
           </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Minimum</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn_mv_up">
           <property name="text">
-           <string>Delete Element</string>
+           <string>Move Up</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn_mv_dwn">
+          <property name="text">
+           <string>Move Down</string>
           </property>
          </widget>
         </item>
@@ -448,6 +466,18 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn_delete_element">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Delete Element</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QPushButton" name="btn_clear_all">
@@ -820,7 +850,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>77</x>
-     <y>286</y>
+     <y>244</y>
     </hint>
     <hint type="destinationlabel">
      <x>97</x>
@@ -900,7 +930,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>93</x>
-     <y>334</y>
+     <y>402</y>
     </hint>
     <hint type="destinationlabel">
      <x>61</x>
@@ -916,7 +946,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>98</x>
-     <y>392</y>
+     <y>434</y>
     </hint>
     <hint type="destinationlabel">
      <x>99</x>
@@ -1020,6 +1050,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btn_mv_up</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>move_up_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>70</x>
+     <y>307</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>12</x>
+     <y>272</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_mv_dwn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>move_down_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>109</x>
+     <y>333</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>104</x>
+     <y>353</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_config_clicked()</slot>
@@ -1036,5 +1098,7 @@
   <slot>threshold_dbm_edited()</slot>
   <slot>rename_element_clicked()</slot>
   <slot>input_table_double_clicked()</slot>
+  <slot>move_up_clicked()</slot>
+  <slot>move_down_clicked()</slot>
  </slots>
 </ui>
