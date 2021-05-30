@@ -112,6 +112,7 @@ class NewElementDialog(QDialog, newelement_form_class):
             # Display information in the text box
             self.txt_description.setPlainText("")   # Makes sure it starts empty
             self.txt_description.insertPlainText(f"{description}")
+            self.txt_description.setReadOnly(True)  # Sets the text box as read-only
 
     def summarize_info(self):
         ''' Show all the data the user has selected for the new Element'''
