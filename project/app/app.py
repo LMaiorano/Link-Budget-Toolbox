@@ -102,6 +102,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         header.setSectionResizeMode(2, QHeaderView.Stretch)
         header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
 
+
         # Ensure only numerical values are entered in input fields
         self.txt_in_power_W.setValidator(NotEmptyNumericValidator())
         self.txt_in_power_dbm.setValidator(NotEmptyNumericValidator())
@@ -355,7 +356,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             self.tbl_elements.setItem(row, self.name_col, title)
 
             # ------------------------- Attributes ------------------------------------
-            if element_input_type == 'gain_loss':
+            if element_link_type == 'GENERIC':
                 units = self.get_attribute_details(data, gain=True)['units']
                 descr = self.get_attribute_details(data, gain=True)['description']
 
@@ -381,9 +382,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                     try:
                         value_text = f"{val:.{self.decimals}f}"
                     except ValueError:
-                        # Occurs with new element where default value is '??'
+                        # Occurs with new element where default value is ''
                         value_text = val
-
 
                     # Add attribute cells
                     self.tbl_elements.setItem(row, self.attribute_col,
@@ -578,15 +578,16 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def delete_element_clicked(self):
         '''Deletes the selected table element'''
 
-        # FIXME: only deleting one at a time
-        selected = self.tbl_elements.selectedRanges()
+        selected = self.tbl_elements.selectedItems()
+        logger.debug(f'Num selected: {len(selected)}')
         if len(selected) == 0:
             return # quit because no rows selected
 
-        col_L = selected[0].leftColumn()
+
+        col_L = selected[0].column()
 
         if col_L == 0: # Element name must be selected, so you cant remove individual attributes
-            rows = sorted([cell.topRow() for cell in selected])
+            rows = sorted([cell.row() for cell in selected])
             logger.debug(f'Removing rows: {rows}')
 
             for row in reversed(rows): # Must remove from bottom up, else indexes gets confused
@@ -638,8 +639,16 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         # Convert any possible float64 values to float
         for elem, data in self.cfg_data['elements'].items():
             for attr, val in data.items():
-                if isinstance(val, np.float64):
+                try:
                     self.cfg_data['elements'][elem][attr] = float(val)
+                except (ValueError, TypeError):
+                    pass # Strings or None's do not need to be converted
+
+        for name, val in self.cfg_data['general_values'].items():
+            try:
+                self.cfg_data['general_values'][name] = float(val)
+            except (ValueError, TypeError):
+                pass  # Strings or None's do not need to be converted
 
         self.fill_results_table(self.cfg_data['elements'])
 
@@ -791,6 +800,6 @@ if __name__ == '__main__':
     set_log_level('DEBUG')
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle('Fusion')
-    window = MainWindow(UI_decimal_accuracy=2)
+    window = MainWindow()
     window.show()
     app.exec()

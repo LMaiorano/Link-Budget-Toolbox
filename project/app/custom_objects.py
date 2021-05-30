@@ -106,6 +106,13 @@ class AttributeTableItem(QTableWidgetItem):
 
         This is necessary so that additional link element properties can be saved
         in the data dictionary which is passed to the main process
+
+        Parameters
+        ----------
+        type : str, optional
+            Whether the attribute is a 'parameter', or 'gain_loss'
+        description: str, optional
+            Description of the attribute to show as a tooltip
         '''
         self.type = kwargs.pop('type', 'parameter')
         self.description = kwargs.pop('description', 'Link element attribute')

@@ -1,7 +1,7 @@
 elements:
   Free Space:
     gain_loss: -303.2739433373266
-    idx: 3
+    idx: 3.0
     input_type: parameter_set_2
     link_type: FREE_SPACE
     parameters:
@@ -12,7 +12,7 @@ elements:
       wavelength: 9.999999999999998
   GS RX Ant:
     gain_loss: 148.97389732380213
-    idx: 1
+    idx: 1.0
     input_type: parameter_set_1
     link_type: RX
     parameters:
@@ -21,33 +21,14 @@ elements:
       wavelength: 100.0
   SC TX Ant:
     gain_loss: 10.0
-    idx: 2
+    idx: 2.0
     input_type: gain_loss
     link_type: GENERIC
     parameters: null
 general_values:
-  input_power: 65
-  rx_sys_threshold: 6
-  total_gain: !!python/object/apply:numpy.core.multiarray.scalar
-  - &id001 !!python/object/apply:numpy.dtype
-    args:
-    - f8
-    - false
-    - true
-    state: !!python/tuple
-    - 3
-    - <
-    - null
-    - null
-    - null
-    - -1
-    - -1
-    - 0
-  - !!binary |
-    QOwY+pkJYsA=
-  total_margin: !!python/object/apply:numpy.core.multiarray.scalar
-  - *id001
-  - !!binary |
-    gNgx9DNTVUA=
+  input_power: 65.0
+  rx_sys_threshold: 6.0
+  total_gain: -144.30004601352448
+  total_margin: 85.30004601352448
 settings:
   case_type: nominal

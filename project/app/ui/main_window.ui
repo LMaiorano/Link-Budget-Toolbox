@@ -113,6 +113,9 @@
           <height>0</height>
          </size>
         </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::ContiguousSelection</enum>
+        </property>
        </widget>
       </item>
       <item row="0" column="0" colspan="2">
@@ -369,6 +372,9 @@
          <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
         </property>
         <property name="dragEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="dragDropOverwriteMode">
          <bool>false</bool>
         </property>
         <property name="alternatingRowColors">
