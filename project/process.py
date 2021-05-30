@@ -137,13 +137,16 @@ def main_process(user_data):
 
     results_data = fill_results_data(read_user_data(user_data), user_data)
 
+    # Convert parameter units back to logical units
+    convert_SI_units(user_data, to_base_SI=False)
+
     return results_data
 
 
 
 if __name__ == '__main__':
 
-    default_file = DEFAULT_APP_CONFIG
+    default_file = Path(CONFIGS_DIR, 'example_config.yaml')
 
     data = load_from_yaml(default_file)
 

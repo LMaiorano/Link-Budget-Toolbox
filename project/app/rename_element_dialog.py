@@ -4,7 +4,7 @@
 title: rename_element_dialog.py
 project: Link-Budget-Toolbox
 date: 29/05/2021
-author: lmaio
+author: Luigi Maiorano
 """
 
 

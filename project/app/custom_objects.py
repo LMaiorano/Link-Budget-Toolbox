@@ -4,7 +4,7 @@
 title: custom_objects.py
 project: Link-Budget-Toolbox
 date: 29/05/2021
-author: lmaio
+author: Luigi Maiorano
 """
 
 from PyQt5 import QtCore, QtGui

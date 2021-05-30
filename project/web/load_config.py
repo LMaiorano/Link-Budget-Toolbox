@@ -4,7 +4,7 @@
 title: load_config.py
 project: Link-Budget-Toolbox
 date: 13/05/2021
-author: lmaio
+author: Luigi Maiorano
 """
 
 from browser import document, window, console
