@@ -52,7 +52,11 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="txt_name"/>
+      <widget class="QLineEdit" name="txt_name">
+       <property name="cursorPosition">
+        <number>0</number>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -71,6 +75,9 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_name</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -80,12 +87,12 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>316</x>
+     <y>54</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
-     <y>274</y>
+     <y>69</y>
     </hint>
    </hints>
   </connection>
@@ -96,12 +103,12 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>342</x>
+     <y>54</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
-     <y>274</y>
+     <y>69</y>
     </hint>
    </hints>
   </connection>

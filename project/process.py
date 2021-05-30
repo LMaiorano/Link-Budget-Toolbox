@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 # -*- coding: utf-8 -*-
 """
 title: process.py
@@ -12,8 +12,8 @@ import project.link_element as le
 from pathlib import Path
 import yaml
 import pandas as pd
-from loguru import logger
-from astropy import units as u
+from project.unit_conversion import convert_SI_units
+
 
 
 def load_from_yaml(file):
@@ -115,71 +115,7 @@ def fill_results_data(df_user_data, user_data):
 
     return results_data
 
-def decompose_SI(val, unit_str, **kwargs):
-    '''Converts a value with specified unit to its base SI unit
 
-    Parameters
-    ----------
-    val : float
-        Quantity to convert
-    unit_str : str
-        Unit to convert from. For available units, see:
-         https://docs.astropy.org/en/stable/units/index.html
-    skip_units : list of str
-        Units to skip conversion (Default: ['dB', 'deg', '-', ''])
-
-    Returns
-    -------
-    tuple
-        Quantity converted to base unit,
-        Base unit string representation
-    '''
-    # Default units to skip, unless specified otherwise
-    default_skip = ['dB', 'deg', '-', '']
-    skip_units = kwargs.pop('skip_units', default_skip)
-
-    # Check if unit is excluded
-    if unit_str in skip_units:
-        return val, unit_str            # Return same as what is given
-
-    try:
-        x_u = eval(f'u.{unit_str}')     # Given units
-        x = val * x_u                   # Create unit-quantity
-        x_si = x.decompose()            # Convert quantity to the base-unit of u
-        return float(x_si.value), str(x_si.unit)  # convert numpy float64 (precision not necessary)
-
-    except AttributeError:
-        logger.debug(f'Error decomposing units. "{unit_str}" is not a recognized unit')
-        return None, None
-
-
-def convert_to_standard_units(data):
-    '''Convert units to standard SI units
-
-    References:
-        'element_config_reference.yaml' for the given units per parameter
-
-    Parameters
-    ----------
-    data : dict
-        Link Budget configuration dictionary as passed from UI or config file
-    '''
-    elem_cfg_path = Path(Path(__file__).parent, 'element_config_reference.yaml')
-    param_ref = load_from_yaml(elem_cfg_path)
-
-    for element, attributes in data['elements'].items():
-        if attributes['parameters'] is None:
-            continue  # move on to next element since no parameters to convert
-
-        link_type = attributes['link_type']
-        input_type = attributes['input_type']
-
-        for param, value in attributes['parameters'].items():
-            unit = param_ref[link_type][input_type][param]['units'] # Determine unit
-            si_value = decompose_SI(value, unit)[0]      # Convert value to base SI
-
-            # Replace value in dictionary
-            data['elements'][element]['parameters'][param] = si_value
 
 
 def main_process(user_data):
@@ -196,9 +132,8 @@ def main_process(user_data):
         User_data dictionary which has been updated with the calculated gains/losses
     '''
     # Convert parameter units to standard SI base units
-    convert_to_standard_units(user_data)
+    convert_SI_units(user_data)
 
-    # results_data = fill_results_data(read_user_data(update_params_from_genval(user_data, read_user_data(user_data))))
     results_data = fill_results_data(read_user_data(user_data), user_data)
 
     return results_data
