@@ -98,7 +98,7 @@ def convert_SI_units(data, to_base_SI=True):
     '''Convert units to standard SI units
 
     References:
-        'element_config_reference.yaml' for the given units per parameter
+        'element_reference.yaml' for the given units per parameter
 
     Parameters
     ----------

@@ -117,6 +117,22 @@ def fill_results_data(df_user_data, user_data):
     return results_data
 
 
+def sum_results(data):
+    elements = data['elements']
+
+    # Calculate gain/loss sum
+    gain_sum = 0
+
+    for attributes in elements.values():
+        gain_sum += attributes['gain_loss']
+
+
+    margin = data['general_values']['rx_sys_threshold'] \
+             - (data['general_values']['input_power'] + gain_sum)
+
+    data['general_values']['total_margin'] = margin
+    data['general_values']['total_gain'] = gain_sum
+
 
 
 def main_process(user_data):
@@ -136,6 +152,7 @@ def main_process(user_data):
     convert_SI_units(user_data)
 
     results_data = fill_results_data(read_user_data(user_data), user_data)
+    sum_results(results_data)
 
     # Convert parameter units back to logical units
     convert_SI_units(user_data, to_base_SI=False)

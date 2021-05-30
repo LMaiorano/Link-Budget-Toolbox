@@ -17,7 +17,7 @@ BASE_DIR = Path(Path(__file__).parent.parent)
 
 # Element configuration file that defines parameter sets per link type, as well
 # as units and descriptions that are displayed in the UI
-ELEMENT_REFERENCE = Path(BASE_DIR, 'project/element_config_reference.yaml')
+ELEMENT_REFERENCE = Path(BASE_DIR, 'project/element_reference.yaml')
 
 
 

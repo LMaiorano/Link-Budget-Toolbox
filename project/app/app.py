@@ -81,7 +81,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.cfg_file = Path(self.default_cfg)
         self.cfg_data = self.read_config()
         self.element_details = self.read_config(file=ELEMENT_REFERENCE)
-        self.result_data = None
 
         # TABLE SETUP
         self.col_titles = ['Element Name', 'Attribute', 'Value', 'Units']
@@ -487,7 +486,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def get_attribute_details(self, element:dict, specific_parameter=None, gain=False):
         '''Gets details about an element's parameters
 
-        Reads data from element_config_reference.yaml using a specific element.
+        Reads data from element_reference.yaml using a specific element.
         The link_type and input_type are used to determine which parameter set is applicable
 
         Parameters
@@ -629,52 +628,26 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         # Update cfg_data elements
         self.save_input_table()
 
-
-
-        self.result_data = main_process(self.cfg_data)
+        self.cfg_data = main_process(self.cfg_data)
 
         # Convert any possible float64 values to float
-        for elem, data in self.result_data['elements'].items():
+        for elem, data in self.cfg_data['elements'].items():
             for attr, val in data.items():
                 if isinstance(val, np.float64):
-                    self.result_data['elements'][elem][attr] = float(val)
-
-
+                    self.cfg_data['elements'][elem][attr] = float(val)
 
         self.fill_results_table(self.cfg_data['elements'])
 
-        self.sum_results() # Sum the values in the gain column and display in totals
 
-        self.btn_save_results.setEnabled(True)
+        # Display Final Values
+        gain_sum = self.cfg_data['general_values']['total_gain']
+        margin = self.cfg_data['general_values']['total_margin']
 
 
-    def sum_results(self):
-        # Calculate gain/loss sum
-        sum = 0
-        for r in range(self.tbl_results.rowCount()):
-            gain_item = self.tbl_results.item(r, 1)
-            if isinstance(gain_item, QTableWidgetItem):
-                gain = gain_item.text()
-                try:
-                    sum += float(gain)
-
-                except ValueError as E:
-                    logger.debug(E)
-                    showdialog([f'An error has occurred during the analysis:', 'One or more elements '
-                                f'are missing a total gain'])
-
-        # Calculate margin
-        margin = self.cfg_data['general_values']['rx_sys_threshold'] \
-                 - (self.cfg_data['general_values']['input_power'] + sum )
-
-        # Display Values
-        self.txt_total.setText(f'{sum:.{self.decimals}f}')
+        self.txt_total.setText(f'{gain_sum:.{self.decimals}f}')
         self.txt_margin.setText(f'{margin:.{self.decimals}f}')
 
-        # Save Values
-        self.cfg_data['general_values']['total_gain'] = sum
-        self.cfg_data['general_values']['total_margin'] = margin
-
+        self.btn_save_results.setEnabled(True)
 
     def save_config_clicked(self):
         '''Save current configuration to yaml file'''
