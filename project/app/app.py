@@ -17,6 +17,8 @@ from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem, \
     QHeaderView, QLineEdit
 from loguru import logger
 import numpy as np
+import traceback
+
 
 from project.app.new_element_dialog import NewElementDialog
 from project.app.rename_element_dialog import RenameElementDialog
@@ -131,7 +133,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             self.fill_general_values()
         except Exception as E:
             logger.debug(f'Error loading file: {E}')
-
+            logger.debug(traceback.format_exc())
             if not isinstance(E, KeyError): # Some random exception that probably needs debugging
                 msg = ''
             elif 'Configuration file' in E.args[0]: # KeyError originates from self.read_config()
@@ -354,8 +356,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
             # ------------------------- Attributes ------------------------------------
             if element_input_type == 'gain_loss':
-                units = self.get_attribute_details(data, gain=True)['gain_loss']['units']
-                descr = self.get_attribute_details(data, gain=True)['gain_loss']['description']
+                units = self.get_attribute_details(data, gain=True)['units']
+                descr = self.get_attribute_details(data, gain=True)['description']
 
                 self.tbl_elements.setItem(row, self.attribute_col,
                                           AttributeTableItem('Gain',
@@ -507,12 +509,14 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
 
         '''
+        link_type = element['link_type']
         input_type = element['input_type']
 
-        if input_type == 'gain_loss' or gain: # Parameter_set not relevant because gain is directly given
-            return self.element_details['GENERIC']['gain_loss']
 
-        param_set_details = self.element_details[element['link_type']][input_type]
+        if link_type == 'gain_loss' or gain: # Parameter_set not relevant because gain is directly given
+            return self.element_details['GENERIC']['gain_loss']['gain_loss']
+
+        param_set_details = self.element_details[link_type][input_type]
         if specific_parameter: # If a specific parameter is requested
             return param_set_details[specific_parameter]
 
@@ -574,6 +578,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def delete_element_clicked(self):
         '''Deletes the selected table element'''
 
+        # FIXME: only deleting one at a time
         selected = self.tbl_elements.selectedRanges()
         if len(selected) == 0:
             return # quit because no rows selected
@@ -783,7 +788,7 @@ def set_log_level(log_level='INFO'):
 
 
 if __name__ == '__main__':
-    set_log_level('INFO')
+    set_log_level('DEBUG')
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle('Fusion')
     window = MainWindow(UI_decimal_accuracy=2)

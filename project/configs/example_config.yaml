@@ -23,7 +23,7 @@ elements:
     gain_loss: 10.0
     idx: 2
     input_type: gain_loss
-    link_type: TX
+    link_type: GENERIC
     parameters: null
 general_values:
   input_power: 65
