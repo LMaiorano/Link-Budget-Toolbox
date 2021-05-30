@@ -13,6 +13,7 @@ from pathlib import Path
 import yaml
 import pandas as pd
 from project.unit_conversion import convert_SI_units
+from project.settings import CONFIGS_DIR, DEFAULT_APP_CONFIG
 
 
 
@@ -39,7 +40,7 @@ def save_to_yaml(d:dict, filename:str):
         filepath = Path(filepath.parent, filepath.stem+'.yaml')
 
     if len(filepath.parts) == 1: # Only a filename is given, change save directory to default
-        filepath = Path('./configs', filepath.name)
+        filepath = Path(CONFIGS_DIR, filepath.name)
 
     # Save data to YAML
     with open(filepath, 'w') as f:
@@ -138,9 +139,11 @@ def main_process(user_data):
 
     return results_data
 
+
+
 if __name__ == '__main__':
 
-    default_file = 'configs/default_config.yaml'
+    default_file = DEFAULT_APP_CONFIG
 
     data = load_from_yaml(default_file)
 

@@ -9,7 +9,8 @@ author: lmaio
 from pathlib import Path
 from loguru import logger
 import yaml
-from astropy import units as u
+from project.settings import ELEMENT_REFERENCE
+from astropy import units as u # DO NOT REMOVE THIS ONE
 
 def load_from_yaml(file):
     with open(file, 'r') as f:
@@ -66,7 +67,7 @@ def convert_SI_units(data, to_base_SI=True):
     data : dict
         Link Budget configuration dictionary as passed from UI or config file
     '''
-    elem_cfg_path = Path(Path(__file__).parent, 'element_config_reference.yaml')
+    elem_cfg_path = Path(ELEMENT_REFERENCE)
     param_ref = load_from_yaml(elem_cfg_path)
 
     ignore_units = ['dB', 'deg', '-', '']

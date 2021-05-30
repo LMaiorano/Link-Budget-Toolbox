@@ -8,13 +8,15 @@ author: lmaio
 """
 
 
-from PyQt5 import QtWidgets, uic, QtCore
+from pathlib import Path
+
+from PyQt5 import uic
 from PyQt5.QtWidgets import QDialog
+
 from project.app.custom_objects import showdialog
-from loguru import logger
+from project.settings import APP_UI_DIR
 
-
-rename_form_class = uic.loadUiType('ui/rename_element.ui')[0]
+rename_form_class = uic.loadUiType(Path(APP_UI_DIR, 'rename_element.ui'))[0]
 
 class RenameElementDialog(QDialog, rename_form_class):
     def __init__(self, current_name, existing_names, parent=None):

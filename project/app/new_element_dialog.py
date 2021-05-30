@@ -11,9 +11,11 @@ from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QDialog
 from project.app.custom_objects import showdialog
 from loguru import logger
+from pathlib import Path
+from project.settings import APP_UI_DIR
 
 
-newelement_form_class = uic.loadUiType('ui/new_element.ui')[0]
+newelement_form_class = uic.loadUiType(Path(APP_UI_DIR, 'new_element.ui'))[0]
 
 class NewElementDialog(QDialog, newelement_form_class):
     def __init__(self, element_reference, existing_names, parent=None):

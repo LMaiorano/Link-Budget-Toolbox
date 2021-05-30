@@ -25,19 +25,24 @@ from project.app.rename_element_dialog import RenameElementDialog
 from project.process import main_process
 from project.app.custom_objects import *
 
+from project.settings import ELEMENT_REFERENCE, DEFAULT_APP_CONFIG, CONFIGS_DIR, APP_UI_DIR
 
 
 
 
-mainwindow_form_class = uic.loadUiType('ui/main_window.ui')[0]
+
+mainwindow_form_class = uic.loadUiType(Path(APP_UI_DIR, 'main_window.ui'))[0]
 
 class MainWindow(QMainWindow, mainwindow_form_class):
     '''Main window of the LinkBudget Toolbox
 
-    All user-interface logic is defined here.
+    All user-interface logic is defined here. This app purely assist in the creation and
+    modification of LinkBudget configuration files. These can also be edited manually, but with
+    the risk of improper parameters and/or attributes. The calculations are exclusively performed
+    by process.py, which can be run independently of this User Interface.
 
     User Interface Design:
-    ----------------------------
+    ----------------------
     The layout and construction of each window or dialog is stored in the *.ui files,
     which are generated and modified using QtDesigner. The object names defined in QtDesigner
     automatically become class attributes here in Python, and can be used accordingly. These ui
@@ -54,7 +59,10 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     This clarifies for the developer which class methods are run by signals/slots and which are
     purely program logic.
 
-
+    App Setup:
+    ----------
+    File paths of the default configuration to be loaded or element_reference should be changed
+    in settings.py
     '''
     def __init__(self, **kwargs):
         '''Initialization of the Main Window
@@ -62,22 +70,19 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         Parameters
         ----------
         **kwargs : dict, optional
-            Extra arguments to 'MainWindow'.
-            | 'default_config_yaml': Default configuration file to load at startup
-            | 'element_reference_yaml': Element reference file
+            Extra arguments to 'MainWindow'. See settings.py for default file paths
             | 'UI_decimal_accuracy': (Default = 2) Decimals to show in UI
         '''
         QMainWindow.__init__(self, parent=None)
         self.setupUi(self)
 
-        default_cfg = kwargs.pop('default_config_yaml', '../configs/default_config.yaml')
-        element_ref = kwargs.pop('element_reference_yaml', '../element_config_reference.yaml')
         self.decimals = kwargs.pop('UI_decimal_accuracy', 2)
+        self.default_cfg = DEFAULT_APP_CONFIG
 
         # Set initial values and general attributes
-        self.cfg_file = Path(default_cfg)
+        self.cfg_file = Path(self.default_cfg)
         self.cfg_data = self.read_config()
-        self.element_details = self.read_config(file=element_ref)
+        self.element_details = self.read_config(file=ELEMENT_REFERENCE)
         self.result_data = None
 
         # TABLE SETUP
@@ -112,7 +117,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         dlg = QFileDialog()
         
         file_path = dlg.getOpenFileName(self, 'Open YAML Configuration FIle',
-                                        directory='../configs',
+                                        directory=CONFIGS_DIR,
                                         filter='Config Files (*.yaml)')[0]
         if file_path == '':
             return # Dialog cancelled, Exit this
@@ -142,7 +147,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
     def new_clicked(self):
         self.clear_table_elements()
-        self.cfg_file = Path('../configs/default_config.yaml')
+        self.cfg_file = Path(self.default_cfg)
         self.cfg_data = self.read_config()
         self.fill_input_table()
 
@@ -618,12 +623,15 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         '''Run Analysis button clicked in UI, which calculates the link budget'''
         logger.info('Running main process')
 
+        # Check if data in table is valid
+        valid_data = self.validate_input_values()
+        if not valid_data:
+            return
+
         # Update cfg_data elements
-        try:
-            self.save_input_table()
-        except ValueError:
-            showdialog(['Please check that only numerical values are entered'])
-            return  # Abort saving file
+        self.save_input_table()
+
+
 
         self.result_data = main_process(self.cfg_data)
 
@@ -685,7 +693,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         # Create file dialog to get save location
         dlg = QFileDialog()
         file_path = dlg.getSaveFileName(self, 'Save YAML Configuration FIle',
-                                        directory='../configs',
+                                        directory=CONFIGS_DIR,
                                         filter='Config Files (*.yaml)')[0]
         if file_path == '':
             return  # Dialog cancelled, Exit this saving process
