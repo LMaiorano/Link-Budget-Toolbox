@@ -57,6 +57,26 @@ class NewElementDialog(QDialog, newelement_form_class):
         if conditions_unmet == 0:
             super().accept()
 
+    def yes_gain_clicked(self):
+        # Add available parameters to Element Type combobox
+        self.cmb_element_type.clear() # Ensures it start empty
+        self.cmb_element_type.addItem("GENERIC")
+            
+        # Add gain_loss parameters to Parameters Set combobox
+        self.cmb_set_param.clear()  # Ensures it start empty
+        self.cmb_set_param.addItem("gain_loss")
+        
+    
+    def no_gain_clicked(self):
+        ''' The user does not know the gain/loss value. The parameter is set based
+                on the available sets that come with the selected Element Type'''
+
+        # Add available parameters to Element Type combobox
+        self.cmb_element_type.clear() # Ensures it start empty
+        for input_type in self.element_ref.keys():
+            if input_type != 'GENERIC':
+                self.cmb_element_type.addItem(input_type)
+
     def element_type_selected(self):
         selected_element_type = self.cmb_element_type.currentText()
         logger.debug(f'Element type selected {selected_element_type}')
@@ -64,6 +84,7 @@ class NewElementDialog(QDialog, newelement_form_class):
         # Prevents error when starting and type is ''
         if selected_element_type in self.element_ref.keys():
             self.refresh_param_set(selected_element_type)
+            self.show_overall_desc(selected_element_type)
 
     
     def param_set_selected(self):
@@ -84,16 +105,13 @@ class NewElementDialog(QDialog, newelement_form_class):
                 if param_set != 'overall_description':
                     self.cmb_set_param.addItem(param_set)
     
-    def yes_gain_clicked(self):
-        # Add gain_loss parameters to Parameters Set combobox
-        self.cmb_set_param.clear()  # Ensures it start empty
-        self.cmb_set_param.addItem("gain_loss")
-    
-    def no_gain_clicked(self):
-        ''' The user does not know the gain/loss value. The parameter is set based
-                on the available sets that come with the selected Element Type'''
-
-        self.element_type_selected()
+    def show_overall_desc(self, selected_element_type):
+        
+        if self.rdl_yes.isChecked() or self.rdl_no.isChecked():
+            description = self.element_ref[selected_element_type]['overall_description']
+            # Display information in the text box
+            self.txt_description.setPlainText("")   # Makes sure it starts empty
+            self.txt_description.insertPlainText(f"{description}")
 
     def summarize_info(self):
         ''' Show all the data the user has selected for the new Element'''
