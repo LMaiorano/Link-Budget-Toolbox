@@ -4,7 +4,7 @@
 title: app.py
 project: Link-Budget-Toolbox
 date: 13/05/2021
-author: lmaio
+author: Luigi Maiorano
 """
 
 import sys
@@ -16,8 +16,6 @@ from PyQt5.QtGui import QFont, QDoubleValidator
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem, \
     QHeaderView, QLineEdit
 from loguru import logger
-# # DO NOT REMOVE astropy
-# from astropy import units as u
 import numpy as np
 
 from project.app.new_element_dialog import NewElementDialog
@@ -117,7 +115,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         dlg = QFileDialog()
         
         file_path = dlg.getOpenFileName(self, 'Open YAML Configuration FIle',
-                                        directory=CONFIGS_DIR,
+                                        directory=str(CONFIGS_DIR),
                                         filter='Config Files (*.yaml)')[0]
         if file_path == '':
             return # Dialog cancelled, Exit this
@@ -635,9 +633,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         self.result_data = main_process(self.cfg_data)
 
-        # FIXME: result_data returned by main process is in base SI units,
-        #  overwriting those in UI easy-units
-
         # Convert any possible float64 values to float
         for elem, data in self.result_data['elements'].items():
             for attr, val in data.items():
@@ -693,7 +688,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         # Create file dialog to get save location
         dlg = QFileDialog()
         file_path = dlg.getSaveFileName(self, 'Save YAML Configuration FIle',
-                                        directory=CONFIGS_DIR,
+                                        directory=str(CONFIGS_DIR),
                                         filter='Config Files (*.yaml)')[0]
         if file_path == '':
             return  # Dialog cancelled, Exit this saving process
@@ -713,82 +708,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             yaml.dump(self.cfg_data, f)
 
         logger.debug(f"Config saved to {self.cfg_file}")
-
-
-    def save_results_table_to_dict(self): # TODO: in progress. Not used anywhere yet
-        '''Convert PyQt Table to an 'elements' dictionary of the same format
-                as the input config file. This can be passed to the main process
-
-                Note: This must be called explicitly and cannot be bound to a cell-changed event,
-                because of how new elements are generated
-                '''
-
-        def wrap_up_previous_element(elem_name, params):
-            if elem_name:  # Does not run for first element in table
-                # Save previous parameters if they exist
-                if len(params) > 0:  # Checks if parameters contain any values
-                    data[elem_name]['parameters'] = params
-                else:
-                    # Saves parameters entry as null instead of empty dict
-                    # a {key: empty dict} pair is ignored when writing to yaml, but null values are not
-                    data[elem_name]['parameters'] = None
-
-                # if gain_loss is not already added, include the default value of None
-                if not data[elem_name].get('gain_loss'):
-                    data[elem_name]['gain_loss'] = None
-
-        data = {}  # Empty dict to build
-        parameters = {}  # Parameter attributes that may be present in a link element
-        element_name = None  # The current element being read, initialized to none
-        idx = 0  # The position in the table of the element (1 = top element)
-
-        # Walk through each row of the table to detect new elements and read attributes
-        for r in range(self.tbl_elements.rowCount()):
-            # Check if this row is a new element
-            elem_item = self.tbl_elements.item(r, self.name_col)
-            if isinstance(elem_item, ElementTableItem):
-                # First, wrap up previous element
-                wrap_up_previous_element(element_name, parameters)
-                parameters = {}
-
-                # Then, start constructing next element
-                idx += 1
-                element_name = elem_item.text()
-                link_type = elem_item.link_type
-                input_type = elem_item.input_type
-
-                data[element_name] = {'input_type': input_type,
-                                      'link_type': link_type,
-                                      'idx': idx}
-
-            # Use last defined element name for the remaining parameters, skip if not defined
-            if element_name:
-                attribute = self.tbl_elements.item(r, self.attribute_col)
-
-                # Extract attribute name, depending on how data was inserted into cell
-                attribute_type = attribute.type
-                if attribute_type == 'gain_loss':
-                    name = 'gain_loss'
-                else:
-                    name = attribute.text()
-
-                # if strings are entered, this will raise a TypeError to be caught by the click action
-                value = self.tbl_elements.item(r, self.value_col).text()
-                if value == '':
-                    value = 0
-                value = float(value)
-
-                # Decide where to save name:value
-                if attribute_type == 'parameter':
-                    parameters[name] = value
-                else:
-                    data[element_name][name] = value
-
-        wrap_up_previous_element(element_name, parameters)
-
-        self.cfg_data['elements'] = data
-
-        self.fill_input_table()  # reload table with saved values (fills empty cells with 0)
 
 
     @staticmethod

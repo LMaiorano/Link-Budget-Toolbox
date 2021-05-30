@@ -893,8 +893,8 @@
    <slot>delete_element_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>82</x>
-     <y>376</y>
+     <x>93</x>
+     <y>334</y>
     </hint>
     <hint type="destinationlabel">
      <x>61</x>
@@ -995,6 +995,22 @@
     <hint type="destinationlabel">
      <x>391</x>
      <y>78</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_save_results</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>save_config_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>613</x>
+     <y>637</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>713</x>
+     <y>635</y>
     </hint>
    </hints>
   </connection>
