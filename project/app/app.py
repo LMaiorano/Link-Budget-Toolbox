@@ -17,6 +17,8 @@ from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidgetItem, \
     QHeaderView, QLineEdit
 from loguru import logger
 import numpy as np
+import traceback
+
 
 from project.app.new_element_dialog import NewElementDialog
 from project.app.rename_element_dialog import RenameElementDialog
@@ -81,7 +83,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.cfg_file = Path(self.default_cfg)
         self.cfg_data = self.read_config()
         self.element_details = self.read_config(file=ELEMENT_REFERENCE)
-        self.result_data = None
 
         # TABLE SETUP
         self.col_titles = ['Element Name', 'Attribute', 'Value', 'Units']
@@ -132,7 +133,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             self.fill_general_values()
         except Exception as E:
             logger.debug(f'Error loading file: {E}')
-
+            logger.debug(traceback.format_exc())
             if not isinstance(E, KeyError): # Some random exception that probably needs debugging
                 msg = ''
             elif 'Configuration file' in E.args[0]: # KeyError originates from self.read_config()
@@ -355,8 +356,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
             # ------------------------- Attributes ------------------------------------
             if element_input_type == 'gain_loss':
-                units = self.get_attribute_details(data, gain=True)['gain_loss']['units']
-                descr = self.get_attribute_details(data, gain=True)['gain_loss']['description']
+                units = self.get_attribute_details(data, gain=True)['units']
+                descr = self.get_attribute_details(data, gain=True)['description']
 
                 self.tbl_elements.setItem(row, self.attribute_col,
                                           AttributeTableItem('Gain',
@@ -487,7 +488,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def get_attribute_details(self, element:dict, specific_parameter=None, gain=False):
         '''Gets details about an element's parameters
 
-        Reads data from element_config_reference.yaml using a specific element.
+        Reads data from element_reference.yaml using a specific element.
         The link_type and input_type are used to determine which parameter set is applicable
 
         Parameters
@@ -508,12 +509,14 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
 
         '''
+        link_type = element['link_type']
         input_type = element['input_type']
 
-        if input_type == 'gain_loss' or gain: # Parameter_set not relevant because gain is directly given
-            return self.element_details['GENERIC']['gain_loss']
 
-        param_set_details = self.element_details[element['link_type']][input_type]
+        if link_type == 'gain_loss' or gain: # Parameter_set not relevant because gain is directly given
+            return self.element_details['GENERIC']['gain_loss']['gain_loss']
+
+        param_set_details = self.element_details[link_type][input_type]
         if specific_parameter: # If a specific parameter is requested
             return param_set_details[specific_parameter]
 
@@ -575,6 +578,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def delete_element_clicked(self):
         '''Deletes the selected table element'''
 
+        # FIXME: only deleting one at a time
         selected = self.tbl_elements.selectedRanges()
         if len(selected) == 0:
             return # quit because no rows selected
@@ -629,52 +633,26 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         # Update cfg_data elements
         self.save_input_table()
 
-
-
-        self.result_data = main_process(self.cfg_data)
+        self.cfg_data = main_process(self.cfg_data)
 
         # Convert any possible float64 values to float
-        for elem, data in self.result_data['elements'].items():
+        for elem, data in self.cfg_data['elements'].items():
             for attr, val in data.items():
                 if isinstance(val, np.float64):
-                    self.result_data['elements'][elem][attr] = float(val)
-
-
+                    self.cfg_data['elements'][elem][attr] = float(val)
 
         self.fill_results_table(self.cfg_data['elements'])
 
-        self.sum_results() # Sum the values in the gain column and display in totals
 
-        self.btn_save_results.setEnabled(True)
+        # Display Final Values
+        gain_sum = self.cfg_data['general_values']['total_gain']
+        margin = self.cfg_data['general_values']['total_margin']
 
 
-    def sum_results(self):
-        # Calculate gain/loss sum
-        sum = 0
-        for r in range(self.tbl_results.rowCount()):
-            gain_item = self.tbl_results.item(r, 1)
-            if isinstance(gain_item, QTableWidgetItem):
-                gain = gain_item.text()
-                try:
-                    sum += float(gain)
-
-                except ValueError as E:
-                    logger.debug(E)
-                    showdialog([f'An error has occurred during the analysis:', 'One or more elements '
-                                f'are missing a total gain'])
-
-        # Calculate margin
-        margin = self.cfg_data['general_values']['rx_sys_threshold'] \
-                 - (self.cfg_data['general_values']['input_power'] + sum )
-
-        # Display Values
-        self.txt_total.setText(f'{sum:.{self.decimals}f}')
+        self.txt_total.setText(f'{gain_sum:.{self.decimals}f}')
         self.txt_margin.setText(f'{margin:.{self.decimals}f}')
 
-        # Save Values
-        self.cfg_data['general_values']['total_gain'] = sum
-        self.cfg_data['general_values']['total_margin'] = margin
-
+        self.btn_save_results.setEnabled(True)
 
     def save_config_clicked(self):
         '''Save current configuration to yaml file'''
@@ -810,7 +788,7 @@ def set_log_level(log_level='INFO'):
 
 
 if __name__ == '__main__':
-    set_log_level('INFO')
+    set_log_level('DEBUG')
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle('Fusion')
     window = MainWindow(UI_decimal_accuracy=2)
