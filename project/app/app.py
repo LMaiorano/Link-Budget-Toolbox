@@ -354,8 +354,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
             # ------------------------- Attributes ------------------------------------
             if element_input_type == 'gain_loss':
-                units = self.get_attribute_details(data, gain=True)['units']
-                descr = self.get_attribute_details(data, gain=True)['description']
+                units = self.get_attribute_details(data, gain=True)['gain_loss']['units']
+                descr = self.get_attribute_details(data, gain=True)['gain_loss']['description']
 
                 self.tbl_elements.setItem(row, self.attribute_col,
                                           AttributeTableItem('Gain',
