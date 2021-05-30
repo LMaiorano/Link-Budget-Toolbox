@@ -200,8 +200,14 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def clear_all_clicked(self):
         self.clear_table_elements()
 
-    def validate_input_values(self):
+    def validate_input_values(self, allow_blank=False):
         '''Check whether all values in input table can be converted to float
+
+        Parameters
+        ----------
+        allow_blank : bool, optional
+            (Default False) Whether blank values are allowed. This is allowed when deleting
+                an element
 
         Returns
         -------
@@ -209,13 +215,16 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         '''
         try:
             for r in range(self.tbl_elements.rowCount()):
-                float(self.tbl_elements.item(r, self.value_col).text())
+                val = self.tbl_elements.item(r, self.value_col).text()
+                if allow_blank and val == '':
+                    return True
+                float(val)
             return True
         except ValueError:
             showdialog(['Please check that only numerical values are entered in the table'])
             return False
 
-    def save_input_table(self):
+    def save_input_table(self, **kwargs):
         '''Save contents of Input Table to self.cfg_data dictionary
 
         Converts PyQt Table to an 'elements' dictionary of the same format
@@ -250,7 +259,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         idx = 0                 # The position in the table of the element (1 = top element)
 
         # Check if data in table is valid
-        valid_data = self.validate_input_values()
+        allow_blank = kwargs.pop('allow_blank', False)
+        valid_data = self.validate_input_values(allow_blank=allow_blank)
         if not valid_data:
             return
 
@@ -360,12 +370,16 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                 units = self.get_attribute_details(data, gain=True)['units']
                 descr = self.get_attribute_details(data, gain=True)['description']
 
+                value = data['gain_loss']
+                if value is None:
+                    value = ''
+
                 self.tbl_elements.setItem(row, self.attribute_col,
                                           AttributeTableItem('Gain',
                                                              type='gain_loss',
                                                              description=descr))
                 self.tbl_elements.setItem(row, self.value_col,
-                                          ValueTableItem(str(data['gain_loss'])))
+                                          ValueTableItem(str(value)))
                 self.tbl_elements.setItem(row, self.units_col,
                                           UnitsTableItem(units))
                 row +=1
@@ -593,7 +607,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             for row in reversed(rows): # Must remove from bottom up, else indexes gets confused
                 self.tbl_elements.removeRow(row)
 
-        self.save_input_table()
+        self.save_input_table(allow_blank=True)
 
 
     def input_table_double_clicked(self, row, column):
