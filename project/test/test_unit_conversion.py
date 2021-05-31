@@ -1,5 +1,5 @@
 import unittest
-from project.unit_conversion import base_SI, prefixed_SI, freq_to_wavelength, wavelength_to_freq
+from project.unit_conversion import to_base_SI, to_prefixed_SI, freq_to_wavelength, wavelength_to_freq
 
 
 class UnitConversionTests(unittest.TestCase):
@@ -7,27 +7,43 @@ class UnitConversionTests(unittest.TestCase):
         in_val  = 300
         in_unit = 'km'
 
-        out_val, out_unit = base_SI(in_val, in_unit)
+        out_val = to_base_SI(in_val, in_unit)
         ref_val = 300e3
-        ref_unit = 'm'
 
         self.assertEqual(ref_val, out_val)
-        self.assertEqual(ref_unit, out_unit)
+
+
+    def test_base_SI_freq(self):
+        in_val  = 300
+        in_unit = 'kHz'
+
+        out_val = to_base_SI(in_val, in_unit)
+        ref_val = 300e3
+
+        self.assertEqual(ref_val, out_val)
+
 
     def test_prefix_SI(self):
         in_val = 750e-9
         desired_unit = 'nm'
 
-        out_val, out_unit = prefixed_SI(in_val, desired_unit)
+        out_val = to_prefixed_SI(in_val, desired_unit)
 
         ref_val = 750
-        ref_unit = 'nm'
 
         self.assertAlmostEqual(ref_val, out_val, 8)
-        self.assertEqual(ref_unit, out_unit)
+
 
     def test_prefix_SI_freq(self):
-        pass
+        in_val = 750e9
+        desired_unit = 'GHz'
+
+        out_val = to_prefixed_SI(in_val, desired_unit)
+
+        ref_val = 750
+
+        self.assertAlmostEqual(ref_val, out_val, 8)
+
 
     def test_freq_wavelength(self):
         freq1 = 500         # Hz
