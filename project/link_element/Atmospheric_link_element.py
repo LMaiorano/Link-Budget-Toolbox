@@ -18,25 +18,76 @@ class Atmospheric_LinkElement(LinkElement):
     automatically inherited and will also work
     '''
     def __init__(self, name, input_type, gain, parameters):
+        '''Atmospheric Attenuation Link Element
+        
+        Assigns all attributes such as the name, wether a gain is given
+        directly or needs to be calculated, said gain and the parameters list
+
+        Parameters
+        ----------
+       name : str
+            Defines the type of link element.
+        input_type : str
+            Defines wether a gain/loss is given or a parameter set is used.
+        gain : int
+            The gain or loss in Decibel of this link element in the case it is
+            known or given. Losses are given as negative gains.
+        parameters : dict
+            Contains parameters used: 
+                'air_temperature':[degK], 
+                'air_pressure':[Pa],
+                'water_vapor_content':[kg/m**3],
+                'wavelength':[m]
+                'elevation_angle':[deg].
+
+        Returns
+        -------
+        None.
+
+        '''
         # Run the initialization of parent LinkElement
         super().__init__(name, linktype='Atmospheric', gain = gain)
-        # Add attributes that are unique to TxElement
+        # Add attributes that are unique to Atmospheric_LinkElement
         self.input_type = input_type
 
-        self.t = parameters.get('air_temperature', None)        # [degC]
-        self.p = parameters.get('air_pressure', None)           # [hPa]
-        self.ro = parameters.get('water_vapor_content', None)   # [g/m**3]
-        self.wavelength = parameters.get('wavelength', None)    # [m]
-        self.angle = parameters.get('elevation_angle', None)    # [deg]
-        self.f = c/self.wavelength/1e6
-
+        self.t = parameters.get('air_temperature', None) -273.15    # [degC]
+        self.p = parameters.get('air_pressure', None)*1e-2          # [hPa]
+        self.ro = parameters.get('water_vapor_content', None)*1e3   # [g/m**3]
+        self.wavelength = parameters.get('wavelength', None)        # [m]
+        self.angle = parameters.get('elevation_angle', None)        # [deg]
+        self.f = c/self.wavelength*1e-6                             # [GHz]
+        # Check if gain/loss is given directly or calculations are required
         if self.input_type != 'gain_loss':
             self.process()
 
     def process(self):
+        '''
+        Atmospheric Attenuation specific calculations, based upon the 
+        "RECOMMENDATION ITU-R P.676-9 - Attenuation by atmospheric gases"
+        document of the International Telecommunication Union.
+        It combines the attenuation due to the path through the wet air and
+        the dry air and the path travelled. When the total attenuation is
+        calculated the Atmospheric loss is updated.
+
+        Returns
+        -------
+        None
+
+        '''
+        # Summates the attenuations due to the path through wet and dry air
         self.gain = (self.attenuationWetAir() + self.attenuationDryAir()
                      ) / np.sin(self.angle / 180 * np.pi)
     def attenuationDryAir(self):
+        '''
+        Calculates the atmospheric attenuation in dry air, based on the
+        water_vapor_content, air_temperature, air_pressure and frequency.
+        The function is valid up to 54 GHz.
+
+        Returns
+        -------
+        double
+
+        '''
         # approximation valid up to 54 GHz
         e = self.ro* (self.t + 273.15) / 216.7
         ptot= self.p + e
@@ -63,6 +114,16 @@ class Atmospheric_LinkElement(LinkElement):
         return att
 
     def attenuationWetAir(self):
+        '''
+        Calculates the atmospheric attenuation in wet air, based on the
+        water_vapor_content, air_temperature, air_pressure and frequency.
+        The function is valid up to 350 GHz.
+
+        Returns
+        -------
+        double
+
+        '''
         # approximation valid up to 350 GHz
         e = self.ro* (self.t + 273.15) / 216.7
         ptot= self.p + e
@@ -72,17 +133,23 @@ class Atmospheric_LinkElement(LinkElement):
         eta1 = 0.955 * rp* rt**(0.68) + 0.006 * self.ro
         eta2 = 0.735 * rp* rt**(0.5) + 0.0353 * rt**4 * self.ro
 
-        gamma1 = self.g(self.f, 22) * (3.98 * eta1 * np.exp(2.23 * (1 -rt))) / ((self.f -22.235)**2 + 9.42 * eta1**2) + (11.96 * eta1 * np.exp(0.7 * (1 -rt))) / ((self.f -183.31)**2 + 11.14 * eta1**2)
-        gamma2 = ((0.081 * eta1 * np.exp(6.44 * (1 -rt))) / ((self.f -321.226)**2 + 6.29 * eta1**2)) + ((3.66 * eta1 * np.exp(1.6 * (1 -rt))) / ((self.f -325.153)**2 + 9.22 * eta1**2))
-        gamma3 = ((25.37 * eta1 * np.exp(1.09 * (1 -rt))) / ((self.f -380)**2)) + ((17.4 * eta1 * np.exp(1.46 * (
+        gamma1 = self.g(self.f, 22) * (3.98 * eta1 * np.exp(2.23 * (
+            1 -rt))) / ((self.f -22.235)**2 + 9.42 * eta1**2) + (
+                11.96 * eta1 * np.exp(0.7 * (1 -rt))) / ((
+                    self.f -183.31)**2 + 11.14 * eta1**2)
+        gamma2 = ((0.081 * eta1 * np.exp(6.44 * (1 -rt))) / (
+            (self.f -321.226)**2 + 6.29 * eta1**2)) + ((3.66 * eta1 * np.exp(
+                1.6 * (1 -rt))) / ((self.f -325.153)**2 + 9.22 * eta1**2))
+        gamma3 = ((25.37 * eta1 * np.exp(1.09 * (1 -rt))) / (
+            (self.f -380)**2)) + ((17.4 * eta1 * np.exp(1.46 * (
                 1 -rt))) /((self.f -448)**2))
-        gamma4 = (self.g(self.f, 557) * (844.6 * eta1 * np.exp(0.17 * (1 -rt))) /(
-            (self.f -557)**2)) + (self.g(self.f, 752) * (290 * eta1 * np.exp(0.41 * (
-                1 -rt))) /((self.f -752)**2))
-        gamma5 = self.g(self.f, 1780) * (8.3328e4 * eta2 * np.exp(0.99 * (1 -rt))) /(
-            (self.f -1780)**2)
-        gammaw= (gamma1 + gamma2 + gamma3 + gamma4 + gamma5) * self.f**2 * rt**(
-            2.5) * self.ro* 1e-4
+        gamma4 = (self.g(self.f, 557) * (844.6 * eta1 * np.exp(0.17 * (
+            1 -rt))) /((self.f -557)**2)) + (self.g(self.f, 752) * (
+                290 * eta1 * np.exp(0.41 * (1 -rt))) /((self.f -752)**2))
+        gamma5 = self.g(self.f, 1780) * (8.3328e4 * eta2 * np.exp(0.99 * (
+            1 -rt))) /((self.f -1780)**2)
+        gammaw= (gamma1 + gamma2 + gamma3 + gamma4 + gamma5
+                 ) * self.f**2 * rt**(2.5) * self.ro* 1e-4
 
         sigmaw= 1.013 / (1 + np.exp(-8.6 * (rp-0.57)))
 
@@ -97,20 +164,39 @@ class Atmospheric_LinkElement(LinkElement):
         return att
 
     def g(self,f,fi):
-        return 1 + ((f-fi) / (f+fi))**2
+        '''
+        substitution calculation in Rec. ITU-R P.676-10
+
+        Returns
+        -------
+        float
+
+        '''
+        out = 1 + ((f-fi) / (f+fi))**2
+        return out
 
     def phi(self,rp, rt, a, b, c, d):
-        return rp**a * rt**b * np.exp(c * (1 - rp) + d * (1 - rt))
+        '''
+        substitution calculation in Rec. ITU-R P.676-10
+
+        Returns
+        -------
+        double
+
+        '''
+        out = rp**a * rt**b * np.exp(c * (1 - rp) + d * (1 - rt))
+        return out
 
 if __name__ == '__main__':
     # Put any code here you want to use to test the class
     # (like a scratch pad to test stuff while you're working)
-    testparameters = {'air_temperature': 15,
-                      'air_pressure': 1013,
-                      'water_vapor_content': 7.5,
+    testparameters = {'air_temperature': 15+273.15,
+                      'air_pressure': 101300,
+                      'water_vapor_content': 7.5*1e-3,
                       'wavelength': c/2e6,
                       'elevation_angle': 5}
-    testelement = Atmospheric_LinkElement('test', 'parameter_set_2', -131, testparameters)
+    testelement = Atmospheric_LinkElement('test', 'parameter_set_2', -131, 
+                                          testparameters)
     print(testelement)
     testelement.process()
     print(testelement)

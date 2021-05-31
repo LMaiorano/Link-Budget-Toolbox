@@ -43,7 +43,7 @@ class RX_LinkElement(LinkElement):
         '''
         # Run the initialization of parent LinkElement
         super().__init__(name, linktype='RX', gain = gain)
-        # Add attributes that are unique to RxElement
+        # Add attributes that are unique to Rx_LinkElement
         self.input_type = input_type
         # Add attributes that are unique parameters to RxElement
         self.efficiency = parameters.get('antenna_efficiency', None)
@@ -57,7 +57,7 @@ class RX_LinkElement(LinkElement):
         
     def process(self):
         '''
-        Free Space Path Loss Specific calculations, it checks which parameter
+        Free Space Path loss specific calculations, it checks which parameter
         set needs to be used and uses the respective required calculations.
         Parameter_set_1 uses the antenna efficiency, its diameter and the
         wavelength of transmission for calculating the receiving antenna gain.
