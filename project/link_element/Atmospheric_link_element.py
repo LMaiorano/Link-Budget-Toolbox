@@ -42,9 +42,9 @@ class Atmospheric_LinkElement(LinkElement):
         rp= ptot/ 1013
         rt= 288 / (273 + self.t)
 
-        xi1 = self.phi(rp, rt, 0.0717, -1.8132, 0.0156, -1.6515)
-        xi2 = self.phi(rp, rt, 0.5146, -4.6368, -0.1921, -5.7416)
-        xi3 = self.phi(rp, rt, 0.3414, -6.5851, 0.2130, -8.5854)
+        xi1 = float(self.phi(rp, rt, 0.0717, -1.8132, 0.0156, -1.6515))
+        xi2 = float(self.phi(rp, rt, 0.5146, -4.6368, -0.1921, -5.7416))
+        xi3 = float(self.phi(rp, rt, 0.3414, -6.5851, 0.2130, -8.5854))
         print(rt)
         print(rp)
         print(self.f)
