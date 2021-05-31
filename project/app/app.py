@@ -104,12 +104,17 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
 
         # Ensure only numerical values are entered in input fields
-        self.txt_in_power_W.setValidator(NotEmptyNumericValidator())
-        self.txt_in_power_dbm.setValidator(NotEmptyNumericValidator())
-        self.txt_threshold_W.setValidator(NotEmptyNumericValidator())
-        self.txt_threshold_dbm.setValidator(NotEmptyNumericValidator())
+        self._set_lineedit_validators()
 
 
+    def _set_lineedit_validators(self, remove=False):
+        validator = NotEmptyNumericValidator()
+        if remove:
+            validator = None
+        self.txt_in_power_W.setValidator(validator)
+        self.txt_in_power_dbm.setValidator(validator)
+        self.txt_threshold_W.setValidator(validator)
+        self.txt_threshold_dbm.setValidator(validator)
 
     def open_config_clicked(self):
         '''Opens a file dialog to select a config file'''
@@ -135,14 +140,15 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         except Exception as E:
             logger.debug(f'Error loading file: {E}')
             logger.debug(traceback.format_exc())
-            if not isinstance(E, KeyError): # Some random exception that probably needs debugging
-                msg = ''
-            elif 'Configuration file' in E.args[0]: # KeyError originates from self.read_config()
+            if 'Configuration file' in E.args[0]: # KeyError originates from self.read_config()
                 msg = E.args[0]
-            else: # A different (unexpected) KeyError
-                msg = f'Missing required section: "{E.args[0]}"'
+                showdialog(['Please select a valid YAML configuration file', '', msg])
+            else: # A different (unexpected) Exception
+                msg = traceback.format_exc()
+                showdialog(['An unexpected error occurred while loading configuration file', '', msg])
 
-            showdialog(['Please select a valid YAML configuration file', msg])
+
+
 
 
     def new_clicked(self):
@@ -191,6 +197,11 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         '''Clears input table'''
         self.tbl_elements.clearContents()
         self.tbl_elements.setRowCount(0)
+
+        self.txt_in_power_dbm.clear()
+        self.txt_in_power_W.clear()
+        self.txt_threshold_dbm.clear()
+        self.txt_threshold_W.clear()
 
         if results:
             self.tbl_results.clearContents()
@@ -431,6 +442,9 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         if threshold is None:
             threshold = 0
 
+        # Temporarily disable validators to allow any values to be put in the LineEdits
+        self._set_lineedit_validators(remove=True)
+
         self.txt_in_power_dbm.setText(f'{in_power}')
         self.txt_threshold_dbm.setText(f'{threshold}')
 
@@ -439,6 +453,9 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                                self.dBm_to_W, sigfigs=5)
         self.sync_input_fields(self.txt_threshold_dbm, self.txt_threshold_W,
                                self.dBm_to_W, sigfigs=5)
+
+        # Re-enable LineEdit Validators
+        self._set_lineedit_validators()
 
 
     def fill_results_table(self, results_data):
@@ -610,6 +627,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         self.save_input_table(allow_blank=True)
 
+
     def shift_selected_elements(self, up=True):
         if not self.validate_input_values():
             return
@@ -654,6 +672,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
     def move_up_clicked(self):
         self.shift_selected_elements(up=True)
+
 
     def move_down_clicked(self):
         self.shift_selected_elements(up=False)
