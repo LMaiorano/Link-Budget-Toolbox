@@ -39,12 +39,14 @@ Proposed Milestones (completed by Monday Meeting):
 
 		Showcase meeting w/ Stefano
 
-		|			2 WEEKS					|
-		|	Unit Testing					|
-		|	Verification & Validation		|
-		|	New LinkElements				|
-		| 	Polish UI 						|
-		|									|
+		|			2 WEEKS					        |
+		|	Verification (Unit/Integration Testing)	|
+		|	Validation		                        |
+		|	Code Cleanup    				        |
+        |	Final Documentation 			        |
+		|	New LinkElements (removed after meeting)|
+		| 	Polish UI (removed after meeting)		|
+		|									        |
 	31 May 	- Meeting w/ Stefano 
 		Check that there are no significant changes needed
 
