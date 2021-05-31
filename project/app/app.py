@@ -765,8 +765,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         """
         return 10 ** ((dBm - 30) / 10)
 
-    @staticmethod
-    def sync_input_fields(in_field, out_field, convert_fn, sigfigs=4):
+    def sync_input_fields(self, in_field, out_field, convert_fn, sigfigs=4):
         """Updates the text in one QLineEdit field based on another field
 
         Parameters
@@ -785,11 +784,16 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         None
             Modifies out_field directly
         """
+        self._set_lineedit_validators(remove=True)
+
         if in_field.text() in ['', '-']:
             in_field.setText('0.0')
 
         val_in = float(in_field.text())
         out_field.setText(f'{convert_fn(val_in):.{sigfigs}g}')
+
+        self._set_lineedit_validators()
+
 
     def input_power_W_edited(self):
         self.sync_input_fields(self.txt_in_power_W, self.txt_in_power_dbm,
@@ -832,10 +836,15 @@ def set_log_level(log_level='INFO'):
         logger.add(sys.stderr, level="DEBUG")
 
 
-if __name__ == '__main__':
-    set_log_level('DEBUG')
+def run_app():
+    set_log_level()
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle('Fusion')
     window = MainWindow()
     window.show()
     app.exec()
+
+if __name__ == '__main__':
+    set_log_level('DEBUG')
+
+    run_app()
