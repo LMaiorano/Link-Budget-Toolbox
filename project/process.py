@@ -60,9 +60,34 @@ def read_user_data(user_data):
         Dictionary which gives along its rows per link element the link element name, link type, input type,
         gain loss and parameters, based on the user input in the dictionary user_data
     '''
+    # user_data = {'elements': {'Free Space': {'gain_loss': None,
+    #                                               'idx': 3,
+    #                                               'input_type': 'parameter_set_2',
+    #                                               'link_type': 'FREE_SPACE',
+    #                                               'parameters': {'angle': 10.0,
+    #                                                              'distance': 1500.0,
+    #                                                              'gs_altitude': 0.0,
+    #                                                              'sc_altitude': 300.0,
+    #                                                              'wavelength': 10.0}},
+    #                                'GS RX Ant': {'gain_loss': None, 'idx': 1,
+    #                                              'input_type': 'parameter_set_1',
+    #                                              'link_type': 'RX',
+    #                                              'parameters': {'antenna_diameter': 1.0,
+    #                                                             'antenna_efficiency': 0.8,
+    #                                                             'wavelength': 100.0}},
+    #                                'SC TX Ant': {'gain_loss': 10.0,
+    #                                              'idx': 2,
+    #                                              'input_type': 'gain_loss',
+    #                                              'link_type': 'GENERIC',
+    #                                              'parameters': None}},
+    #                   'general_values': {'input_power': 65,
+    #                                      'rx_sys_threshold': 6,
+    #                                      'total_gain': None,
+    #                                      'total_margin': None},
+    #                   'settings': {'case_type': 'nominal'}}
 
     df_user_data = pd.DataFrame.from_dict(user_data['elements']).T.reset_index().rename(columns={'index' : 'name'})
-
+    # print(df_user_data.values.tolist())
     return df_user_data
 
 
