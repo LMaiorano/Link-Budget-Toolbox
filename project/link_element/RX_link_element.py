@@ -31,8 +31,10 @@ class RX_LinkElement(LinkElement):
             The gain or loss in Decibel of this link element in the case it is
             known or given. Losses are given as negative gains.
         parameters : dict
-            Parameters used: Antenna Efficiency[1 = 100%], Antenna diameter[m],
-            Transmission wavelength[m].
+            Contains parameters used: 
+                Antenna Efficiency[1 = 100%], 
+                Antenna diameter[m],
+                Transmission wavelength[m].
 
         Returns
         -------
@@ -59,10 +61,11 @@ class RX_LinkElement(LinkElement):
         set needs to be used and uses the respective required calculations.
         Parameter_set_1 uses the antenna efficiency, its diameter and the
         wavelength of transmission for calculating the receiving antenna gain.
+        Then it updates the gain of the RX_LinkElement object.
 
         Returns
         -------
-        self.gain: The updated gain of the RX_LinkElement object.
+        None
 
         '''
         # RX Specific calculations, first checks if any calculations are 

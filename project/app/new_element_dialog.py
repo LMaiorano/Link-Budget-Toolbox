@@ -18,6 +18,9 @@ from project.settings import APP_UI_DIR
 newelement_form_class = uic.loadUiType(Path(APP_UI_DIR, 'new_element.ui'))[0]
 
 class NewElementDialog(QDialog, newelement_form_class):
+
+    
+    
     def __init__(self, element_reference, existing_names, parent=None):
         super().__init__(parent=parent)
         self.setupUi(self)
@@ -36,6 +39,7 @@ class NewElementDialog(QDialog, newelement_form_class):
 
     def accept(self) -> None:
         '''Check that required fields are filled before continuing'''
+        
         conditions_unmet = 2
 
         # Check Name
@@ -94,6 +98,19 @@ class NewElementDialog(QDialog, newelement_form_class):
             self.summarize_info()    
 
     def refresh_param_set(self, selected_elem_type):
+        '''
+        
+
+        Parameters
+        ----------
+        selected_elem_type : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        '''
         # Add available parameters to Parameters Set combobox
         self.cmb_set_param.clear()  # Ensures it start empty
         
@@ -106,6 +123,19 @@ class NewElementDialog(QDialog, newelement_form_class):
                     self.cmb_set_param.addItem(param_set)
     
     def show_overall_desc(self, selected_element_type):
+        '''
+        
+
+        Parameters
+        ----------
+        selected_element_type : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        '''
         
         if self.rdl_yes.isChecked() or self.rdl_no.isChecked():
             description = self.element_ref[selected_element_type]['overall_description']
@@ -117,13 +147,11 @@ class NewElementDialog(QDialog, newelement_form_class):
         ''' Show all the data the user has selected for the new Element'''
         
         # Gather all the Element parameters
-        element_name = self.txt_element_name.text()  # Get the element name
         selected_elem_type = self.cmb_element_type.currentText()   # Get element type
         param_set = self.cmb_set_param.currentText()   # Get parameter set
         
         # Display information in the text box
         self.txt_summary.setPlainText("")   # Makes sure it starts empty
-        #self.txt_summary.insertPlainText(f"Name: {element_name}")
         self.txt_summary.appendPlainText(f"Type: {selected_elem_type}")
         self.txt_summary.appendPlainText("Parameters: ")
         if self.rdl_yes.isChecked():
