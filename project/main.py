@@ -7,9 +7,16 @@ Script execution of the Link Budget. Performs same calculations as the UI app
 from project.process import main_process, load_from_yaml
 from pathlib import Path
 from project.settings import DEFAULT_APP_CONFIG
+from project.app.app import run_app
+import argparse
 
 
-def main(config_file):
+def run_script(config_file):
+    def column_print(values, indent=''):
+        col_width = max(len(name) for row in values for name in row) + 2
+        for row in values:
+            print(indent + "".join(word.ljust(col_width) for word in row))
+
     # Load config
     data = load_from_yaml(config_file)
 
@@ -28,7 +35,6 @@ def main(config_file):
               ["Margin:", f"{result['general_values']['total_margin']} dB"]]
 
 
-
     column_print(header)
     print()
     print(f'Total Gain per Element:')
@@ -37,14 +43,26 @@ def main(config_file):
     column_print(footer)
 
 
-def column_print(values, indent=''):
-    col_width = max(len(name) for row in values for name in row) + 2
-    for row in values:
-        print(indent + "".join(word.ljust(col_width) for word in row))
+def main(method='script', config_file=DEFAULT_APP_CONFIG):
+    # ----------- Command Line Script ---------
+    if method.lower() == 'script':
+        run_script(config_file)
+
+    # --------- GUI Application ------------
+    elif method.lower() == 'app':
+        run_app()
 
 
 if __name__ == '__main__':
-    default_file = Path(DEFAULT_APP_CONFIG)
+    """Available Methods:
+            'app'
+            'script' - Requires file path of YAML config file
+    """
+    main('app')
 
-    main(default_file)
+    # config1 = Path(DEFAULT_APP_CONFIG)
+    # main(method='script', config_file=config1)
+
+
+
 
