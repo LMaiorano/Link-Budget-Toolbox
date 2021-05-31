@@ -28,13 +28,14 @@ class Atmospheric_LinkElement(LinkElement):
         self.ro = parameters.get('water_vapor_content', None)   # [g/m**3]
         self.wavelength = parameters.get('wavelength', None)    # [m]
         self.angle = parameters.get('elevation_angle', None)    # [deg]
-        self.f = c/self.wavelength
+        self.f = c/self.wavelength/1e6
 
         if self.input_type != 'gain_loss':
             self.process()
 
     def process(self):
-        self.gain = (self.attenuationWetAir() + self.attenuationDryAir()) / np.sin(self.angle / 180 * np.pi)
+        self.gain = (self.attenuationWetAir() + self.attenuationDryAir()
+                     ) / np.sin(self.angle / 180 * np.pi)
     def attenuationDryAir(self):
         # approximation valid up to 54 GHz
         e = self.ro* (self.t + 273.15) / 216.7
@@ -45,18 +46,14 @@ class Atmospheric_LinkElement(LinkElement):
         xi1 = float(self.phi(rp, rt, 0.0717, -1.8132, 0.0156, -1.6515))
         xi2 = float(self.phi(rp, rt, 0.5146, -4.6368, -0.1921, -5.7416))
         xi3 = float(self.phi(rp, rt, 0.3414, -6.5851, 0.2130, -8.5854))
-        print(rt)
-        print(rp)
-        print(self.f)
-        print(xi1)
-        print(xi2)
-        print(xi3)
-        # TODO: find out what is causing the RuntimeWarning: invlaid value encountered in double scalars
-        gamma0 = (((7.2 * rt**(2.8)) / (self.f**2 + 0.34 * rp**2 * rt**(1.6)))+ ((0.62 * xi3) / ((54 -self.f)**(1.16 * xi1) + 0.83 * xi2)))* self.f**2 * rp**2 * 1e-3
+        gamma0 = (((7.2 * rt**(2.8)) / (self.f**2 + 0.34 * rp**2 * rt**(1.6)))
+                  + ((0.62 * xi3) / ((54 -self.f)**(1.16 * xi1) + 0.83 * xi2))
+                  ) * self.f**2 * rp**2 * 1e-3
 
         t1 = 4.64 / (1 + 0.066 * rp**(-2.3)) * np.exp(
             -((self.f -59.7) / (2.87 + 12.4 * np.exp(-7.9 * rp)))**2)
-        t2 = 0.14 * np.exp(2.12 * rp) / ((self.f -118.75)**2 + 0.031 * np.exp(2.2 * rp))
+        t2 = 0.14 * np.exp(2.12 * rp) / (
+            (self.f -118.75)**2 + 0.031 * np.exp(2.2 * rp))
         t3 = 0.0114 / (1 + 0.14 * rp**(-2.6)) * self.f * (
             -0.0247 + 0.0001 * self.f + 1.61e-6 * self.f**2) / (
                 1 -0.0169 * self.f + 4.1e-5 * self.f**2 + 3.2e-7 * self.f**3)
@@ -109,10 +106,10 @@ if __name__ == '__main__':
     # Put any code here you want to use to test the class
     # (like a scratch pad to test stuff while you're working)
     testparameters = {'air_temperature': 15,
-                      'air_pressure': 1023,
+                      'air_pressure': 1013,
                       'water_vapor_content': 7.5,
                       'wavelength': c/2e6,
-                      'elevation_angle': 89}
+                      'elevation_angle': 5}
     testelement = Atmospheric_LinkElement('test', 'parameter_set_2', -131, testparameters)
     print(testelement)
     testelement.process()
