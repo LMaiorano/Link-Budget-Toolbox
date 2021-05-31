@@ -143,6 +143,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.cfg_file = Path(self.default_cfg)
         self.cfg_data = self.read_config()
         self.fill_input_table()
+        self.fill_general_values()
 
     def read_config(self, file=None):
         """Reads and loads YAML configuration file to a dictionary
@@ -713,6 +714,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         if not valid_data:
             return  # Abort saving, values must first be fixed
 
+        self.save_input_table()
+
         # Create file dialog to get save location
         dlg = QFileDialog()
         file_path = dlg.getSaveFileName(self, 'Save YAML Configuration FIle',
@@ -836,8 +839,8 @@ def set_log_level(log_level='INFO'):
         logger.add(sys.stderr, level="DEBUG")
 
 
-def run_app():
-    set_log_level()
+def run_app(log_lvl='INFO'):
+    set_log_level(log_lvl)
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle('Fusion')
     window = MainWindow()
@@ -845,6 +848,4 @@ def run_app():
     app.exec()
 
 if __name__ == '__main__':
-    set_log_level('DEBUG')
-
-    run_app()
+    run_app(log_lvl='DEBUG')

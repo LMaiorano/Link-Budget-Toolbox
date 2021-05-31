@@ -47,6 +47,14 @@ elements:
     input_type: gain_loss
     link_type: GENERIC
     parameters: null
+  as:
+    gain_loss: null
+    idx: 9
+    input_type: parameter_set_1
+    link_type: FREE_SPACE
+    parameters:
+      distance: 34.0
+      frequency: 23.0
 general_values:
   input_power: 30.0
   rx_sys_threshold: -30.0

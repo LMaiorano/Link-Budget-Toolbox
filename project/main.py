@@ -57,6 +57,8 @@ if __name__ == '__main__':
     """Available Methods:
             'app'
             'script' - Requires file path of YAML config file
+            
+    Modify settings.py to change default file paths
     """
     main('app')
 

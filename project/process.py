@@ -149,13 +149,13 @@ def main_process(user_data):
         User_data dictionary which has been updated with the calculated gains/losses
     '''
     # Convert parameter units to standard SI base units
-    convert_SI_units(user_data)
+    user_data = convert_SI_units(user_data)
 
     results_data = fill_results_data(read_user_data(user_data), user_data)
     sum_results(results_data)
 
     # Convert parameter units back to logical units
-    convert_SI_units(user_data, to_base_SI=False)
+    results_data = convert_SI_units(results_data, to_base_SI=False)
 
     return results_data
 

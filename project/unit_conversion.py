@@ -11,6 +11,8 @@ from loguru import logger
 import yaml
 from project.settings import ELEMENT_REFERENCE
 from astropy import units as u
+import scipy.constants as sc
+import copy
 
 def load_from_yaml(file):
     with open(file, 'r') as f:
@@ -60,6 +62,8 @@ def prefixed_SI(base_si_val, prefix_unit_str):
     The base SI unit is derived directly from the desired prefixed unit.
     Note: This only works for single units. Composite units (ie m / s^2) are not supported
 
+    This is used after the main_process calculation to convert back to logical units
+
     Parameters
     ----------
     base_si_val : float
@@ -95,7 +99,9 @@ def prefixed_SI(base_si_val, prefix_unit_str):
         return None, None
 
 def convert_SI_units(data, to_base_SI=True):
-    '''Convert units to standard SI units
+    '''Convert units to the base SI units
+
+    Example: km -> m, GHz -> Hz
 
     References:
         'element_reference.yaml' for the given units per parameter
@@ -110,6 +116,9 @@ def convert_SI_units(data, to_base_SI=True):
 
     ignore_units = ['dB', 'deg', '-', '']
 
+    # Create copy to write changes to, without modifying iterator
+    converted_data = copy.deepcopy(data)
+
     for element, attributes in data['elements'].items():
         if attributes['parameters'] is None:
             continue  # move on to next element since no parameters to convert
@@ -117,23 +126,56 @@ def convert_SI_units(data, to_base_SI=True):
         link_type = attributes['link_type']
         input_type = attributes['input_type']
 
+        converted_params = {}
         for param, value in attributes['parameters'].items():
+            if not to_base_SI:
+                # Convert frequency parameter (currently wavelength in [m]) to [Hz]
+                if param.lower() == 'wavelength':
+                    value = wavelength_to_freq(value)
+                    # replace w/ 'frequency'
+                    param = 'frequency'
+
             unit = param_ref[link_type][input_type][param]['units'] # Determine unit
 
             if unit not in ignore_units:
+                # -------------- BEFORE Calculations -------------
                 if to_base_SI:
-                    value = base_SI(value, unit)[0]      # Convert value to base SI
+                    # Convert value to base SI
+                    value, new_unit = base_SI(value, unit)
+
+                    # Convert frequency [Hz] to wavelength
+                    if param.lower() == 'frequency':
+                        if new_unit != '1 / s':
+                            logger.debug(f'Frequency not reduced to Hz. {new_unit}')
+                        value = freq_to_wavelength(value)
+
+                        # Replace with 'wavelength'
+                        param = 'wavelength'
+
+                # -------------- AFTER Calculations -------------------
                 else:
-                    value = prefixed_SI(value, unit)[0]
+                    # Convert value to user-friendly unit
+                    value= prefixed_SI(value, unit)[0]
 
-            # Replace value in dictionary
-            data['elements'][element]['parameters'][param] = value
+            converted_params[param] = value
 
+        # Replace value in dictionary
+        converted_data['elements'][element]['parameters'] = converted_params
+
+    return converted_data
+
+
+
+def freq_to_wavelength(f):
+    return float(sc.c / f)
+
+def wavelength_to_freq(lmbda):
+    return float(sc.c / lmbda)
 
 
 if __name__ == '__main__':
     test_val = 60
-    test_unit = 'km / s'
+    test_unit = 'km '
 
     # Convert to SI Base units
     si_val, si_unit = base_SI(test_val, test_unit)
