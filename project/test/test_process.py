@@ -1,12 +1,31 @@
 import unittest
-from project.process import read_user_data, fill_results_data
+from project.process import read_user_data, fill_results_data, load_from_yaml
+
 
 class MyTestCase(unittest.TestCase):
     # TODO: Use dics/df from txt/csv/??? file instead of hardcoding in this script
     # TODO: find setup / teardown? to limit crosscontamination test variables between unit tests
     # TODO: Check for tests to fail, skip next tests, as it is chronological.
+
+    def setUp(self):
+        self.maxDiff = None
+        self.data_bare_minimum = load_from_yaml('data/bare_minimum.yaml')
+        self.data_generic_only = load_from_yaml('data/generic_only.yaml')
+
     def test_load_from_yaml(self):
-        pass
+        ref_data = {"elements": {"test_element": {"input_type": "parameter_set_1",
+                                                  "link_type":"FREE_SPACE",
+                                                  "idx": 1,
+                                                  "parameters":{"distance": 3000.0,
+                                                                "frequency": 5.0},
+                                                  "gain_loss": None}},
+                    "general_values": {"input_power": 30.0,
+                                      "rx_sys_threshold": 6.021,
+                                      "total_gain": None,
+                                      "total_margin": None},
+                    "settings": {"case_type": "nominal"}
+                    }
+        self.assertDictEqual(self.data_bare_minimum, ref_data)
 
     def test_save_to_yaml(self):
         pass

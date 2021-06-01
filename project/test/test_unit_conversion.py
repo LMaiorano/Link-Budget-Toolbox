@@ -35,8 +35,8 @@ class UnitConversionTests(unittest.TestCase):
 
 
     def test_prefix_SI_freq(self):
-        in_val = 750e9
-        desired_unit = 'GHz'
+        in_val = 750e6
+        desired_unit = 'MHz'
 
         out_val = to_prefixed_SI(in_val, desired_unit)
 

@@ -1,0 +1,16 @@
+elements:
+  test_element:
+    gain_loss: null
+    idx: 1
+    input_type: parameter_set_1
+    link_type: FREE_SPACE
+    parameters:
+      distance: 3000.0
+      frequency: 5.0
+general_values:
+  input_power: 30.0
+  rx_sys_threshold: 6.021
+  total_gain: null
+  total_margin: null
+settings:
+  case_type: nominal

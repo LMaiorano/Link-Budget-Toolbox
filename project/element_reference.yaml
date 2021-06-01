@@ -17,10 +17,6 @@ FREE_SPACE:
             description:    Radio frequency
             units:          GHz
             range:          "(0, inf)"
-#        wavelength:
-#            description:    Radio signal wavelength
-#            units:          nm
-#            range:          "(0, inf)"
     parameter_set_2:
         angle:
             description:    "??????"
@@ -37,9 +33,9 @@ FREE_SPACE:
             description:    Spacecraft altitude
             units:          km
             range:          "(0, inf)"
-        wavelength:
-            description:    Radio signal wavelength
-            units:          nm
+        frequency:
+            description:    Radio frequency
+            units:          GHz
             range:          "(0, inf)"
 RX:
     overall_description:    Summary of RX element
@@ -52,9 +48,9 @@ RX:
             description:    Efficiency of antenna
             units:          "-"
             range:          "(0, 1]"
-        wavelength:
-            description:    Radio signal wavelength
-            units:          nm
+        frequency:
+            description:    Radio frequency
+            units:          GHz
             range:          "(0, inf)"
 TX:
     overall_description:    Summary of TX element
@@ -67,17 +63,18 @@ TX:
             description:    Efficiency of antenna
             units:          "-"
             range:          "(0, 1]"
-        wavelength:
-            description:    Radio signal wavelength
-            units:          nm
+        frequency:
+            description:    Radio frequency
+            units:          GHz
             range:          "(0, inf)"
     parameter_set_2:
         waist_radius:
             description:    "??????"
             units:          m
-        wavelength:
-            description:    Radio signal wavelength
-            units:          nm
+        frequency:
+            description:    Radio frequency
+            units:          GHz
+            range:          "(0, inf)"
 GENERIC:
     overall_description:    Summary of GENERIC element
     gain_loss:
