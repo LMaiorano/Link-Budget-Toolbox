@@ -1,5 +1,6 @@
 import unittest
-from project.process import read_user_data, fill_results_data, load_from_yaml
+from project.process import read_user_data, fill_results_data, load_from_yaml, \
+    main_process
 
 
 class MyTestCase(unittest.TestCase):
@@ -146,8 +147,19 @@ class MyTestCase(unittest.TestCase):
     def test_sum_results(self):
         pass
 
-    def test_main_process(self):
+    def test_main_process_basic(self):
+        result = main_process(self.data_generic_only)
+
+        self.data_generic_only['general_values']['total_gain'] = -53.0
+        self.data_generic_only['general_values']['total_margin'] = -7
+
+        # Check that all units are converted back properly and the inputs have not been changed
+        self.assertDictEqual(result, self.data_generic_only)
+
+    def test_main_process_complex(self):
         pass
+
+
 
 if __name__ == '__main__':
     unittest.main()

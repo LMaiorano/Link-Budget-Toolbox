@@ -15,27 +15,27 @@ FREE_SPACE:
             range:          "(0, inf)"
         frequency:
             description:    Radio frequency
-            units:          GHz
+            units:          MHz
             range:          "(0, inf)"
     parameter_set_2:
         angle:
             description:    "??????"
             units:          deg
         distance:
-            description:    Distance between spacecraft and ground station
-            units:          m
+            description:    Slant range between spacecraft and ground station
+            units:          km
             range:          "(0, inf)"
         gs_altitude:
             description:    Ground station altitude
             units:          m
-            range:          "(0, inf)"
+            range:          "[0, inf)"
         sc_altitude:
             description:    Spacecraft altitude
             units:          km
-            range:          "(0, inf)"
+            range:          "[0, inf)"
         frequency:
             description:    Radio frequency
-            units:          GHz
+            units:          MHz
             range:          "(0, inf)"
 RX:
     overall_description:    Summary of RX element
@@ -50,7 +50,7 @@ RX:
             range:          "(0, 1]"
         frequency:
             description:    Radio frequency
-            units:          GHz
+            units:          MHz
             range:          "(0, inf)"
 TX:
     overall_description:    Summary of TX element
@@ -65,7 +65,7 @@ TX:
             range:          "(0, 1]"
         frequency:
             description:    Radio frequency
-            units:          GHz
+            units:          MHz
             range:          "(0, inf)"
     parameter_set_2:
         waist_radius:
@@ -73,7 +73,7 @@ TX:
             units:          m
         frequency:
             description:    Radio frequency
-            units:          GHz
+            units:          MHz
             range:          "(0, inf)"
 GENERIC:
     overall_description:    Summary of GENERIC element

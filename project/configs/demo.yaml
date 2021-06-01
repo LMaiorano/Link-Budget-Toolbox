@@ -9,7 +9,7 @@ elements:
       distance: 1500.0
       gs_altitude: 0.0
       sc_altitude: 300.0
-      wavelength: 10.0
+      frequency: 10.0
   GS RX Ant:
     gain_loss: null
     idx: 1
@@ -18,7 +18,7 @@ elements:
     parameters:
       antenna_diameter: 1.0
       antenna_efficiency: 0.8
-      wavelength: 100.0
+      frequency: 100.0
   SC TX Ant:
     gain_loss: 10.0
     idx: 2
