@@ -3,7 +3,7 @@ from project.process import read_user_data, fill_results_data, load_from_yaml, \
     main_process
 
 
-class MyTestCase(unittest.TestCase):
+class ProcessTestCase(unittest.TestCase):
     # TODO: Use dics/df from txt/csv/??? file instead of hardcoding in this script
     # TODO: find setup / teardown? to limit crosscontamination test variables between unit tests
     # TODO: Check for tests to fail, skip next tests, as it is chronological.
@@ -14,6 +14,8 @@ class MyTestCase(unittest.TestCase):
         self.data_generic_only = load_from_yaml('data/generic_only.yaml')
 
     def test_load_from_yaml(self):
+        # Try to limit this to the only hard-coded dictionary. If this test passes, all other
+        # dictionaries (reference or input) can be loaded from a file instead
         ref_data = {"elements": {"test_element": {"input_type": "parameter_set_1",
                                                   "link_type":"FREE_SPACE",
                                                   "idx": 1,
