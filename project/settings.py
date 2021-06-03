@@ -24,7 +24,7 @@ ELEMENT_REFERENCE = Path(BASE_DIR, 'project/element_reference.yaml')
 
 # LinkBudget Configurations, loaded/saved by UI and run by process
 CONFIGS_DIR = Path(BASE_DIR, 'project/configs')
-DEFAULT_APP_CONFIG = Path(BASE_DIR, CONFIGS_DIR, 'default_config.yaml')
+DEFAULT_LINK_CONFIG = Path(BASE_DIR, CONFIGS_DIR, 'default_config.yaml')
 
 
 

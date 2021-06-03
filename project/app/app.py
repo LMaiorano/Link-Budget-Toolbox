@@ -22,7 +22,7 @@ from project.app.custom_objects import *
 from project.app.new_element_dialog import NewElementDialog
 from project.app.rename_element_dialog import RenameElementDialog
 from project.process import main_process
-from project.settings import ELEMENT_REFERENCE, DEFAULT_APP_CONFIG, CONFIGS_DIR, APP_UI_DIR
+from project.settings import ELEMENT_REFERENCE, DEFAULT_LINK_CONFIG, CONFIGS_DIR, APP_UI_DIR
 
 mainwindow_form_class = uic.loadUiType(Path(APP_UI_DIR, 'main_window.ui'))[0]
 
@@ -43,7 +43,9 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     files are dynamically loaded at each run and SHOULD NEVER BE MODIFIED DIRECTLY. Modifications
     will be overwritten by QtDesigner.
 
-    Signals/Slots: -------------- Connections between UI objects and their corresponding
+    Signals/Slots:
+    --------------
+    Connections between UI objects and their corresponding
     functions is done using signals/slots. ALL of these are specified in QtDesigner, where the
     slot is the <class method name>+() added manually in the 'Signals/Slots of MainWindow - Qt
     Designer' editor. Any action by the user that should trigger a function is linked in this
@@ -70,7 +72,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.setupUi(self)
 
         self.decimals = kwargs.pop('UI_decimal_accuracy', 2)
-        self.default_cfg = DEFAULT_APP_CONFIG
+        self.default_cfg = DEFAULT_LINK_CONFIG
 
         # Set initial values and general attributes
         self.cfg_file = Path(self.default_cfg)

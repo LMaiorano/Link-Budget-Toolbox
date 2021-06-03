@@ -1,17 +1,37 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Script execution of the Link Budget. Performs same calculations as the UI app
+Script execution of the Link Budget.
+Allows user to choose whether to use script or UI app
+
 """
 
 from project.process import main_process, load_from_yaml
-from pathlib import Path
-from project.settings import DEFAULT_APP_CONFIG
+from project.settings import DEFAULT_LINK_CONFIG
 from project.app.app import run_app
+
 import argparse
+import os
+from pathlib import Path
+
 
 
 def run_script(config_file):
+    '''Runs Link Budget Toolbox as a script without a User Interface
+
+    Total gain and margin are printed in console as results
+
+    Parameters
+    ----------
+    config_file : str
+        File path to configuration YAML file
+
+    Returns
+    -------
+    dict
+        Updated configuration file, with gain of each element and total overall
+        gain and margin
+    '''
     def column_print(values, indent=''):
         col_width = max(len(name) for row in values for name in row) + 2
         for row in values:
@@ -42,28 +62,43 @@ def run_script(config_file):
     print()
     column_print(footer)
 
+    return result
 
-def main(method='script', config_file=DEFAULT_APP_CONFIG):
+
+
+
+def main():
+    '''Runs Link Budget Toolbox. Defaults to GUI app, unless CLI argument '-s' is passed
+
+    usage: Link Budget Toolbox [-h] [-s] [-f FILE]
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -s, --script          Run as CLI script. Does not open GUI
+      -f FILE, --file FILE  Link Budget configuration file (YAML)
+
+    '''
+
+    parser = argparse.ArgumentParser(prog="Link Budget Toolbox",
+                                     description="Runs by default as application with GUI")
+    parser.add_argument('-s', '--script', help="Run as CLI script. Does not open GUI",  action="store_true")
+    parser.add_argument('-f', '--file', nargs=1, default=DEFAULT_LINK_CONFIG, help='Link Budget configuration file (YAML)')
+    args = parser.parse_args()
+
     # ----------- Command Line Script ---------
-    if method.lower() == 'script':
-        run_script(config_file)
+    if args.script:
+        cfg_file = Path(os.getcwd(), args.file[0].strip("'"))
+        print(cfg_file)
+        run_script(str(cfg_file))
 
     # --------- GUI Application ------------
-    elif method.lower() == 'app':
+    else:
         run_app()
 
 
 if __name__ == '__main__':
-    """Available Methods:
-            'app'
-            'script' - Requires file path of YAML config file
-            
-    Modify settings.py to change default file paths
-    """
-    main('app')
+    main()
 
-    # config1 = Path(DEFAULT_APP_CONFIG)
-    # main(method='script', config_file=config1)
 
 
 

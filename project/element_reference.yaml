@@ -19,7 +19,7 @@ FREE_SPACE:
             range:          "(0, inf)"
     parameter_set_2:
         angle:
-            description:    "??????"
+            description:    "Elevation angle"
             units:          deg
         distance:
             description:    Slant range between spacecraft and ground station

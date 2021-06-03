@@ -13,7 +13,7 @@ from pathlib import Path
 import yaml
 import pandas as pd
 from project.unit_conversion import convert_config_units
-from project.settings import CONFIGS_DIR, DEFAULT_APP_CONFIG
+from project.settings import CONFIGS_DIR, DEFAULT_LINK_CONFIG
 
 
 

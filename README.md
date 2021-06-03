@@ -8,29 +8,122 @@ A modular Python alternative to STK to easily calculate satellite link budgets
 More documentation to follow...
 
 
-## Git Command Reference
+## Usage
+To use the Link Budget Toolbox, `main.py` can be run from the terminal. By default (no additional arguments) it will run in application-mode, which opens a 
+user-friendly GUI. This allows the user to create a valid link budget and calculate
+the margins.
 
-This is a reference section included by default for new github repositories. The following commands are used in "Git Bash":
+`
+$ python main.py
+`
 
-### ALWAYS START each work session with: <kbd>git pull</kbd>
+Alternatively, if a configuration file is already present, the link budget calculation
+can be run as a CLI script using the `-s` or ` --script` flag. The path to the YAML config can be specified with the `-f <filepath>` argument. 
 
-Then, after making changes to files:
+`
+$ python main.py -s -f "project/configs/demo.yaml"
+`
 
-1) <kbd>git add .</kbd>
-2) <kbd>git status</kbd>
-3) <kbd>git commit -m "Describe what you changed here"</kbd> Use a short but useful description of the changes
-4) <kbd>git push</kbd>
 
-If error:
+By default, an example configuration file will be used, which is defined in `settings.py` by variable `DEFAULT_LINK_CONFIG`.   
 
-5) <kbd>git pull</kbd>
-    * If merge is successful: 
-        - Confirm merge with: <kbd>ESC</kbd>, <kbd>:</kbd>, <kbd>wq</kbd>, <kbd>ENTER</kbd>
-    * If merge failed: 
-        - Resolve conflicts in the python files
-        - Re-run affected files (check for new bugs)
-        - <kbd>git add .</kbd>
-        - <kbd>git commit -m "Merge description"</kbd>
+## Link Budget Configuration Files
 
-6) <kbd>git push</kbd>
+Example configuration:
+```yaml
+elements:
+  Free Space:
+    gain_loss: null
+    idx: 3
+    input_type: parameter_set_2
+    link_type: FREE_SPACE
+    parameters:
+      angle: 10.0
+      distance: 1500.0
+      gs_altitude: 0.0
+      sc_altitude: 300.0
+      frequency: 10.0
+  GS RX Ant:
+    gain_loss: null
+    idx: 1
+    input_type: parameter_set_1
+    link_type: RX
+    parameters:
+      antenna_diameter: 1.0
+      antenna_efficiency: 0.8
+      frequency: 100.0
+  SC TX Ant:
+    gain_loss: 10.0
+    idx: 2
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+general_values:
+  input_power: 65
+  rx_sys_threshold: 6
+  total_gain: null
+  total_margin: null
+settings:
+  case_type: nominal
 
+```
+
+## Development
+
+New element types can be added using the steps below. The GUI dynamically loads these elements, and therefore does not need modification.
+
+### How-To: Creating a New Element:
+1. first
+2. then
+3. blah
+
+### Definitions:
+|            	|                                                        Description                                                         	|   Naming Convention  	|
+|------------	|:--------------------------------------------------------------------------------------------------------------------------:	|:--------------------:	|
+| link_type  	|                                                                                                                            	| All Caps (required)  	|
+| input_type 	| Which parameter set is to be used. This depends on the Link Type, and is defined for reference in `element_reference.yaml` 	| lower_case no spaces 	|
+
+
+### Element Reference File:
+Found at `project/element_reference.yaml`
+This is used for the backend, to define for each `link_type`, per parameter set:
+ - Which attributes are required
+ - The units of each attribute
+ - A description for each attribute
+ - The acceptable domain of the attribute (using mathematical "[ ]" and "()" interval notation)
+ 
+
+An example is shown below. Note: this is incomplete and not up-to-date.
+```yaml
+FREE_SPACE:
+    overall_description:    Summary of FREE_SPACE element
+    parameter_set_1:
+        distance:
+            description:    Distance between spacecraft and ground station
+            units:          m
+            range:          "(0, inf)"
+        frequency:
+            description:    Radio frequency
+            units:          MHz
+            range:          "(0, inf)"
+    parameter_set_2:
+        angle:
+            description:    "Elevation angle"
+            units:          deg
+        distance:
+            description:    Slant range between spacecraft and ground station
+            units:          km
+            range:          "(0, inf)"
+        gs_altitude:
+            description:    Ground station altitude
+            units:          m
+            range:          "[0, inf)"
+        sc_altitude:
+            description:    Spacecraft altitude
+            units:          km
+            range:          "[0, inf)"
+        frequency:
+            description:    Radio frequency
+            units:          MHz
+            range:          "(0, inf)"
+```
