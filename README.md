@@ -25,7 +25,21 @@ $ python main.py -s -f "project/configs/demo.yaml"
 `
 
 
-By default, an example configuration file will be used, which is defined in `settings.py` by variable `DEFAULT_LINK_CONFIG`.   
+By default, an example configuration file will be used, which is defined in `settings.py` by variable `DEFAULT_LINK_CONFIG`.
+
+```
+usage: Link Budget Toolbox [-h] [-d | -s] [-f FILE]
+
+Runs by default as application with GUI
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -d, --debug           GUI app only: Print debug statements to terminal
+  -s, --script          Run as CLI script. Does not open GUI
+  -f FILE, --file FILE  Link Budget configuration file (YAML)
+
+```
+
 
 ## Link Budget Configuration Files
 

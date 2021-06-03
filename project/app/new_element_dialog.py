@@ -61,7 +61,7 @@ class NewElementDialog(QDialog, newelement_form_class):
         self.element_ref = element_reference
         
         self.existing_names = existing_names
-        print(self.existing_names)
+        # print(self.existing_names)
 
         # Add available parameters to Element Type combobox
         self.cmb_element_type.clear() # Ensures it start empty

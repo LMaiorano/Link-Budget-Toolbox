@@ -409,7 +409,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                     row += 1
 
             # Make name cell span all other rows
-            self.tbl_elements.setSpan(start_row, self.name_col, row - start_row, 1)
+            if (row - start_row) > 1:
+                self.tbl_elements.setSpan(start_row, self.name_col, row - start_row, 1)
 
         # Show table
         self.tbl_elements.show()
@@ -487,7 +488,8 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
             # Make cells span all other rows of this element
             for r in range(len(self.res_col_titles)):
-                self.tbl_results.setSpan(start_row, r, elem_rows[name], 1)
+                if elem_rows[name] > 1:
+                    self.tbl_results.setSpan(start_row, r, elem_rows[name], 1)
 
             row += elem_rows[name]
 
@@ -671,7 +673,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
     def run_process_clicked(self):
         """Run Analysis button clicked in UI, which calculates the link budget"""
-        logger.info('Running main process')
+        logger.debug('Running main process')
 
         # Check if data in table is valid
         valid_data = self.validate_input_values()

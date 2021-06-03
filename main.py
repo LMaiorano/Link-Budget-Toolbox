@@ -70,18 +70,22 @@ def run_script(config_file):
 def main():
     '''Runs Link Budget Toolbox. Defaults to GUI app, unless CLI argument '-s' is passed
 
-    usage: Link Budget Toolbox [-h] [-s] [-f FILE]
+    usage: Link Budget Toolbox [-h] [-d | -s] [-f FILE]
 
     optional arguments:
       -h, --help            show this help message and exit
+      -d, --debug           GUI app only: Print debug statements to terminal
       -s, --script          Run as CLI script. Does not open GUI
       -f FILE, --file FILE  Link Budget configuration file (YAML)
-
     '''
 
     parser = argparse.ArgumentParser(prog="Link Budget Toolbox",
                                      description="Runs by default as application with GUI")
-    parser.add_argument('-s', '--script', help="Run as CLI script. Does not open GUI",  action="store_true")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-d', '--debug', help='GUI app only: Print debug statements to terminal',
+                       action="store_true")
+    group.add_argument('-s', '--script', help="Run as CLI script. Does not open GUI",
+                       action="store_true")
     parser.add_argument('-f', '--file', nargs=1, default=DEFAULT_LINK_CONFIG, help='Link Budget configuration file (YAML)')
     args = parser.parse_args()
 
@@ -93,7 +97,10 @@ def main():
 
     # --------- GUI Application ------------
     else:
-        run_app()
+        if args.debug:
+            run_app(log_lvl='DEBUG')
+        else:
+            run_app()
 
 
 if __name__ == '__main__':
