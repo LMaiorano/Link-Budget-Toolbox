@@ -12,7 +12,7 @@ from project.app.app import run_app
 
 import argparse
 import os
-from pathlib import Path
+from pathlib import Path, WindowsPath
 
 
 
@@ -91,7 +91,11 @@ def main():
 
     # ----------- Command Line Script ---------
     if args.script:
-        cfg_file = Path(os.getcwd(), args.file[0].strip("'"))
+        file = args.file
+        if not isinstance(file, WindowsPath):
+            file = Path(os.getcwd(), file[0].strip("'"))
+
+        cfg_file = Path(os.getcwd(), file)
         print(cfg_file)
         run_script(str(cfg_file))
 
