@@ -81,6 +81,7 @@ settings:
   case_type: nominal
 
 ```
+Explanation of each field here...
 
 ## Development
 
