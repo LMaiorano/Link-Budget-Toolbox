@@ -8,19 +8,41 @@ from project.link_element import LinkElement
 import numpy as np
 
 class RX_LinkElement(LinkElement):
-    '''Specific type of LinkElement for the Receiving Antenna,
+    '''Specific type of LinkElement for the Receiving Channel Antenna,
     that can depend a single gain/loss value or on parameters instead. as
     dictated by the input_type value
 
-    Although not defined here, methods "get_gain()" and "get_loss()" are 
-    automatically inherited and will also work
+    ...
+    
+    Attributes
+    ----------
+    name : str
+        Defines the type of link element.
+    input_type : str
+        Defines wether a gain/loss is given or a parameter set is used.
+    gain : int
+        The gain or loss in Decibel of this link element in the case it is
+        known or given. Losses are given as negative gains.
+    parameters : dict
+        Contains parameters used: 
+            'antenna_efficiency': int
+                Efficiency of the antenna [1 = 100%], 
+            'antenna_diameter': int
+                The diameter of the antenna dish in[m],
+            'wavelength': int
+                Transmission wavelength in [m]
+    Methods:
+    -------
+    process()
+        Updates the Receiving Channel gain
+    calc_efficiencygain()
+        Returns the calculated antenna gain using parameter_set_1
+    
+    Although not defined here, methods "dB(value)", "get_gain()" and 
+    "get_loss()" are automatically inherited and will also work
     '''
     def __init__(self, name, input_type, gain, parameters):
-        '''Receiving Channel Link Element
-        
-        Assigns all attributes such as the name, wether a gain is given
-        directly or needs to be calculated, said gain and the parameters list
-
+        '''
         Parameters
         ----------
        name : str
@@ -32,14 +54,12 @@ class RX_LinkElement(LinkElement):
             known or given. Losses are given as negative gains.
         parameters : dict
             Contains parameters used: 
-                Antenna Efficiency[1 = 100%], 
-                Antenna diameter[m],
-                Transmission wavelength[m].
-
-        Returns
-        -------
-        None.
-
+                'antenna_efficiency': int
+                    Efficiency of the antenna [1 = 100%], 
+                'antenna_diameter': int
+                    The diameter of the antenna dish in[m],
+                'wavelength': int
+                    Transmission wavelength in [m]
         '''
         # Run the initialization of parent LinkElement
         super().__init__(name, linktype='RX', gain = gain)
@@ -56,12 +76,10 @@ class RX_LinkElement(LinkElement):
 
         
     def process(self):
-        '''
-        Free Space Path loss specific calculations, it checks which parameter
-        set needs to be used and uses the respective required calculations.
-        Parameter_set_1 uses the antenna efficiency, its diameter and the
-        wavelength of transmission for calculating the receiving antenna gain.
-        Then it updates the gain of the RX_LinkElement object.
+        '''Updates the Receiving Channel antenna gain
+        Checks which parameter set needs to be used and calls the respective 
+        required calculations to obtain the gain and update the gain of the 
+        RX_LinkElement object.
 
         Returns
         -------
@@ -73,11 +91,24 @@ class RX_LinkElement(LinkElement):
         # does not cover specific antenna models yet
         # TODO: include specific antenna models
         if self.input_type == "parameter_set_1":
-            self.calc_1()
+            self.gain = self.calc_efficiencygain()
         
-    def calc_1(self):
+    def calc_efficiencygain(self):
+        '''Returns the Receiving Channel antenna gain using the efficiency
+        
+        Uses parameter_set_1, consisting of the antenna efficiency, 
+        its diameter and the wavelength of transmission for calculating the 
+        receiving channel antenna gain. 
+
+        Returns
+        -------
+        float
+            Receiving Channel antenna gain
+
+        '''
         Gr = self.efficiency*(np.pi*self.diameter/self.wavelength)**2  #[-], peak gain
-        self.gain = self.dB(Gr)
+        # TODO: does this needs to be in dB?
+        return Gr
 
 if __name__ == '__main__':
     # Put any code here you want to use to test the class

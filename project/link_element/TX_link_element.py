@@ -9,14 +9,65 @@ import numpy as np
 
 
 class TX_LinkElement(LinkElement):
-    '''Specific type of LinkElement for the Transmitting Antenna,
+    '''Specific type of LinkElement for the Transmitting Channel Antenna,
     that can depend a single gain/loss value or on parameters instead. as
     dictated by the input_type value
 
-    Although not defined here, methods "get_gain()" and "get_loss()" are 
-    automatically inherited and will also work
+    ...
+    
+    Attributes
+    ----------
+    name : str
+        Defines the type of link element.
+    input_type : str
+        Defines wether a gain/loss is given or a parameter set is used.
+    gain : int
+        The gain or loss in Decibel of this link element in the case it is
+        known or given. Losses are given as negative gains.
+    parameters : dict
+        Contains parameters used: 
+            'antenna_efficiency': int
+                Efficiency of the antenna [1 = 100%], 
+            'antenna_diameter': int
+                The diameter of the antenna dish in[m],
+            'wavelength': int
+                Transmission wavelength in [m],
+            'w0': int
+                    The waist radius of the antenna in [m]
+    Methods:
+    -------
+    process()
+        Updates the Transmitting Channel gain
+    calc_efficiencygain()
+        Returns the calculated peak antenna gain using parameter_set_1
+    calc_waistgain()
+        Returns the calculated antenna gain using parameter_set_2
+    
+    Although not defined here, methods "dB(value)", "get_gain()" and 
+    "get_loss()" are automatically inherited and will also work
     '''
     def __init__(self, name, input_type, gain, parameters):
+        '''
+        Parameters
+        ----------
+       name : str
+            Defines the type of link element.
+        input_type : str
+            Defines wether a gain/loss is given or a parameter set is used.
+        gain : int
+            The gain or loss in Decibel of this link element in the case it is
+            known or given. Losses are given as negative gains.
+        parameters : dict
+            Contains parameters used: 
+                'antenna_efficiency': int
+                    Efficiency of the antenna [1 = 100%], 
+                'antenna_diameter': int
+                    The diameter of the antenna dish in[m],
+                'wavelength': int
+                    Transmission wavelength in [m],
+                'w0': int
+                    The waist radius of the antenna in [m]
+        '''
         # Run the initialization of parent LinkElement
         super().__init__(name, linktype='TX', gain = gain)
         # Add attributes that are unique to TxElement
@@ -33,18 +84,57 @@ class TX_LinkElement(LinkElement):
 
         
     def process(self):
-        # TX Specific calculations, first checks if any calculations are 
-        # required or if gain_loss is directly given and needs to be usec. 
-        # does not cover specific antenna models yet
-# TODO: Include calculation method from Space Instrumentation Course
+        '''Updates the Receiving Channel antenna gain
+        Checks which parameter set needs to be used and calls the respective 
+        required calculations to obtain the gain and update the gain of the 
+        RX_LinkElement object.
+
+        Returns
+        -------
+        None
+
+        '''
+        # Check which calculation is required
         if self.input_type == "parameter_set_1":
-            Gtpeak = self.efficiency*(np.pi*self.diameter/self.wavelength)**2  #[-], peak gain
+            Gtpeak = self.calc_efficiencygain()
             self.gain = self.dB(Gtpeak)
         elif self.input_type == "parameter_set_2":
-            Gt = 2*(2*np.pi*self.w0/self.wavelength)**2
+            Gt = self.calc_waistgain()
             self.gain = self.dB(Gt)
-        # elif self.input_type == "gain_loss":
-        #     self.gain = self.gain
+
+    def calc_efficiencygain(self):
+        '''Returns the Transmitting Channel antenna gain using the efficiency
+        
+        Uses parameter_set_1, consisting of the antenna efficiency, 
+        its diameter and the wavelength of transmission for calculating the 
+        receiving channel antenna gain. 
+
+        Returns
+        -------
+        float
+            Receiving Channel antenna gain
+
+        '''
+        Gtpeak = self.efficiency*(np.pi*self.diameter/self.wavelength)**2  #[-], peak gain
+        # TODO: does this needs to be in dB and is it?
+        return Gtpeak
+
+    def calc_waistgain(self):
+        '''Returns the Transmitting Channel antenna gain using the waist radius
+        
+        Uses parameter_set_2, consisting of the waist radius and the 
+        wavelength of transmission for calculating the receiving channel
+        antenna gain. 
+
+        Returns
+        -------
+        float
+            Receiving Channel antenna gain
+
+        '''
+        Gt = 2*(2*np.pi*self.w0/self.wavelength)**2
+        # TODO: does this needs to be in dB and is it?
+        return Gt
 
 if __name__ == '__main__':
     # Put any code here you want to use to test the class

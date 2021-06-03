@@ -18,9 +18,10 @@ FREE_SPACE:
             units:          MHz
             range:          "(0, inf)"
     parameter_set_2:
-        angle:
-            description:    "Elevation angle"
+        elevation_angle:
+            description:    spacecraft elevation from ground station horizon
             units:          deg
+            range:          "(0,90)"
         distance:
             description:    Slant range between spacecraft and ground station
             units:          km
@@ -28,15 +29,42 @@ FREE_SPACE:
         gs_altitude:
             description:    Ground station altitude
             units:          m
-            range:          "[0, inf)"
+            range:          "[0, sc_altitude)"
         sc_altitude:
             description:    Spacecraft altitude
             units:          km
-            range:          "[0, inf)"
+            range:          "[sc_altitude, inf)"
         frequency:
             description:    Radio frequency
             units:          MHz
             range:          "(0, inf)"
+Atmospheric:
+    overall_description:    Summary of Atmospheric element
+    parameter_set_1:
+        air_temperature:
+            description:    Surface temperature
+            units:          degK
+            range:          "(0, inf)"
+        air_pressure:
+            description:    Surface pressure
+            units:          MHz
+            range:          "(0, inf)"
+        water_vapor_content:
+            description:    Surface water-vapour density
+            units:          kg/m**3
+            range:          "(0, inf)"
+        water_vapor_content:
+            description:    Surface water-vapour density
+            units:          kg/m**3
+            range:          "(0, inf)"
+        elevation_angle:
+            description:    spacecraft elevation from ground station horizon
+            units:          deg
+            range:          "(0,90)"
+        frequency:
+            description:    Radio frequency
+            units:          MHz
+            range:          "(0, inf)"  
 RX:
     overall_description:    Summary of RX element
     parameter_set_1:

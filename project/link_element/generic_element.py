@@ -21,6 +21,20 @@ class LinkElement:
                f'{self.gain}dB'
                
     def dB(self,value):
+        ''' Returns the original value converted into decibels
+        
+
+        Parameters
+        ----------
+        value : float
+            Any value that needs to be converted into decibels.
+
+        Returns
+        -------
+        float
+            The original value converted into decibels.
+
+        '''
         #Return value in decibels (used in all elements for defining the gain)
         return 10*np.log10(value/1)
 

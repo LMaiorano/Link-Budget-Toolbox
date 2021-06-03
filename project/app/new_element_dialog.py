@@ -18,15 +18,50 @@ from project.settings import APP_UI_DIR
 newelement_form_class = uic.loadUiType(Path(APP_UI_DIR, 'new_element.ui'))[0]
 
 class NewElementDialog(QDialog, newelement_form_class):
-
+    ''' Dialog window when creating a New Element in the LinkBudget Toolbox
+    
+    This code defines the user-interface logic for the New Element dialog. It is
+    an extension to the code defined in app.py and cannot be run on its own. To see
+    this code in action, you have to run app.py.  
+    
+    User Interface Design:
+    ----------------------
+    PLEASE READ the instructions on how to use QtDesigner in app.py. 
+    
+    App Setup:
+    ----------
+    File paths of the default configuration to be loaded or element_reference should be changed
+    in settings.py
+    
+    '''
     
     
     def __init__(self, element_reference, existing_names, parent=None):
+        '''Initialization of the New Element dialog window
+
+        Parameters
+        ----------
+        element_reference : TYPE
+            Dictionary of the default elements defined in element_reference.yaml.
+        existing_names : list
+            List of the element names in the configuration file.
+        parent : TYPE, optional
+            DESCRIPTION. The default is None.
+
+        Returns
+        -------
+        None.
+
+        '''
+        
+        
         super().__init__(parent=parent)
         self.setupUi(self)
 
         self.element_ref = element_reference
+        
         self.existing_names = existing_names
+        print(self.existing_names)
 
         # Add available parameters to Element Type combobox
         self.cmb_element_type.clear() # Ensures it start empty

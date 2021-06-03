@@ -10,22 +10,55 @@ import numpy as np
 c = 299792458   #[m/s]
 
 class Atmospheric_LinkElement(LinkElement):
-    '''Specific type of LinkElement for the Atmospheric loss,
+    """Specific type of LinkElement for the Atmospheric loss,
     that can depend a single gain/loss value or on parameters instead. as
     dictated by the input_type value
-
-    Although not defined here, methods "get_gain()" and "get_loss()" are
-    automatically inherited and will also work
-    '''
+    
+    ...
+    
+    Attributes
+    ----------
+    name : str
+        Defines the type of link element.
+    input_type : str
+        Defines wether a gain/loss is given or a parameter set is used.
+    gain : int
+        The gain or loss in Decibel of this link element in the case it is
+        known or given. Losses are given as negative gains.
+    parameters : dict
+        Contains parameters used: 
+            'air_temperature': int
+                The surface temperature in [degK],
+            'air_pressure': int
+                The surface pressure in [Pa],
+            'water_vapor_content': int
+                The water vapor content at surface level in [kg/m**3],
+            'wavelength': int
+                The wavelength of the transmission in [m],
+            'elevation_angle': int
+                The elevation from the horizon of ground station to the 
+                spacecraft in [deg]
+    Methods:
+    -------
+    process()
+        Updates the attenuation loss
+    attenuationDryAir()
+        Returns the attenuation in dry air based on ITU-R P.676-9
+    attenuationWetAir()
+        Returns the attenuation in wet air based on ITU-R P.676-9
+    g()
+        Wet air attenuation substitution calculation in Rec. ITU-R P.676-10
+    phi()
+        Dry air attenuation substitution calculation in Rec. ITU-R P.676-10
+    
+    Although not defined here, methods "dB(value)", "get_gain()" and 
+    "get_loss()" are automatically inherited and will also work
+    """
     def __init__(self, name, input_type, gain, parameters):
-        '''Atmospheric Attenuation Link Element
-        
-        Assigns all attributes such as the name, wether a gain is given
-        directly or needs to be calculated, said gain and the parameters list
-
+        '''
         Parameters
         ----------
-       name : str
+        name : str
             Defines the type of link element.
         input_type : str
             Defines wether a gain/loss is given or a parameter set is used.
@@ -33,18 +66,20 @@ class Atmospheric_LinkElement(LinkElement):
             The gain or loss in Decibel of this link element in the case it is
             known or given. Losses are given as negative gains.
         parameters : dict
-            Contains parameters used: 
-                'air_temperature':[degK], 
-                'air_pressure':[Pa],
-                'water_vapor_content':[kg/m**3],
-                'wavelength':[m]
-                'elevation_angle':[deg].
-
-        Returns
-        -------
-        None.
-
+        Contains parameters used: 
+            'air_temperature': int,
+                The surface temperature in [degK]
+            'air_pressure': int,
+                The surface pressure in [Pa]
+            'water_vapor_content': int,
+                The water vapor content at surface level in [kg/m**3]
+            'wavelength': int
+                The wavelength of the transmission in [m]
+            'elevation_angle': int
+                The elevation from the horizon of ground station to the 
+                spacecraft in [deg]
         '''
+        
         # Run the initialization of parent LinkElement
         super().__init__(name, linktype='Atmospheric', gain = gain)
         # Add attributes that are unique to Atmospheric_LinkElement
@@ -61,13 +96,12 @@ class Atmospheric_LinkElement(LinkElement):
             self.process()
 
     def process(self):
-        '''
-        Atmospheric Attenuation specific calculations, based upon the 
-        "RECOMMENDATION ITU-R P.676-9 - Attenuation by atmospheric gases"
-        document of the International Telecommunication Union.
-        It combines the attenuation due to the path through the wet air and
-        the dry air and the path travelled. When the total attenuation is
-        calculated the Atmospheric loss is updated.
+        '''Updates the attenuation loss
+        
+        Follows the "RECOMMENDATION ITU-R P.676-9 - Attenuation by
+        atmospheric gases" document of the International Telecommunication
+        Union. The calculations of attenuation in wet and dry air are summated
+        and multiplied with the path length.
 
         Returns
         -------
@@ -78,7 +112,8 @@ class Atmospheric_LinkElement(LinkElement):
         self.gain = (self.attenuationWetAir() + self.attenuationDryAir()
                      ) / np.sin(self.angle / 180 * np.pi)
     def attenuationDryAir(self):
-        '''
+        '''Returns the attenuation in dry air based on ITU-R P.676-9
+        
         Calculates the atmospheric attenuation in dry air, based on the
         water_vapor_content, air_temperature, air_pressure and frequency.
         The function is valid up to 54 GHz.
@@ -114,7 +149,8 @@ class Atmospheric_LinkElement(LinkElement):
         return att
 
     def attenuationWetAir(self):
-        '''
+        '''Returns the attenuation in wet air based on ITU-R P.676-9
+        
         Calculates the atmospheric attenuation in wet air, based on the
         water_vapor_content, air_temperature, air_pressure and frequency.
         The function is valid up to 350 GHz.
@@ -165,7 +201,7 @@ class Atmospheric_LinkElement(LinkElement):
 
     def g(self,f,fi):
         '''
-        substitution calculation in Rec. ITU-R P.676-10
+        Wet air attenuation substitution calculation in Rec. ITU-R P.676-10
 
         Returns
         -------
@@ -177,7 +213,7 @@ class Atmospheric_LinkElement(LinkElement):
 
     def phi(self,rp, rt, a, b, c, d):
         '''
-        substitution calculation in Rec. ITU-R P.676-10
+        Dry air attenuation substitution calculation in Rec. ITU-R P.676-10
 
         Returns
         -------
