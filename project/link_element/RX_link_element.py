@@ -119,6 +119,5 @@ if __name__ == '__main__':
                       'antenna_diameter':10,
                       'wavelength':1}
     testelement = RX_LinkElement('test', 'parameter_set_1', 30, testparameters)
-    print(testelement)
-    testelement.process()
-    print(testelement)
+    print(testelement.gain)
+    

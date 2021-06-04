@@ -109,7 +109,7 @@ class Atmospheric_LinkElement(LinkElement):
 
         '''
         # Summates the attenuations due to the path through wet and dry air
-        self.gain = (self.attenuationWetAir() + self.attenuationDryAir()
+        self.gain = -(self.attenuationWetAir() + self.attenuationDryAir()
                      ) / np.sin(self.angle / 180 * np.pi)
     def attenuationDryAir(self):
         '''Returns the attenuation in dry air based on ITU-R P.676-9
@@ -233,6 +233,4 @@ if __name__ == '__main__':
                       'elevation_angle': 5}
     testelement = Atmospheric_LinkElement('test', 'parameter_set_2', -131, 
                                           testparameters)
-    print(testelement)
-    testelement.process()
     print(testelement)
