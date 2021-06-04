@@ -267,6 +267,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
     @pyqtSlot()
     def input_table_double_clicked(self, row, column):
+        '''PyQt Slot Handlerwhen input table is double clicked'''
         if column == self.name_col:
             self.rename_element()
 
