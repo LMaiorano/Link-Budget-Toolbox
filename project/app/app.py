@@ -14,6 +14,7 @@ from pathlib import Path
 import numpy as np
 import yaml
 from PyQt5 import QtWidgets, uic
+from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QHeaderView, QLineEdit
 from loguru import logger
@@ -97,17 +98,37 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
 
         # Ensure only numerical values are entered in input fields
-        self._set_lineedit_validators()
+        self.set_lineedit_validators()
 
-    def _set_lineedit_validators(self, remove=False):
-        validator = NotEmptyNumericValidator()
-        if remove:
-            validator = None
-        self.txt_in_power_W.setValidator(validator)
-        self.txt_in_power_dbm.setValidator(validator)
-        self.txt_threshold_W.setValidator(validator)
-        self.txt_threshold_dbm.setValidator(validator)
+    @staticmethod
+    def W_to_dBm(W):
+        """Converts Watts to Decibel-milliwatts
 
+        Parameters
+        ----------
+        W   : float
+            Watts to convert
+        Returns
+        -------
+        float
+        """
+        return 30 + 10 * np.log10(W)
+
+    @staticmethod
+    def dBm_to_W(dBm):
+        """Converts Decibel-milliwatts to Watts
+
+        Parameters
+        ----------
+        dBm : float
+            Decibel-milliwatts to convert
+        Returns
+        -------
+        float
+        """
+        return 10 ** ((dBm - 30) / 10)
+
+    @pyqtSlot()
     def open_config_clicked(self):
         """Opens a file dialog to select a config file"""
 
@@ -140,13 +161,20 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                 showdialog(
                     ['An unexpected error occurred while loading configuration file', '', msg])
 
+    @pyqtSlot()
     def new_clicked(self):
+        '''New Action, clears existing data and loads default config'''
         self.clear_table_elements()
         self.cfg_file = Path(self.default_cfg)
         self.cfg_data = self.read_config()
         self.fill_input_table()
         self.fill_general_values()
 
+    @pyqtSlot()
+    def clear_all_clicked(self):
+        self.clear_table_elements()
+
+    @pyqtSlot()
     def read_config(self, file=None):
         """Reads and loads YAML configuration file to a dictionary
 
@@ -180,6 +208,187 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         return data
 
+    @pyqtSlot()
+    def add_element_clicked(self):
+        """Adds new row to column, could be expanded to add a preset number of rows"""
+        self.save_input_table()
+
+        # Get existing names, (cannot have a duplicate, due to dictionary structure)
+        existing_element_names = [name.lower() for name in self.cfg_data['elements'].keys()]
+
+        # Open Dialog
+        new_dlg = NewElementDialog(self.element_details, existing_element_names)
+        exit_successful = new_dlg.exec_()
+
+        if exit_successful:
+            name = new_dlg.txt_element_name.text()  # get name
+            elem_type = new_dlg.cmb_element_type.currentText()  # get link type
+            gain_loss = new_dlg.rdl_yes.isChecked()  # get if total gain is known
+            if gain_loss:
+                param_set = 'gain_loss'
+            else:
+                param_set = new_dlg.cmb_set_param.currentText()  # get parameter set
+
+            # Create blank element dict
+            new_element = self.build_empty_element(elem_type, param_set)
+
+            # Add to active config
+            self.cfg_data['elements'][name] = new_element
+            logger.debug(f'Added element: {name}')
+
+            # Reload table
+            self.fill_input_table()
+
+    @pyqtSlot()
+    def delete_element_clicked(self):
+        """Deletes the selected table element"""
+
+        selected = self.tbl_elements.selectedItems()
+        if len(selected) == 0:
+            return  # quit because no rows selected
+
+        col_L = selected[0].column()
+        if col_L == 0:  # Element name must be selected, so user cant remove individual attributes
+            rows = sorted({cell.row() for cell in selected})
+            logger.debug(f'Removing rows: {rows}')
+
+            for row in reversed(rows):  # Must remove from bottom up, else indexes gets confused
+                self.tbl_elements.removeRow(row)
+
+        self.save_input_table(allow_blank=True)
+
+    @pyqtSlot()
+    def move_up_clicked(self):
+        self.shift_selected_elements(up=True)
+
+    @pyqtSlot()
+    def move_down_clicked(self):
+        self.shift_selected_elements(up=False)
+
+    @pyqtSlot()
+    def input_table_double_clicked(self, row, column):
+        if column == self.name_col:
+            self.rename_element()
+
+    @pyqtSlot()
+    def run_process_clicked(self):
+        """Run Analysis button clicked in UI, which calculates the link budget"""
+        logger.debug('Running main process')
+
+        # Check if data in table is valid
+        valid_data = self.validate_input_values()
+        if not valid_data:
+            return
+
+        # Update cfg_data elements
+        self.save_input_table()
+
+        self.cfg_data = main_process(self.cfg_data)
+
+        # Convert any possible float64 values to float
+        for elem, data in self.cfg_data['elements'].items():
+            for attr, val in data.items():
+                try:
+                    self.cfg_data['elements'][elem][attr] = float(val)
+                except (ValueError, TypeError):
+                    pass  # Strings or None's do not need to be converted
+
+        for name, val in self.cfg_data['general_values'].items():
+            try:
+                self.cfg_data['general_values'][name] = float(val)
+            except (ValueError, TypeError):
+                pass  # Strings or None's do not need to be converted
+
+        self.fill_results_table(self.cfg_data['elements'])
+
+        # Display Final Values
+        gain_sum = self.cfg_data['general_values']['total_gain']
+        margin = self.cfg_data['general_values']['total_margin']
+
+        self.txt_total.setText(f'{gain_sum:.{self.decimals}f}')
+        self.txt_margin.setText(f'{margin:.{self.decimals}f}')
+
+        self.btn_save_results.setEnabled(True)
+
+    @pyqtSlot()
+    def save_config_clicked(self):
+        """Save current configuration to yaml file"""
+
+        # Update cfg_data elements
+        valid_data = self.validate_input_values()
+        if not valid_data:
+            return  # Abort saving, values must first be fixed
+
+        self.save_input_table()
+
+        # Create file dialog to get save location
+        dlg = QFileDialog()
+        file_path = dlg.getSaveFileName(self, 'Save YAML Configuration FIle',
+                                        directory=str(CONFIGS_DIR),
+                                        filter='Config Files (*.yaml)')[0]
+        if file_path == '':
+            return  # Dialog cancelled, Exit this saving process
+
+        file_path = Path(file_path)
+
+        # Ensure file is saved as .yaml
+        if file_path.suffix != '.yaml':  # Wrong suffix given
+            file_path = Path(file_path.parent, file_path.name + '.yaml')
+
+        # update current cfg file to the one being saved
+        self.cfg_file = file_path
+        self.lbl_config_file.setText(self.cfg_file.name)
+
+        # Write full config to file specified above
+        with open(self.cfg_file, 'w') as f:
+            yaml.dump(self.cfg_data, f)
+
+        logger.debug(f"Config saved to {self.cfg_file}")
+
+    @pyqtSlot()
+    def input_power_W_edited(self):
+        self.sync_input_fields(self.txt_in_power_W, self.txt_in_power_dbm,
+                               self.W_to_dBm)
+        self.txt_in_power_dbm_changed()
+
+    @pyqtSlot()
+    def input_power_dbm_edited(self):
+        self.sync_input_fields(self.txt_in_power_dbm, self.txt_in_power_W,
+                               self.dBm_to_W, sigfigs=5)
+        self.txt_in_power_dbm_changed()
+
+    @pyqtSlot()
+    def threshold_W_edited(self):
+        self.sync_input_fields(self.txt_threshold_W, self.txt_threshold_dbm,
+                               self.W_to_dBm)
+        self.txt_threshold_dbm_changed()
+
+    @pyqtSlot()
+    def threshold_dbm_edited(self):
+        self.sync_input_fields(self.txt_threshold_dbm, self.txt_threshold_W,
+                               self.dBm_to_W, sigfigs=5)
+        self.txt_threshold_dbm_changed()
+
+    def set_lineedit_validators(self, remove=False):
+        '''Sets or removes QValidators for all LineEdits in main window
+
+        Parameters
+        ----------
+        remove : bool, default=True
+            Removes validator from QLineEdits
+
+        Returns
+        -------
+        None
+        '''
+        validator = NotEmptyNumericValidator()
+        if remove:
+            validator = None
+        self.txt_in_power_W.setValidator(validator)
+        self.txt_in_power_dbm.setValidator(validator)
+        self.txt_threshold_W.setValidator(validator)
+        self.txt_threshold_dbm.setValidator(validator)
+
     def clear_table_elements(self, results=True):
         """Clears input table"""
         self.tbl_elements.clearContents()
@@ -194,9 +403,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             self.tbl_results.clearContents()
             self.tbl_results.setRowCount(0)
             self.tbl_results.setColumnCount(0)
-
-    def clear_all_clicked(self):
-        self.clear_table_elements()
 
     def validate_input_values(self, allow_blank=False):
         """Check whether all values in input table can be converted to float
@@ -425,7 +631,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             threshold = 0
 
         # Temporarily disable validators to allow any values to be put in the LineEdits
-        self._set_lineedit_validators(remove=True)
+        self.set_lineedit_validators(remove=True)
 
         self.txt_in_power_dbm.setText(f'{in_power}')
         self.txt_threshold_dbm.setText(f'{threshold}')
@@ -437,7 +643,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                                self.dBm_to_W, sigfigs=5)
 
         # Re-enable LineEdit Validators
-        self._set_lineedit_validators()
+        self.set_lineedit_validators()
 
     def fill_results_table(self, results_data):
 
@@ -534,36 +740,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         # Otherwise return all parameters
         return param_set_details
 
-    def add_element_clicked(self):
-        """Adds new row to column, could be expanded to add a preset number of rows"""
-        self.save_input_table()
-
-        # Get existing names, (cannot have a duplicate, due to dictionary structure)
-        existing_element_names = [name.lower() for name in self.cfg_data['elements'].keys()]
-
-        # Open Dialog
-        new_dlg = NewElementDialog(self.element_details, existing_element_names)
-        exit_successful = new_dlg.exec_()
-
-        if exit_successful:
-            name = new_dlg.txt_element_name.text()  # get name
-            elem_type = new_dlg.cmb_element_type.currentText()  # get link type
-            gain_loss = new_dlg.rdl_yes.isChecked()  # get if total gain is known
-            if gain_loss:
-                param_set = 'gain_loss'
-            else:
-                param_set = new_dlg.cmb_set_param.currentText()  # get parameter set
-
-            # Create blank element dict
-            new_element = self.build_empty_element(elem_type, param_set)
-
-            # Add to active config
-            self.cfg_data['elements'][name] = new_element
-            logger.debug(f'Added element: {name}')
-
-            # Reload table
-            self.fill_input_table()
-
     def build_empty_element(self, link_type, input_type):
         # basic data
         data = {'gain_loss': None,
@@ -582,23 +758,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                 data['parameters'][param] = ''
 
         return data
-
-    def delete_element_clicked(self):
-        """Deletes the selected table element"""
-
-        selected = self.tbl_elements.selectedItems()
-        if len(selected) == 0:
-            return  # quit because no rows selected
-
-        col_L = selected[0].column()
-        if col_L == 0:  # Element name must be selected, so user cant remove individual attributes
-            rows = sorted({cell.row() for cell in selected})
-            logger.debug(f'Removing rows: {rows}')
-
-            for row in reversed(rows):  # Must remove from bottom up, else indexes gets confused
-                self.tbl_elements.removeRow(row)
-
-        self.save_input_table(allow_blank=True)
 
     def shift_selected_elements(self, up=True):
         if not self.validate_input_values():
@@ -639,16 +798,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.fill_input_table()
         self.fill_general_values()
 
-    def move_up_clicked(self):
-        self.shift_selected_elements(up=True)
-
-    def move_down_clicked(self):
-        self.shift_selected_elements(up=False)
-
-    def input_table_double_clicked(self, row, column):
-        if column == self.name_col:
-            self.rename_element()
-
     def rename_element(self):
         selected = self.tbl_elements.selectedRanges()
         if len(selected) == 0:
@@ -671,107 +820,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
                 self.fill_input_table()
 
-    def run_process_clicked(self):
-        """Run Analysis button clicked in UI, which calculates the link budget"""
-        logger.debug('Running main process')
-
-        # Check if data in table is valid
-        valid_data = self.validate_input_values()
-        if not valid_data:
-            return
-
-        # Update cfg_data elements
-        self.save_input_table()
-
-        self.cfg_data = main_process(self.cfg_data)
-
-        # Convert any possible float64 values to float
-        for elem, data in self.cfg_data['elements'].items():
-            for attr, val in data.items():
-                try:
-                    self.cfg_data['elements'][elem][attr] = float(val)
-                except (ValueError, TypeError):
-                    pass  # Strings or None's do not need to be converted
-
-        for name, val in self.cfg_data['general_values'].items():
-            try:
-                self.cfg_data['general_values'][name] = float(val)
-            except (ValueError, TypeError):
-                pass  # Strings or None's do not need to be converted
-
-        self.fill_results_table(self.cfg_data['elements'])
-
-        # Display Final Values
-        gain_sum = self.cfg_data['general_values']['total_gain']
-        margin = self.cfg_data['general_values']['total_margin']
-
-        self.txt_total.setText(f'{gain_sum:.{self.decimals}f}')
-        self.txt_margin.setText(f'{margin:.{self.decimals}f}')
-
-        self.btn_save_results.setEnabled(True)
-
-    def save_config_clicked(self):
-        """Save current configuration to yaml file"""
-
-        # Update cfg_data elements
-        valid_data = self.validate_input_values()
-        if not valid_data:
-            return  # Abort saving, values must first be fixed
-
-        self.save_input_table()
-
-        # Create file dialog to get save location
-        dlg = QFileDialog()
-        file_path = dlg.getSaveFileName(self, 'Save YAML Configuration FIle',
-                                        directory=str(CONFIGS_DIR),
-                                        filter='Config Files (*.yaml)')[0]
-        if file_path == '':
-            return  # Dialog cancelled, Exit this saving process
-
-        file_path = Path(file_path)
-
-        # Ensure file is saved as .yaml
-        if file_path.suffix != '.yaml':  # Wrong suffix given
-            file_path = Path(file_path.parent, file_path.name + '.yaml')
-
-        # update current cfg file to the one being saved
-        self.cfg_file = file_path
-        self.lbl_config_file.setText(self.cfg_file.name)
-
-        # Write full config to file specified above
-        with open(self.cfg_file, 'w') as f:
-            yaml.dump(self.cfg_data, f)
-
-        logger.debug(f"Config saved to {self.cfg_file}")
-
-    @staticmethod
-    def W_to_dBm(W):
-        """Converts Watts to Decibel-milliwatts
-
-        Parameters
-        ----------
-        W   : float
-            Watts to convert
-        Returns
-        -------
-        float
-        """
-        return 30 + 10 * np.log10(W)
-
-    @staticmethod
-    def dBm_to_W(dBm):
-        """Converts Decibel-milliwatts to Watts
-
-        Parameters
-        ----------
-        dBm : float
-            Decibel-milliwatts to convert
-        Returns
-        -------
-        float
-        """
-        return 10 ** ((dBm - 30) / 10)
-
     def sync_input_fields(self, in_field, out_field, convert_fn, sigfigs=4):
         """Updates the text in one QLineEdit field based on another field
 
@@ -791,7 +839,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         None
             Modifies out_field directly
         """
-        self._set_lineedit_validators(remove=True)
+        self.set_lineedit_validators(remove=True)
 
         if in_field.text() in ['', '-']:
             in_field.setText('0.0')
@@ -799,28 +847,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         val_in = float(in_field.text())
         out_field.setText(f'{convert_fn(val_in):.{sigfigs}g}')
 
-        self._set_lineedit_validators()
-
-
-    def input_power_W_edited(self):
-        self.sync_input_fields(self.txt_in_power_W, self.txt_in_power_dbm,
-                               self.W_to_dBm)
-        self.txt_in_power_dbm_changed()
-
-    def input_power_dbm_edited(self):
-        self.sync_input_fields(self.txt_in_power_dbm, self.txt_in_power_W,
-                               self.dBm_to_W, sigfigs=5)
-        self.txt_in_power_dbm_changed()
-
-    def threshold_W_edited(self):
-        self.sync_input_fields(self.txt_threshold_W, self.txt_threshold_dbm,
-                               self.W_to_dBm)
-        self.txt_threshold_dbm_changed()
-
-    def threshold_dbm_edited(self):
-        self.sync_input_fields(self.txt_threshold_dbm, self.txt_threshold_W,
-                               self.dBm_to_W, sigfigs=5)
-        self.txt_threshold_dbm_changed()
+        self.set_lineedit_validators()
 
     def txt_threshold_dbm_changed(self):
         threshold = float(self.txt_threshold_dbm.text())
@@ -829,6 +856,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def txt_in_power_dbm_changed(self):
         power = float(self.txt_in_power_dbm.text())
         self.cfg_data['general_values']['input_power'] = power
+
 
 
 def set_log_level(log_level='INFO'):
@@ -844,6 +872,16 @@ def set_log_level(log_level='INFO'):
 
 
 def run_app(log_lvl='INFO'):
+    '''Create window and run application
+
+    Parameters
+    ----------
+    log_lvl
+
+    Returns
+    -------
+
+    '''
     set_log_level(log_lvl)
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle('Fusion')

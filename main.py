@@ -16,7 +16,7 @@ from pathlib import Path, WindowsPath
 
 
 
-def run_script(config_file):
+def run_script(config_file, decimals=2):
     '''Runs Link Budget Toolbox as a script without a User Interface
 
     Total gain and margin are printed in console as results
@@ -25,6 +25,8 @@ def run_script(config_file):
     ----------
     config_file : str
         File path to configuration YAML file
+    decimals : int, default=2
+        Decimals to round off to in printed results
 
     Returns
     -------
@@ -47,12 +49,16 @@ def run_script(config_file):
     header = [['Input Power:', f'{data["general_values"]["input_power"]} dBm'],
               ['Receiver System Threshold', f"{data['general_values']['rx_sys_threshold']} dBm"]]
 
-    values = []
-    for elem, data in result['elements'].items():
-        values.append([elem, str(data['gain_loss'])])
+    # Order elements according to index (ensures they are printed in logical order)
+    elements_ordered = {key: val for key, val in
+                        sorted(result['elements'].items(), key=lambda item: item[1]['idx'])}
 
-    footer = [['Total Gain:', f"{result['general_values']['total_gain']} dB"],
-              ["Margin:", f"{result['general_values']['total_margin']} dB"]]
+    values = []
+    for elem, data in elements_ordered.items():
+        values.append([elem, f"{data['gain_loss']:.{decimals}f} dB"])
+
+    footer = [['Total Gain:', f"{result['general_values']['total_gain']:.{decimals}f} dB"],
+              ["Margin:", f"{result['general_values']['total_margin']:.{decimals}f} dB"]]
 
 
     column_print(header)
