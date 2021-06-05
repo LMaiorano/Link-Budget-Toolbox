@@ -122,8 +122,7 @@ class FREE_SPACE_LinkElement(LinkElement):
             The Free Space loss
 
         '''
-        S = self.distance  # [m]
-        Ls = (self.wavelength / (4 * np.pi * S)) ** 2  # [-], Free Space Loss
+        Ls = (self.wavelength / (4 * np.pi * self.distance)) ** 2  # [-], Free Space Loss
         loss = self.dB(Ls)
         return loss
         
@@ -176,7 +175,5 @@ if __name__ == '__main__':
                       'gs_altitude': 0,
                       'elevation_angle': 10,
                       'wavelength': c/2e6}   
-    testelement = FREE_SPACE_LinkElement('test', 'parameter_set_', -131, testparameters)
-    print(testelement)
-    testelement.process()
+    testelement = FREE_SPACE_LinkElement('test', 'parameter_set_1', -131, testparameters)
     print(testelement)
