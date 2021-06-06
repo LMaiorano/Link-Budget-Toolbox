@@ -41,12 +41,12 @@ class NewElementDialog(QDialog, newelement_form_class):
 
         Parameters
         ----------
-        element_reference : TYPE
+        element_reference : dict
             Dictionary of the default elements defined in element_reference.yaml.
         existing_names : list
             List of the element names in the configuration file.
-        parent : TYPE, optional
-            DESCRIPTION. The default is None.
+        parent : class, optional
+            Parent classes can be specified. The default is None.
 
         Returns
         -------
@@ -61,7 +61,6 @@ class NewElementDialog(QDialog, newelement_form_class):
         self.element_ref = element_reference
         
         self.existing_names = existing_names
-        # print(self.existing_names)
 
         # Add available parameters to Element Type combobox
         self.cmb_element_type.clear() # Ensures it start empty
@@ -79,16 +78,16 @@ class NewElementDialog(QDialog, newelement_form_class):
 
         # Check Name
         name = self.txt_element_name.text()
-        if len(name) == 0:
+        if len(name) == 0:  # Check that a name has been written
             showdialog(['The new element must have a name'])
-        elif name.lower() in self.existing_names:
+        elif name.lower() in self.existing_names:   # Check if that name was already given previously
             showdialog(['This element name already exists'])
         else:
             conditions_unmet -= 1
 
         # Check Radio button
         if self.rdl_yes.isChecked() or self.rdl_no.isChecked():
-            conditions_unmet -=1
+            conditions_unmet -=1    # The Yes or No radio button must be clicked
         else:
             showdialog(['Please select an option for total Gain/Loss'])
 
@@ -97,6 +96,15 @@ class NewElementDialog(QDialog, newelement_form_class):
             super().accept()
 
     def yes_gain_clicked(self):
+        ''' The user already know the gain or loss of the new element. 
+        
+        The element is therefore a Generic type of element. The only parameter 
+        for that is the gain/loss. 
+        When clicked, the comboboxes are updated.   
+        
+        '''
+        
+        
         # Add available parameters to Element Type combobox
         self.cmb_element_type.clear() # Ensures it start empty
         self.cmb_element_type.addItem("GENERIC")
@@ -107,16 +115,27 @@ class NewElementDialog(QDialog, newelement_form_class):
         
     
     def no_gain_clicked(self):
-        ''' The user does not know the gain/loss value. The parameter is set based
-                on the available sets that come with the selected Element Type'''
+        ''' The user does not know the gain/loss value. 
+        
+        A few element types are suggested in the combobox that the user can choose from.
+        The Generic type is not suggested as the user does not know the gain nor loss.        
+        
+        '''
 
-        # Add available parameters to Element Type combobox
+        # Add available parameters to Element Type combobox except Generic Type.
         self.cmb_element_type.clear() # Ensures it start empty
         for input_type in self.element_ref.keys():
             if input_type != 'GENERIC':
-                self.cmb_element_type.addItem(input_type)
+                self.cmb_element_type.addItem(input_type)   
+
 
     def element_type_selected(self):
+        ''' The user selects an element type in the combobox.
+
+
+
+        '''
+        
         selected_element_type = self.cmb_element_type.currentText()
         logger.debug(f'Element type selected {selected_element_type}')
 
