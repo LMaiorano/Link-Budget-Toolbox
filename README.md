@@ -97,9 +97,16 @@ stuff about folders and standard locations
 ## How-To: Creating a New Element:
 New element types can be added using the steps below. The GUI dynamically loads these elements, and therefore does not need modification.
 
-1. first
-2. then
-3. blah
+1. Create a new [name]_link_element.py file
+2. Import the LinkElement parent class
+3. Create the [name]_LinkElement(LinkElement) childclass
+4. Initialize the class, requiring a name, input_type, gain and a parameters dictionary
+5. The name, linktype = [name], and gain are initialized from the parent class
+6. All attributes that are unique to the class, such as the input_type and any parameters, are assigned after this. The parameters are obtained from the parameters dictionary
+7. Finally in the intialization, check if the gain is directly given. If not, call the process method to calculate it
+8. In the process method, check which parameter_set_# is to be used and call the specific required class methods to calculate the gain per parameter_set_#
+9. For any parameter_set_#, define the required methods to calculate the gain with
+10. Finally convert per calculation the gain to decibels using the LinkElement.dB(value) method and then update the new [name]_LinkElement.gain
 
 ### Definitions:
 |            	|                                                        Description                                                         	|   Naming Convention  	|
