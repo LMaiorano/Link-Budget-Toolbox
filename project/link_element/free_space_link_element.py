@@ -136,14 +136,16 @@ class FREE_SPACE_LinkElement(LinkElement):
         the angle from the horizon as taken from the groundstation. This 
         assumes that the horizon plane is perpendicular to the origin of the
         barycenter. The sine-rule is then used to calculate the distance 
-        between sc and gs.
+        between sc and gs. The equation also works for negative horizon
+        angles and for gs and sc on the same altitude. However, in these cases
+        one must be certain there is no other medium in the way such as the
+        Earth. Furthermore sc can not be at a lower altitude than gs.
 
         Returns
         -------
         None
 
         '''
-        # TODO: Check what happens in the case that the orbits are the same!
         # Set altitudes to orbital distance around barycentre of Earth-System.
         r_sc = self.sc_altitude + Re    #[m]
         r_gs = self.gs_altitude + Re    #[m]
@@ -166,14 +168,13 @@ class FREE_SPACE_LinkElement(LinkElement):
             c = 180-a-b                     #[deg]
             S = sineratio*np.sin(np.deg2rad(c))         #[m]
         self.distance = S
-
 if __name__ == '__main__':
     # Put any code here you want to use to test the class
     # (like a scratch pad to test stuff while you're working)
     testparameters = {'distance': 600e3,
                       'sc_altitude': 500e3,
                       'gs_altitude': 0,
-                      'elevation_angle': 10,
+                      'elevation_angle': -45,
                       'wavelength': c/2e6}   
-    testelement = FREE_SPACE_LinkElement('test', 'parameter_set_1', -131, testparameters)
+    testelement = FREE_SPACE_LinkElement('test', 'parameter_set_2', -131, testparameters)
     print(testelement)

@@ -116,7 +116,6 @@ class TX_LinkElement(LinkElement):
 
         '''
         Gtpeak = self.efficiency*(np.pi*self.diameter/self.wavelength)**2  #[-], peak gain
-        # TODO: does this needs to be in dB and is it?
         return Gtpeak
 
     def calc_waistgain(self):
@@ -133,15 +132,13 @@ class TX_LinkElement(LinkElement):
 
         '''
         Gt = 2*(2*np.pi*self.w0/self.wavelength)**2
-        # TODO: does this needs to be in dB and is it?
         return Gt
 
 if __name__ == '__main__':
     # Put any code here you want to use to test the class
     # (like a scratch pad to test stuff while you're working)
-    # print('Good Busy Willem! :P')
 
-    params = {'antenna_efficiency': 8,
+    params = {'antenna_efficiency': 0.8,
               'antenna_diameter': 10,
               'wavelength': 1550e-9,
               'waist_radius': 24.7e-3}

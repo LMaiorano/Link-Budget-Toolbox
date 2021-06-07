@@ -1,7 +1,8 @@
 # Satellite Link Budget Toolbox
 
+
+[![Toolbox Verification Tests](https://github.com/LMaiorano/Link-Budget-Toolbox/actions/workflows/python-app.yml/badge.svg)](https://github.com/LMaiorano/Link-Budget-Toolbox/actions/workflows/python-app.yml)
 [![GitHub license](https://img.shields.io/github/license/LMaiorano/Link-Budget-Toolbox)](https://github.com/LMaiorano/Link-Budget-Toolbox/blob/master/LICENSE)
-[![Python Toolbox](https://github.com/LMaiorano/Link-Budget-Toolbox/actions/workflows/python-app.yml/badge.svg)](https://github.com/LMaiorano/Link-Budget-Toolbox/actions/workflows/python-app.yml)
 
 A modular Python alternative to STK to easily calculate satellite link budgets
 
@@ -96,10 +97,54 @@ stuff about folders and standard locations
 ## How-To: Creating a New Element:
 New element types can be added using the steps below. The GUI dynamically loads these elements, and therefore does not need modification.
 
-1. first
-2. then
-3. blah
+1. Create a new LINKTYPE_link_element.py file
+2. Import the LinkElement parent class
+3. Create the LINKTYPE_LinkElement(LinkElement) childclass
+4. Initialize the class, requiring a name, input_type, gain and a parameters dictionary
+5. The name, linktype = LINKTYPE, and gain are initialized from the parent class
+6. All attributes that are unique to the class, such as the input_type and any parameters, are assigned after this. The parameters are obtained from the parameters dictionary
+7. Finally in the intialization, check if the gain is directly given. If not, call the process method to calculate it
+8. In the process method, check which parameter_set_# is to be used and call the specific required class methods to calculate the gain per parameter_set_#
+9. For any parameter_set_#, define the required methods to calculate the gain with
+10. Finally convert per calculation the gain to decibels using the LinkElement.dB(value) method and then update the new LINKTYPE_LinkElement.gain
 
+### Example Link Element
+```
+from project.link_element import LinkElement
+# import other packages here
+
+class RX_LinkElement(LinkElement):
+    def __init__(self, name, input_type, gain, parameters):
+        # Run the initialization of parent LinkElement
+        super().__init__(name, linktype='RX', gain = gain)
+        # Add attributes that are unique to Rx_LinkElement
+        self.input_type = input_type
+        # Add attributes that are unique parameters to RxElement
+        self.param_a = parameters.get('param_a', None)
+        self.param_b = parameters.get('param_b', None)
+        self.param_c = parameters.get('param_c', None)
+        # check if gain/loss is given directly or calculations are required
+        if self.input_type != 'gain_loss':
+            self.process()
+        
+    def process(self):
+        if self.input_type == "parameter_set_1":
+            G = self.calc_1()
+            self.gain = self.dB(G)
+        elif self.input_type == "parameter_set_2":
+            G = self.calc_2()
+            self.gain = self.dB(G)
+    def calc_1(self):
+        G = self.param_a + self.param_b
+        return G
+    def calc_2(self):
+        G = self.param_a*self.param_c + self.param_b
+        return G
+    
+    if __name__ == '__main__':
+    # Put any code here you want to use to test the class
+    # (like a scratch pad to test stuff while you're working)
+```
 ### Definitions:
 |            	|                                                        Description                                                         	|   Naming Convention  	|
 |------------	|:--------------------------------------------------------------------------------------------------------------------------:	|:--------------------:	|
