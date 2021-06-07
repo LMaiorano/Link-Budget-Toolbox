@@ -43,7 +43,7 @@ ATMOSPHERIC:
     parameter_set_1:
         air_temperature:
             description:    Surface temperature
-            units:          degK
+            units:          deg K
             range:          "(0, inf)"
         air_pressure:
             description:    Surface pressure
@@ -51,16 +51,16 @@ ATMOSPHERIC:
             range:          "(0, inf)"
         water_vapor_content:
             description:    Surface water-vapour density
-            units:          kg/m**3
+            units:          kg / m3
             range:          "(0, inf)"
         water_vapor_content:
             description:    Surface water-vapour density
-            units:          kg/m**3
+            units:          kg / m3
             range:          "(0, inf)"
         elevation_angle:
             description:    spacecraft elevation from ground station horizon
             units:          deg
-            range:          "(0,90)"
+            range:          "(0, 90)"
         frequency:
             description:    Radio frequency
             units:          MHz
