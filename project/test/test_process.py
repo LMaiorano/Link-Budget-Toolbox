@@ -1,6 +1,7 @@
 import unittest
 import filecmp
 import os
+from pathlib import Path
 from project.process import read_user_data, fill_results_data, load_from_yaml, \
     main_process, save_to_yaml
 
@@ -11,17 +12,18 @@ class ProcessTestCase(unittest.TestCase):
     # TODO: Check for tests to fail, skip next tests, as it is chronological.
 
     def setUp(self):
+        self.cwd = Path(__file__).parent
         self.maxDiff = None
-        self.tmp_fname = 'ref_data/tmp_saved.yaml'       # Temporary file to save to if using filecmp
+        self.tmp_fname = f'{self.cwd}/ref_data/tmp_saved.yaml'       # Temporary file to save to if using filecmp
 
-        self.data_bare_minimum = load_from_yaml('ref_data/bare_minimum.yaml')
-        self.data_generic_only = load_from_yaml('ref_data/generic_only.yaml')
+        self.data_bare_minimum = load_from_yaml(f'{self.cwd}/ref_data/bare_minimum.yaml')
+        self.data_generic_only = load_from_yaml(f'{self.cwd}/ref_data/generic_only.yaml')
 
-        self.data_test_user_data = load_from_yaml('ref_data/user_data.yaml')
-        self.ref_user_data = load_from_yaml('ref_data/ref_user_data.yaml')
+        self.data_test_user_data = load_from_yaml(f'{self.cwd}/ref_data/user_data.yaml')
+        self.ref_user_data = load_from_yaml(f'{self.cwd}/ref_data/ref_user_data.yaml')
 
-        self.unit_converted_user_data = load_from_yaml('ref_data/unit_converted_user_data.yaml')
-        self.ref_fill_results_data = load_from_yaml('ref_data/ref_fill_results_data.yaml')
+        self.unit_converted_user_data = load_from_yaml(f'{self.cwd}/ref_data/unit_converted_user_data.yaml')
+        self.ref_fill_results_data = load_from_yaml(f'{self.cwd}/ref_data/ref_fill_results_data.yaml')
 
     def tearDown(self):
         if os.path.exists(self.tmp_fname): # Remove temp saved file if it exists
@@ -60,7 +62,7 @@ class ProcessTestCase(unittest.TestCase):
                     }
         save_to_yaml(ref_data, self.tmp_fname)
 
-        self.assertTrue(filecmp.cmp('ref_data/bare_minimum.yaml', self.tmp_fname))
+        self.assertTrue(filecmp.cmp(f'{self.cwd}/ref_data/bare_minimum.yaml', self.tmp_fname))
 
         # tearDown automatically removes this file after running
 

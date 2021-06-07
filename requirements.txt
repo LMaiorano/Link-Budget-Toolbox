@@ -5,6 +5,7 @@ scipy
 
 
 flake8
+pytest
 
 pyyaml
 
