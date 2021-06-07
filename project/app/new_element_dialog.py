@@ -177,9 +177,7 @@ class NewElementDialog(QDialog, newelement_form_class):
                     self.cmb_set_param.addItem(param_set)
     
     def show_overall_desc(self, selected_element_type):
-        '''
-        
-
+        '''Shows description of element type
         Parameters
         ----------
         selected_element_type : TYPE

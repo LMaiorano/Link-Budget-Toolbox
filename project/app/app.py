@@ -174,7 +174,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def clear_all_clicked(self):
         self.clear_table_elements()
 
-    @pyqtSlot()
+
     def read_config(self, file=None):
         """Reads and loads YAML configuration file to a dictionary
 
@@ -265,7 +265,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def move_down_clicked(self):
         self.shift_selected_elements(up=False)
 
-    @pyqtSlot()
+    @pyqtSlot(int, int)
     def input_table_double_clicked(self, row, column):
         '''PyQt Slot Handlerwhen input table is double clicked'''
         if column == self.name_col:
@@ -455,7 +455,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                     data[elem_name]['parameters'] = None
 
                 # if gain_loss is not already added, include the default value of None
-                if not data[elem_name].get('gain_loss'):
+                if data[elem_name].get('gain_loss') is None:
                     data[elem_name]['gain_loss'] = None
 
         data = {}  # Empty dict to build
@@ -504,7 +504,11 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                 value = self.tbl_elements.item(r, self.value_col).text()
                 if value == '':
                     value = 0
+
                 value = float(value)
+
+                if isinstance(value, str): # Sometimes previous line doesnt run
+                    value = float(value)
 
                 # Decide where to save name:value
                 if attribute_type == 'parameter':
