@@ -9,6 +9,8 @@ More documentation to follow...
 
 
 ## Usage
+Install venv
+
 To use the Link Budget Toolbox, `main.py` can be run from the terminal. By default (no additional arguments) it will run in application-mode, which opens a 
 user-friendly GUI. This allows the user to create a valid link budget and calculate
 the margins.
@@ -39,6 +41,8 @@ optional arguments:
   -f FILE, --file FILE  Link Budget configuration file (YAML)
 
 ```
+
+Settings.py stuff
 
 
 ## Link Budget Configuration Files
@@ -83,11 +87,15 @@ settings:
 ```
 Explanation of each field here...
 
-## Development
+# Development
 
+## Project Structure
+
+stuff about folders and standard locations
+
+## How-To: Creating a New Element:
 New element types can be added using the steps below. The GUI dynamically loads these elements, and therefore does not need modification.
 
-### How-To: Creating a New Element:
 1. first
 2. then
 3. blah
