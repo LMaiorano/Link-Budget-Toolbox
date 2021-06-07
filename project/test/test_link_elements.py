@@ -4,7 +4,7 @@ Created on Wed Jun  2 13:49:50 2021
 
 @author: Willem van Lynden
 """
-# TODO: test this with DELFT values as also validation
+
 import unittest
 from project.link_element import FREE_SPACE_LinkElement, RX_LinkElement, \
     TX_LinkElement, Atmospheric_LinkElement
@@ -41,26 +41,26 @@ class FREE_SPACE_LinkElementTest(unittest.TestCase):
 
 class TX_LinkElementTest(unittest.TestCase):
     def test_outcome(self):
-        testparameters = {'antenna_efficiency': 0.8,
-              'antenna_diameter': 10,
+        testparameters = {'antenna_efficiency': 1.0,
+              'antenna_diameter': 1,
               'wavelength': 1550e-9,
               'waist_radius': 24.7e-3}
 
-        out_val = TX_LinkElement('test', 'gain_loss', 5, testparameters).gain
+        out_val = TX_LinkElement('test', 'parameter_set_2', 5, testparameters).gain
         print(out_val)
-        ref_val = 5 # Should be 103
+        ref_val = 103 # Should be 103
 
         self.assertAlmostEqual(ref_val, out_val,0)
     
 class RX_LinkElementTest(unittest.TestCase):
     def test_outcome(self):
-        testparameters = {'antenna_efficiency':0.7,
-                      'antenna_diameter':10,
-                      'wavelength':1}
+        testparameters = {'antenna_efficiency':1.0,
+                      'antenna_diameter':1,
+                      'wavelength':1550e-9}
 
-        out_val = RX_LinkElement('test', 'gain_loss', 8.5, testparameters).gain
+        out_val = RX_LinkElement('test', 'parameter_set_1', 8.5, testparameters).gain
         print(out_val)
-        ref_val = 8.5 # Should be 691
+        ref_val = 126 # Should be 126
 
         self.assertAlmostEqual(ref_val, out_val,0)
 

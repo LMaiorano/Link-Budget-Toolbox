@@ -86,12 +86,10 @@ class RX_LinkElement(LinkElement):
         None
 
         '''
-        # RX Specific calculations, first checks if any calculations are 
-        # required or if gain_loss is directly given and needs to be usec. 
-        # does not cover specific antenna models yet
         # TODO: include specific antenna models
         if self.input_type == "parameter_set_1":
-            self.gain = self.calc_efficiencygain()
+            Gr = self.calc_efficiencygain()
+            self.gain = self.dB(Gr)
         
     def calc_efficiencygain(self):
         '''Returns the Receiving Channel antenna gain using the efficiency
@@ -107,7 +105,6 @@ class RX_LinkElement(LinkElement):
 
         '''
         Gr = self.efficiency*(np.pi*self.diameter/self.wavelength)**2  #[-], peak gain
-        # TODO: does this needs to be in dB?
         return Gr
 
 if __name__ == '__main__':
