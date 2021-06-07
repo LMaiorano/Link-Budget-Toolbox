@@ -30,7 +30,9 @@ class RX_LinkElement(LinkElement):
             'antenna_diameter': int
                 The diameter of the antenna dish in[m],
             'wavelength': int
-                Transmission wavelength in [m]
+                Transmission wavelength in [m],
+            'w0': int
+                    The waist radius of the antenna in [m]
     Methods:
     -------
     process()
@@ -59,7 +61,9 @@ class RX_LinkElement(LinkElement):
                 'antenna_diameter': int
                     The diameter of the antenna dish in[m],
                 'wavelength': int
-                    Transmission wavelength in [m]
+                    Transmission wavelength in [m],
+                 'w0': int
+                    The waist radius of the antenna in [m]
         '''
         # Run the initialization of parent LinkElement
         super().__init__(name, linktype='RX', gain = gain)
@@ -69,6 +73,7 @@ class RX_LinkElement(LinkElement):
         self.efficiency = parameters.get('antenna_efficiency', None)
         self.diameter = parameters.get('antenna_diameter', None)
         self.wavelength = parameters.get('wavelength', None)
+        self.w0 = parameters.get('waist_radius', None)
         # check if gain/loss is given directly or calculations are required
         if self.input_type != 'gain_loss':
             self.process()
@@ -90,7 +95,10 @@ class RX_LinkElement(LinkElement):
         if self.input_type == "parameter_set_1":
             Gr = self.calc_efficiencygain()
             self.gain = self.dB(Gr)
-        
+        elif self.input_type == "parameter_set_2":
+            Gt = self.calc_waistgain()
+            self.gain = self.dB(Gt)
+
     def calc_efficiencygain(self):
         '''Returns the Receiving Channel antenna gain using the efficiency
         
@@ -107,6 +115,22 @@ class RX_LinkElement(LinkElement):
         Gr = self.efficiency*(np.pi*self.diameter/self.wavelength)**2  #[-], peak gain
         return Gr
 
+    def calc_waistgain(self):
+        '''Returns the Transmitting Channel antenna gain using the waist radius
+        
+        Uses parameter_set_2, consisting of the waist radius and the 
+        wavelength of transmission for calculating the receiving channel
+        antenna gain. 
+
+        Returns
+        -------
+        float
+            Receiving Channel antenna gain
+
+        '''
+        Gt = 2*(2*np.pi*self.w0/self.wavelength)**2
+        return Gt
+    
 if __name__ == '__main__':
     # Put any code here you want to use to test the class
     # (like a scratch pad to test stuff while you're working)
@@ -114,7 +138,8 @@ if __name__ == '__main__':
     
     testparameters = {'antenna_efficiency':0.7,
                       'antenna_diameter':10,
-                      'wavelength':1}
-    testelement = RX_LinkElement('test', 'parameter_set_1', 30, testparameters)
+                      'wavelength':1550e-9,
+                      'waist_radius': 24.7e-3}
+    testelement = RX_LinkElement('test', 'parameter_set_5', 30, testparameters)
     print(testelement.gain)
     

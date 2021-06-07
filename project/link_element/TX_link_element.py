@@ -138,7 +138,7 @@ if __name__ == '__main__':
     # Put any code here you want to use to test the class
     # (like a scratch pad to test stuff while you're working)
 
-    params = {'antenna_efficiency': 8,
+    params = {'antenna_efficiency': 0.8,
               'antenna_diameter': 10,
               'wavelength': 1550e-9,
               'waist_radius': 24.7e-3}
