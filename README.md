@@ -6,6 +6,14 @@
 
 A modular Python alternative to STK to easily calculate satellite link budgets
 
+
+## TODO Checklist:
+- [ ] Review all entries in element_reference.yaml
+- [ ] Proofread ReadMe
+- [ ] Create relevant example config 
+
+
+
 More documentation to follow...
 
 
