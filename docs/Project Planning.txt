@@ -53,7 +53,12 @@ Proposed Milestones (completed by Monday Meeting):
 	7 June 	- Feature Freeze 
 
 		|			1 WEEK					|
-		|	Code Cleanup    				|
-		|	Final Documentation 			|
-		|									|
+		|	Code Cleanup 
+				- DocStrings  				Everyone		
+		|	Relevant Example				Nicolas
+		|	ReadMe		
+				- Usage 					Luigi
+				- New Link Element 			Willem
+				- Beautify ReadMe 			Jesper
+		|									
 	13 June - Final Deadline 
