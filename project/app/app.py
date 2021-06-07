@@ -163,7 +163,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
     @pyqtSlot()
     def new_clicked(self):
-        '''New Action, clears existing data and loads default config'''
+        '''New Action, clears existing ref_data and loads default config'''
         self.clear_table_elements()
         self.cfg_file = Path(self.default_cfg)
         self.cfg_data = self.read_config()
@@ -276,7 +276,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         """Run Analysis button clicked in UI, which calculates the link budget"""
         logger.debug('Running main process')
 
-        # Check if data in table is valid
+        # Check if ref_data in table is valid
         valid_data = self.validate_input_values()
         if not valid_data:
             return
@@ -463,7 +463,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         element_name = None  # The current element being read, initialized to none
         idx = 0  # The position in the table of the element (1 = top element)
 
-        # Check if data in table is valid
+        # Check if ref_data in table is valid
         allow_blank = kwargs.pop('allow_blank', False)
         valid_data = self.validate_input_values(allow_blank=allow_blank)
         if not valid_data:
@@ -492,7 +492,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             if element_name:
                 attribute = self.tbl_elements.item(r, self.attribute_col)
 
-                # Extract attribute name, depending on how data was inserted into cell
+                # Extract attribute name, depending on how ref_data was inserted into cell
                 attribute_type = attribute.type
                 if attribute_type == 'gain_loss':
                     name = 'gain_loss'
@@ -521,7 +521,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def fill_input_table(self):
         """Populate table with elements in stored in the cfg_data attribute
 
-        This converts the data dictionary elements to the necessary table items
+        This converts the ref_data dictionary elements to the necessary table items
         The table consists of four columns: Element, Attribute, Value, Units
         """
 
@@ -710,7 +710,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     def get_attribute_details(self, element: dict, specific_parameter=None, gain=False):
         """Gets details about an element's parameters
 
-        Reads data from element_reference.yaml using a specific element.
+        Reads ref_data from element_reference.yaml using a specific element.
         The link_type and input_type are used to determine which parameter set is applicable
 
         Parameters ---------- element : dict A specific element dictionary as specified in the
@@ -742,7 +742,7 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         return param_set_details
 
     def build_empty_element(self, link_type, input_type):
-        # basic data
+        # basic ref_data
         data = {'gain_loss': None,
                 'idx': np.inf,
                 'input_type': input_type,

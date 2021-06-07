@@ -40,7 +40,7 @@ def save_to_yaml(d:dict, filename:str):
     if len(filepath.parts) == 1: # Only a filename is given, change save directory to default
         filepath = Path(CONFIGS_DIR, filepath.name)
 
-    # Save data to YAML
+    # Save ref_data to YAML
     with open(filepath, 'w') as f:
         yaml.dump(d, f)
 
@@ -50,7 +50,7 @@ def read_user_data(user_data):
     Parameters
     ----------
     user_data: dict
-        Dictionary containing the data and link elements the user has given
+        Dictionary containing the ref_data and link elements the user has given
 
     Returns
     -------
@@ -78,7 +78,7 @@ def fill_results_data(df_user_data, user_data):
     results_data : dict
         User_data dictionary which has been updated with the calculated gains/losses
     '''
-    # user_data = load_from_yaml('test/data/unit_converted_user_data.yaml')
+    # user_data = load_from_yaml('test/ref_data/unit_converted_user_data.yaml')
     # df_user_data = read_user_data(user_data)
 
     results_data = user_data
@@ -114,7 +114,7 @@ def fill_results_data(df_user_data, user_data):
         #update step
         results_data['elements'][df_user_data.get("name")[i]]["gain_loss"] = result_gain_loss
 
-        # save_to_yaml(df_user_data.to_dict(), 'test/data/ref_fill_results_data')
+        # save_to_yaml(df_user_data.to_dict(), 'test/ref_data/ref_fill_results_data')
     return results_data
 
 
@@ -142,7 +142,7 @@ def main_process(user_data):
     Parameters
     ----------
     user_data: dict
-        Dictionary containing the data and link elements the user has given
+        Dictionary containing the ref_data and link elements the user has given
 
     Returns
     -------

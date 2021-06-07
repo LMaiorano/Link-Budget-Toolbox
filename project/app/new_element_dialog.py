@@ -198,7 +198,7 @@ class NewElementDialog(QDialog, newelement_form_class):
             self.txt_description.insertPlainText(f"{description}")
 
     def summarize_info(self):
-        ''' Show all the data the user has selected for the new Element'''
+        ''' Show all the ref_data the user has selected for the new Element'''
         
         # Gather all the Element parameters
         selected_elem_type = self.cmb_element_type.currentText()   # Get element type

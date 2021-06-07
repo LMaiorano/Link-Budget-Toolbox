@@ -89,7 +89,7 @@ class ElementTableItem(QTableWidgetItem):
         '''Custom TableWidgetItem to allow other attributes to be stored.
 
         This is necessary so that additional link element properties can be saved
-        in the data dictionary which is passed to the main process
+        in the ref_data dictionary which is passed to the main process
         '''
         self.link_type = kwargs.pop('link_type', 'gain_loss')
         self.input_type = kwargs.pop('input_type', 'GENERIC')
@@ -105,7 +105,7 @@ class AttributeTableItem(QTableWidgetItem):
         '''Custom TableWidgetItem to allow other attributes to be stored.
 
         This is necessary so that additional link element properties can be saved
-        in the data dictionary which is passed to the main process
+        in the ref_data dictionary which is passed to the main process
 
         Parameters
         ----------
@@ -127,7 +127,7 @@ class ValueTableItem(QTableWidgetItem):
         '''Custom TableWidgetItem to allow other attributes to be stored.
 
         This is necessary so that additional link element properties can be saved
-        in the data dictionary which is passed to the main process
+        in the ref_data dictionary which is passed to the main process
         '''
         self.range_raw = kwargs.pop('range', None)
         self.range_msg = ''
@@ -196,7 +196,7 @@ class UnitsTableItem(QTableWidgetItem):
         '''Custom TableWidgetItem to allow other attributes to be stored.
 
         This is necessary so that additional link element properties can be saved
-        in the data dictionary which is passed to the main process
+        in the ref_data dictionary which is passed to the main process
         '''
         super().__init__(*args, **kwargs)
         self.setFlags(QtCore.Qt.ItemIsEnabled) # not selectable or editable
