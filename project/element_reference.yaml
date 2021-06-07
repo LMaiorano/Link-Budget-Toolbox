@@ -38,7 +38,7 @@ FREE_SPACE:
             description:    Radio frequency
             units:          MHz
             range:          "(0, inf)"
-Atmospheric:
+ATMOSPHERIC:
     overall_description:    Summary of Atmospheric element
     parameter_set_1:
         air_temperature:

@@ -9,7 +9,7 @@ import numpy as np
 
 c = 299792458   #[m/s]
 
-class Atmospheric_LinkElement(LinkElement):
+class ATMOSPHERIC_LinkElement(LinkElement):
     """Specific type of LinkElement for the Atmospheric loss,
     that can depend a single gain/loss value or on parameters instead. as
     dictated by the input_type value
@@ -82,7 +82,7 @@ class Atmospheric_LinkElement(LinkElement):
         
         # Run the initialization of parent LinkElement
         super().__init__(name, linktype='Atmospheric', gain = gain)
-        # Add attributes that are unique to Atmospheric_LinkElement
+        # Add attributes that are unique to ATMOSPHERIC_LinkElement
         self.input_type = input_type
 
         self.t = parameters.get('air_temperature', None) -273.15    # [degC]
@@ -231,6 +231,6 @@ if __name__ == '__main__':
                       'water_vapor_content': 7.5*1e-3,
                       'wavelength': c/2e6,
                       'elevation_angle': 5}
-    testelement = Atmospheric_LinkElement('test', 'parameter_set_2', -131, 
+    testelement = ATMOSPHERIC_LinkElement('test', 'parameter_set_2', -131,
                                           testparameters)
     print(testelement)

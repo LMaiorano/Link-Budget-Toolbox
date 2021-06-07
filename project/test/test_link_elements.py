@@ -7,7 +7,7 @@ Created on Wed Jun  2 13:49:50 2021
 # TODO: test this with DELFT values as also validation
 import unittest
 from project.link_element import FREE_SPACE_LinkElement, RX_LinkElement, \
-    TX_LinkElement, Atmospheric_LinkElement
+    TX_LinkElement, ATMOSPHERIC_LinkElement
 
 Re = 6371e3     #[m]
 c = 299792458   #[m/s]
@@ -21,7 +21,7 @@ class FREE_SPACE_LinkElementTest(unittest.TestCase):
                       'wavelength': c/437e6}
 
         out_val = FREE_SPACE_LinkElement('test', 'parameter_set_1',0, testparameters).gain
-        print(out_val)
+        # print(out_val)
         ref_val = -147.55 # Should be -149.63
 
         self.assertAlmostEqual(ref_val, out_val,0)
@@ -34,7 +34,7 @@ class FREE_SPACE_LinkElementTest(unittest.TestCase):
                       'wavelength': c/437e6}
 
         out_val = FREE_SPACE_LinkElement('test', 'parameter_set_1',0, testparameters).distance
-        print(out_val)
+        # print(out_val)
         ref_val = 1303.28e3 # Should be -149.63
 
         self.assertAlmostEqual(ref_val, out_val,-2)
@@ -47,7 +47,7 @@ class TX_LinkElementTest(unittest.TestCase):
               'waist_radius': 24.7e-3}
 
         out_val = TX_LinkElement('test', 'gain_loss', 5, testparameters).gain
-        print(out_val)
+        # print(out_val)
         ref_val = 5 # Should be 103
 
         self.assertAlmostEqual(ref_val, out_val,0)
@@ -59,7 +59,7 @@ class RX_LinkElementTest(unittest.TestCase):
                       'wavelength':1}
 
         out_val = RX_LinkElement('test', 'gain_loss', 8.5, testparameters).gain
-        print(out_val)
+        # print(out_val)
         ref_val = 8.5 # Should be 691
 
         self.assertAlmostEqual(ref_val, out_val,0)
@@ -72,8 +72,8 @@ class Atmospheric_LinkElementTest(unittest.TestCase):
                       'wavelength': c/2e6,
                       'elevation_angle': 10}
 
-        out_val = Atmospheric_LinkElement('test', 'parameter_set_1', 30, testparameters).gain
-        print(out_val)
+        out_val = ATMOSPHERIC_LinkElement('test', 'parameter_set_1', 30, testparameters).gain
+        # print(out_val)
         ref_val = -0.4 # Should be -0.4
 
         self.assertAlmostEqual(ref_val, out_val,0)
