@@ -175,6 +175,7 @@ Found at `project/element_reference.yaml`
 This is used for the backend, to define for each `link_type`, per parameter set:
  - Which attributes are required
  - The units of each attribute
+    - Unit strings MUST conform to [Astropy](https://docs.astropy.org/en/stable/units/index.html#module-astropy.units) formatting. Eg: `km`, `m / s2`, or `'-'` if unknown
  - A description for each attribute
  - The acceptable domain of the attribute (using mathematical "[ ]" and "()" interval notation)
  
