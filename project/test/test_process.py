@@ -87,7 +87,8 @@ class ProcessTestCase(unittest.TestCase):
         result = main_process(self.data_generic_only)
 
         self.data_generic_only['general_values']['total_gain'] = -53.0
-        self.data_generic_only['general_values']['total_margin'] = -7
+        self.data_generic_only['general_values']['total_margin'] = -7.0
+        self.data_generic_only['general_values']['output_power'] = -23.0
 
         # Check that all units are converted back properly and the inputs have not been changed
         self.assertDictEqual(result, self.data_generic_only)

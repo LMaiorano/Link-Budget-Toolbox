@@ -128,11 +128,12 @@ def sum_results(data):
         gain_sum += attributes['gain_loss']
 
 
-    margin = data['general_values']['rx_sys_threshold'] \
-             - (data['general_values']['input_power'] + gain_sum)
+    output_power = data['general_values']['input_power'] + gain_sum
+    margin = data['general_values']['rx_sys_threshold'] - output_power
 
     data['general_values']['total_margin'] = margin
     data['general_values']['total_gain'] = gain_sum
+    data['general_values']['output_power'] = output_power
 
 
 

@@ -130,7 +130,10 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
     @pyqtSlot()
     def open_config_clicked(self):
-        """Opens a file dialog to select a config file"""
+        """PyQt Slot for "Open Action"
+
+        Opens a file dialog to select a config file
+        """
 
         dlg = QFileDialog()
 
@@ -163,55 +166,31 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
     @pyqtSlot()
     def new_clicked(self):
-        '''New Action, clears existing ref_data and loads default config'''
-        self.clear_table_elements()
-        self.cfg_file = Path(self.default_cfg)
-        self.cfg_data = self.read_config()
-        self.fill_input_table()
-        self.fill_general_values()
+        """PyQt Slot for "New" Action
+
+        Clears existing ref_data and tables and loads default config
+        """
+        self.clear_table_elements()             # Clear all tables
+        self.cfg_file = Path(self.default_cfg)  # Reset config file to default
+        self.cfg_data = self.read_config()      # Load config to dict
+        self.fill_input_table()                 # Fill input table
+        self.fill_general_values()              # Fill general values
 
     @pyqtSlot()
     def clear_all_clicked(self):
-        self.clear_table_elements()
+        """PyQt Slot for "Clear All" button
 
-
-    def read_config(self, file=None):
-        """Reads and loads YAML configuration file to a dictionary
-
-        Parameters
-        ----------
-        file: str
-            (default: self.cfg_file) Filepath of yaml configuration to load
-
-        Returns
-        -------
-        dict
-            Dictionary from yaml file
+        Clears all entries in table. Does not modify cfg_data dict
         """
-        if file is None:
-            file = self.cfg_file
-
-        with open(file, 'r') as f:
-            data = yaml.full_load(f)
-
-        # verify basic elements
-        if file == self.cfg_file:
-            required_sections = ['elements', 'general_values', 'settings']
-            for sect in required_sections:
-                if sect not in data.keys():
-                    raise KeyError(f'Configuration file missing required section: "{sect}"')
-
-            # Add a default index (top) if missing in element configuration
-            for element in data['elements'].values():
-                if 'idx' not in element.keys():
-                    element['idx'] = 0
-
-        return data
+        self.clear_table_elements()
 
     @pyqtSlot()
     def add_element_clicked(self):
-        """Adds new row to column, could be expanded to add a preset number of rows"""
-        self.save_input_table()
+        """PyQt Slot for "Add Element" button
+
+        Adds new row to column, could be expanded to add a preset number of rows
+        """
+        self.save_input_table() # Save current table
 
         # Get existing names, (cannot have a duplicate, due to dictionary structure)
         existing_element_names = [name.lower() for name in self.cfg_data['elements'].keys()]
@@ -241,8 +220,11 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
     @pyqtSlot()
     def delete_element_clicked(self):
-        """Deletes the selected table element"""
+        """PyQt Slot for "Delete Element" button
 
+        Deletes the selected table element
+        """
+        # Identify selected element
         selected = self.tbl_elements.selectedItems()
         if len(selected) == 0:
             return  # quit because no rows selected
@@ -255,25 +237,48 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             for row in reversed(rows):  # Must remove from bottom up, else indexes gets confused
                 self.tbl_elements.removeRow(row)
 
+        # Save new table (without checking for completed values, allows new entries to be deleted)
         self.save_input_table(allow_blank=True)
 
     @pyqtSlot()
     def move_up_clicked(self):
+        """PyQt Slot for 'Move Up' button"""
+        # Identify selected element
+        selected = self.tbl_elements.selectedItems()
+        if len(selected) == 0:
+            return  # quit because no rows selected
+
         self.shift_selected_elements(up=True)
 
     @pyqtSlot()
     def move_down_clicked(self):
+        """PyQt Slot for 'Move Down' button"""
+        # Identify selected element
+        selected = self.tbl_elements.selectedItems()
+        if len(selected) == 0:
+            return  # quit because no rows selected
+
         self.shift_selected_elements(up=False)
 
     @pyqtSlot(int, int)
     def input_table_double_clicked(self, row, column):
-        '''PyQt Slot Handlerwhen input table is double clicked'''
+        '''PyQt Slot for input table double clicked
+
+        Triggers methods based on row and/or column that is double clicked
+        The (row, column) signature must be kept, even if one of the args is
+        not used.
+        '''
+        # Double-click on name column should open rename dialog
         if column == self.name_col:
             self.rename_element()
 
     @pyqtSlot()
     def run_process_clicked(self):
-        """Run Analysis button clicked in UI, which calculates the link budget"""
+        """PyQt Slot for 'Run Analysis' button
+
+        Triggers sequence of actions to run main process and calculate total
+        gain and link margins
+        """
         logger.debug('Running main process')
 
         # Check if ref_data in table is valid
@@ -300,26 +305,31 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             except (ValueError, TypeError):
                 pass  # Strings or None's do not need to be converted
 
+        # Display intermediate gain results in table
         self.fill_results_table(self.cfg_data['elements'])
 
         # Display Final Values
-        gain_sum = self.cfg_data['general_values']['total_gain']
         margin = self.cfg_data['general_values']['total_margin']
+        output_power = self.cfg_data['general_values']['output_power']
 
-        self.txt_total.setText(f'{gain_sum:.{self.decimals}f}')
+        self.txt_total.setText(f'{output_power:.{self.decimals}f}')
         self.txt_margin.setText(f'{margin:.{self.decimals}f}')
 
-        self.btn_save_results.setEnabled(True)
+        self.btn_save_results.setEnabled(True) # Enable save_results button
 
     @pyqtSlot()
     def save_config_clicked(self):
-        """Save current configuration to yaml file"""
+        """PyQt Slot for 'Save' action
 
-        # Update cfg_data elements
+        Saves current configuration to yaml file
+        """
+
+        # Validate input table values
         valid_data = self.validate_input_values()
         if not valid_data:
             return  # Abort saving, values must first be fixed
 
+        # Save input table to self.cfg_data dict
         self.save_input_table()
 
         # Create file dialog to get save location
@@ -348,27 +358,90 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
     @pyqtSlot()
     def input_power_W_edited(self):
+        """PyQt Slot for 'Input Power [W]' QLineEdit
+
+        Automatically updates corresponding [dBm] field with equivalent power.
+        Updates self.cfg_data
+        """
+        # Convert W to dBm and update adjacent field
         self.sync_input_fields(self.txt_in_power_W, self.txt_in_power_dbm,
                                self.W_to_dBm)
+        # Update self.cfg_data
         self.txt_in_power_dbm_changed()
 
     @pyqtSlot()
     def input_power_dbm_edited(self):
+        """PyQt Slot for 'Input Power [dBm]' QLineEdit
+
+        Automatically updates corresponding [W] field with equivalent power.
+        Updates self.cfg_data
+        """
+        # Convert dBm to W and update adjacent field
         self.sync_input_fields(self.txt_in_power_dbm, self.txt_in_power_W,
                                self.dBm_to_W, sigfigs=5)
+        # Update self.cfg_data
         self.txt_in_power_dbm_changed()
 
     @pyqtSlot()
     def threshold_W_edited(self):
+        """PyQt Slot for 'Receiver System Threshold [W]' QLineEdit
+
+        Automatically updates corresponding [dBm] field with equivalent power.
+        Updates self.cfg_data
+        """
+        # Convert W to dBm and update adjacent field
         self.sync_input_fields(self.txt_threshold_W, self.txt_threshold_dbm,
                                self.W_to_dBm)
+        # Update self.cfg_data
         self.txt_threshold_dbm_changed()
 
     @pyqtSlot()
     def threshold_dbm_edited(self):
+        """PyQt Slot for 'Receiver System Threshold [dBm]' QLineEdit
+
+        Automatically updates corresponding [W] field with equivalent power.
+        Updates self.cfg_data
+        """
+        # Convert dBm to W and update adjacent field
         self.sync_input_fields(self.txt_threshold_dbm, self.txt_threshold_W,
                                self.dBm_to_W, sigfigs=5)
+        # Update self.cfg_data
         self.txt_threshold_dbm_changed()
+
+    def read_config(self, file=None):
+        """Reads and loads YAML configuration file to a dictionary
+
+        Parameters
+        ----------
+        file: str, default=self.cfg_file
+            Filepath of yaml configuration to load
+
+        Returns
+        -------
+        dict
+            Dictionary from yaml file
+        """
+        # Use self.cfg_file as default if none other given
+        if file is None:
+            file = self.cfg_file
+
+        # Read data from file
+        with open(file, 'r') as f:
+            data = yaml.full_load(f)
+
+        # verify basic elements
+        if file == self.cfg_file:
+            required_sections = ['elements', 'general_values', 'settings']
+            for sect in required_sections:
+                if sect not in data.keys():
+                    raise KeyError(f'Configuration file missing required section: "{sect}"')
+
+            # Add a default index (top) if missing in element configuration
+            for element in data['elements'].values():
+                if 'idx' not in element.keys():
+                    element['idx'] = 0
+
+        return data
 
     def set_lineedit_validators(self, remove=False):
         '''Sets or removes QValidators for all LineEdits in main window
@@ -382,54 +455,80 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         -------
         None
         '''
+        # Define validator to apply
         validator = NotEmptyNumericValidator()
         if remove:
             validator = None
+
+        # Set validators for QLineEdit fields
         self.txt_in_power_W.setValidator(validator)
         self.txt_in_power_dbm.setValidator(validator)
         self.txt_threshold_W.setValidator(validator)
         self.txt_threshold_dbm.setValidator(validator)
 
     def clear_table_elements(self, results=True):
-        """Clears input table"""
+        """Clears tables of contents and rows/columns
+
+        Parameters
+        ----------
+        results : bool, default=True
+            Whether results should also be cleared
+
+        Returns
+        -------
+        None
+        """
+        # Clear Input Table
         self.tbl_elements.clearContents()
         self.tbl_elements.setRowCount(0)
 
+        # Clear input general values
         self.txt_in_power_dbm.clear()
         self.txt_in_power_W.clear()
         self.txt_threshold_dbm.clear()
         self.txt_threshold_W.clear()
 
         if results:
+            # Clear results table
             self.tbl_results.clearContents()
             self.tbl_results.setRowCount(0)
             self.tbl_results.setColumnCount(0)
+
+            # Clear result general values (totals)
+            self.txt_total.clear()
+            self.txt_margin.clear()
+
+            # Disable save results button
+            self.btn_save_results.setEnabled(False)
 
     def validate_input_values(self, allow_blank=False):
         """Check whether all values in input table can be converted to float
 
         Parameters
         ----------
-        allow_blank : bool, optional
-            (Default False) Whether blank values are allowed. This is allowed when deleting
-                an element
+        allow_blank : bool, default=False
+            Whether to allow blank value cells. This is used when deleting
+            newly added elements that do not yet have a value
 
         Returns
         -------
         bool
+            Whether all values are valid floats
         """
         try:
+            # Iterate through all value cells
             for r in range(self.tbl_elements.rowCount()):
                 val = self.tbl_elements.item(r, self.value_col).text()
                 if allow_blank and val == '':
-                    return True
+                    continue # Skip to next row
                 float(val)
-            return True
+            return True # All values are valid
+
         except ValueError:
             showdialog(['Please check that only numerical values are entered in the table'])
             return False
 
-    def save_input_table(self, **kwargs):
+    def save_input_table(self, allow_blank=False):
         """Save contents of Input Table to self.cfg_data dictionary
 
         Converts PyQt Table to an 'elements' dictionary of the same format
@@ -437,6 +536,11 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         NOTE: This method must be called explicitly by other methods and cannot
         be bound to a cell-changed event, because of how new elements are generated
+
+        Parameters
+        ----------
+        allow_blank : bool, default=False
+            Whether to allow blank values in cells.
 
         Returns
         -------
@@ -464,7 +568,6 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         idx = 0  # The position in the table of the element (1 = top element)
 
         # Check if ref_data in table is valid
-        allow_blank = kwargs.pop('allow_blank', False)
         valid_data = self.validate_input_values(allow_blank=allow_blank)
         if not valid_data:
             return
@@ -502,13 +605,17 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                 # if strings are entered, this will raise a TypeError to be caught by the click
                 # action
                 value = self.tbl_elements.item(r, self.value_col).text()
-                if value == '':
-                    value = 0
+                if allow_blank and value == '':
+                    value = None
 
-                value = float(value)
+                else:
+                    if value == '':
+                        value = 0
 
-                if isinstance(value, str): # Sometimes previous line doesnt run
                     value = float(value)
+
+                    if isinstance(value, str): # Sometimes previous line doesn't run, double check here
+                        value = float(value)
 
                 # Decide where to save name:value
                 if attribute_type == 'parameter':
@@ -527,6 +634,10 @@ class MainWindow(QMainWindow, mainwindow_form_class):
 
         This converts the ref_data dictionary elements to the necessary table items
         The table consists of four columns: Element, Attribute, Value, Units
+
+        Returns
+        -------
+        None
         """
 
         elements = self.cfg_data['elements']  # Select sub-dictionary of elements from config
@@ -602,6 +713,9 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                     descr = att_details.get('description')
                     val_range = att_details.get('range')
 
+                    if val is None:
+                        val = ''
+
                     try:
                         value_text = f"{val:.{self.decimals}f}"
                     except ValueError:
@@ -627,9 +741,19 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.tbl_elements.show()
 
     def fill_general_values(self):
+        """Fills input power and thershold receiver power fields
+
+        Sources data from self.cfg_data
+
+        Returns
+        -------
+        None
+        """
+        # Load values
         in_power = self.cfg_data['general_values']['input_power']
         threshold = self.cfg_data['general_values']['rx_sys_threshold']
 
+        # Default to 0 if non-existant
         if in_power is None:
             in_power = 0
         if threshold is None:
@@ -651,6 +775,21 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.set_lineedit_validators()
 
     def fill_results_table(self, results_data):
+        """Fill results table with values obtained from argument
+
+        Only gain_loss values are added to this table. Each element is a span
+        of rows to align with the input table, and the elements are in the same
+        order.
+
+        Parameters
+        ----------
+        results_data : dict
+            Dictionary of elements only, each with a gain_loss value
+
+        Returns
+        -------
+        None
+        """
 
         # Determine number of rows needed for table. Stored to dict of element_name: rows
         n_rows = 0
@@ -711,17 +850,21 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         header.setSectionResizeMode(1, QHeaderView.Stretch)
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
 
-    def get_attribute_details(self, element: dict, specific_parameter=None, gain=False):
+    def get_attribute_details(self, element, specific_parameter=None, gain=False):
         """Gets details about an element's parameters
 
         Reads ref_data from element_reference.yaml using a specific element.
         The link_type and input_type are used to determine which parameter set is applicable
 
-        Parameters ---------- element : dict A specific element dictionary as specified in the
-        configuration files specific_parameter : dict (Default: None) Which parameter to return.
-        If not specified, a full dict of all params will be returned. If input_type is
-        'gain_loss', then this is not relevant gain : bool (Default: False) Whether to return
-        details only about the Gain attribute
+        Parameters
+        ----------
+        element : dict
+            A specific element dictionary as specified in the configuration files
+        specific_parameter : dict, default=None
+            Which parameter to return details of. If not specified and input_type is not 'gain_loss',
+            a full dict of all params will be returned.
+        gain : bool, default=False
+            Whether to return details only about the Gain attribute
 
         Returns
         -------
@@ -746,6 +889,28 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         return param_set_details
 
     def build_empty_element(self, link_type, input_type):
+        """Create new element dictionary with required fields and empty values
+
+        This new element is added to the config attribute and table by a different
+        function. This is solely used to create the element dictionary and
+        pre-fill the required entries.
+
+        Both parameters should be passed as variables, which are created automatically
+        by the new_element dialog. See self.add_element_clicked() for example usage.
+
+        Parameters
+        ----------
+        link_type : str
+            The link type of this element. MUST exist in element_reference.yaml AND
+            conform to naming convention
+        input_type : str
+            Name of parameter set to be used. See element_reference.yaml for available types
+
+        Returns
+        -------
+        dict
+            Single element dictionary with all values blank except 'link_type' and 'input_type'
+        """
         # basic ref_data
         data = {'gain_loss': None,
                 'idx': np.inf,
@@ -765,26 +930,47 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         return data
 
     def shift_selected_elements(self, up=True):
-        if not self.validate_input_values():
+        """Shifts selected elements in input table up or down one place
+
+        This works on basis of modifying the 'idx' entries of the selected elements,
+        and then reloading the table. This avoids difficult calculations of how many
+        rows the previous or next element occupies.
+
+        All element indexes are first multiplied by 2, creating even numbers. When a selected
+        element is moved up or down, its index increases or decreases by one, resulting in an odd
+        number. By definition this index will never be shared with another element. Next, the
+        indexes are reset to natural numbering 1, 2, 3, etc. Finally, the elements are
+        applied to the table, placing them in the correct order.
+
+        Parameters
+        ----------
+        up : bool, default=True
+            Whether to shift the selection one index up. Set to False to move the selection down
+
+        Returns
+        -------
+        None
+        """
+        # Cancel operation if there are problems with the values (except blank)
+        if not self.validate_input_values(allow_blank=True):
             return
 
-        self.save_input_table()  # Save current table (in case some values have been changed)
+        # Save current table (in case some values have been changed)
+        self.save_input_table(allow_blank=True)
 
-        selected = self.tbl_elements.selectedRanges()
+        selected = self.tbl_elements.selectedRanges() # Identify selected elements
 
-        self.tbl_elements.clearSpans()
+        self.tbl_elements.clearSpans() # Clear multi-row spans of element titles
 
-        if len(selected) < 1:
-            return  # quit because no rows selected
-
-        rows = {cell.topRow() for cell in selected}
+        rows = {cell.topRow() for cell in selected} # Create set of rows to move (no duplicates)
 
         for elem in self.cfg_data['elements'].values():
             elem['idx'] *= 2  # multiply indexes of all by two, to allow space for item to shift
 
+        # Iterate through all selected rows, and modify 'idx' if cell contains element title
         for row in rows:
             elem_item = self.tbl_elements.item(row, self.name_col)
-            if isinstance(elem_item, ElementTableItem):
+            if isinstance(elem_item, ElementTableItem): # new element
                 name = elem_item.text()
 
                 if up:
@@ -799,11 +985,22 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             self.cfg_data['elements'][elem_name]['idx'] = idx
             idx += 1
 
+        # Reset table and reload elements
         self.clear_table_elements(results=False)
         self.fill_input_table()
         self.fill_general_values()
 
     def rename_element(self):
+        """Renames selected element by opening dialog
+
+        Using a dialog allows for complex actions such as checking that the name
+        does not already exist. The names of each element MUST be unique, as they are
+        the keys in the config dictionary.
+
+        Returns
+        -------
+        None
+        """
         selected = self.tbl_elements.selectedRanges()
         if len(selected) == 0:
             return  # quit because no rows selected
@@ -811,18 +1008,26 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         # Get existing names, (cannot have a duplicate, due to dictionary structure)
         existing_element_names = [name.lower() for name in self.cfg_data['elements'].keys()]
 
+        # Ensure the left column (element name) is selected
         col_L = selected[0].leftColumn()
-        if col_L == 0:  # Element name must be selected
+        if col_L == 0:
+            # Get current name
             old_name = self.tbl_elements.item(selected[0].topRow(), self.name_col).text()
+
+            # Open dialog, passing current and existing names of all other elements
             dlg = RenameElementDialog(old_name, existing_element_names)
             accepted = dlg.exec()
 
-            if accepted:
+            if accepted: # New name is not same as old and does not yet exist
                 new_name = dlg.txt_name.text()
 
+                # Remove current element from config
                 old_elem = self.cfg_data['elements'].pop(old_name)
+
+                # Re-add current element to config under new name
                 self.cfg_data['elements'][new_name] = old_elem
 
+                # Reload input table
                 self.fill_input_table()
 
     def sync_input_fields(self, in_field, out_field, convert_fn, sigfigs=4):
@@ -844,27 +1049,63 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         None
             Modifies out_field directly
         """
+
+        # Temporarily remove validators from fields to prevent odd conflicting behavior
         self.set_lineedit_validators(remove=True)
 
+        # replace empty string with zero
         if in_field.text() in ['', '-']:
             in_field.setText('0.0')
 
+        # Convert field text to float
         val_in = float(in_field.text())
+
+        # Update other field with converted value
         out_field.setText(f'{convert_fn(val_in):.{sigfigs}g}')
 
+        # Re-apply validators
         self.set_lineedit_validators()
 
     def txt_threshold_dbm_changed(self):
+        """Automatically update self.cfg_data with new threshold power
+
+        Only power values in dBm need to be added to the config dictionary. This
+        is run when the user edits either Power Input field
+
+        Returns
+        -------
+        None
+        """
         threshold = float(self.txt_threshold_dbm.text())
         self.cfg_data['general_values']['rx_sys_threshold'] = threshold
 
     def txt_in_power_dbm_changed(self):
+        """Automatically update self.cfg_data with new input power
+
+        Only power values in dBm need to be added to the config dictionary. This
+        is run when the user edits either Power Input field
+
+        Returns
+        -------
+        None
+        """
         power = float(self.txt_in_power_dbm.text())
         self.cfg_data['general_values']['input_power'] = power
 
 
 
 def set_log_level(log_level='INFO'):
+    """Sets level of log statements to print to console
+
+    Parameters
+    ----------
+    log_level : str, default="INFO"
+        Verbosity of debug statements. Options are: 'DEBUG', 'INFO', or 'SUCCESS'
+
+    Returns
+    -------
+    None
+    """
     logger.remove()
     format_clean = '<cyan>{time:HH:mm:ss}</cyan> | ' \
                    '<level>{level: <8}</level> | ' \
@@ -881,11 +1122,12 @@ def run_app(log_lvl='INFO'):
 
     Parameters
     ----------
-    log_lvl
+    log_lvl : str, default="INFO"
+        Verbosity of debug statements. Options are: 'DEBUG', 'INFO', or 'SUCCESS'
 
     Returns
     -------
-
+    None
     '''
     set_log_level(log_lvl)
     app = QtWidgets.QApplication(sys.argv)
