@@ -29,11 +29,11 @@ FREE_SPACE:
         gs_altitude:
             description:    Ground station altitude
             units:          m
-            range:          "[0, sc_altitude)"
+            range:          "[0, inf)"
         sc_altitude:
             description:    Spacecraft altitude
             units:          km
-            range:          "[sc_altitude, inf)"
+            range:          "[0, inf)"
         frequency:
             description:    Radio frequency
             units:          MHz
