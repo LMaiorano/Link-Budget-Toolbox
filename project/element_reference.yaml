@@ -1,114 +1,120 @@
-# This is the configuration file for the user-interface.
+# This is the configuration file defining the how units should be converted and for
+#   user-interface descriptions
 #
 # NOTE: ALL CALCULATIONS ARE EXECUTED IN SI STANDARD UNITS.
 #
-# The units listed here (displayed in the UI and saved in yaml files) are for ease of use,
-#   but the values are converted when the analysis is run
+# When the analysis is run, the values are converted to standard SI units based on
+#   what units are specified here. For example:
+#     - If the unit here is "km", it will automatically be recognized and the value of
+#       the corresponding parameter will be converted to "m"
+#     - If the unit here is "m", it will be recognized that the value does not need conversion
 #
-#
+# Additionally, the values will be converted back to these units after analysis
+
+
 FREE_SPACE:
-    overall_description:    Summary of FREE_SPACE element
+    overall_description:    "Summary of FREE_SPACE element"
     parameter_set_1:
         distance:
-            description:    Distance between spacecraft and ground station
-            units:          m
+            description:    "Distance between spacecraft and ground station"
+            units:          "km"
             range:          "(0, inf)"
         frequency:
-            description:    Radio frequency
-            units:          MHz
+            description:    "Radio frequency"
+            units:          "MHz"
             range:          "(0, inf)"
     parameter_set_2:
         elevation_angle:
-            description:    spacecraft elevation from ground station horizon
-            units:          deg
+            description:    "Spacecraft elevation from ground station horizon"
+            units:          "deg"
             range:          "(0,90)"
         distance:
-            description:    Slant range between spacecraft and ground station
-            units:          km
+            description:    "Slant range between spacecraft and ground station"
+            units:          "km"
             range:          "(0, inf)"
         gs_altitude:
-            description:    Ground station altitude
-            units:          m
-            range:          "[0, sc_altitude)"
+            description:    "Ground station altitude"
+            units:          "m"
+            range:          "[0, inf)"
         sc_altitude:
-            description:    Spacecraft altitude
-            units:          km
-            range:          "[sc_altitude, inf)"
+            description:    "Spacecraft altitude"
+            units:          "km"
+            range:          "[0, inf)"
         frequency:
-            description:    Radio frequency
-            units:          MHz
+            description:    "Radio frequency"
+            units:          "MHz"
             range:          "(0, inf)"
 ATMOSPHERIC:
-    overall_description:    Summary of Atmospheric element
+    overall_description:    "Summary of Atmospheric element"
     parameter_set_1:
         air_temperature:
-            description:    Surface temperature
-            units:          deg K
+            description:    "Surface temperature"
+            units:          "deg K"
             range:          "(0, inf)"
         air_pressure:
-            description:    Surface pressure
-            units:          MHz
+            description:    "Surface pressure"
+            units:          "MHz"
             range:          "(0, inf)"
         water_vapor_content:
-            description:    Surface water-vapour density
-            units:          kg / m3
+            description:    "Surface water-vapour density"
+            units:          "kg / m3"
             range:          "(0, inf)"
         water_vapor_content:
-            description:    Surface water-vapour density
-            units:          kg / m3
+            description:    "Surface water-vapour density"
+            units:          "kg / m3"
             range:          "(0, inf)"
         elevation_angle:
             description:    spacecraft elevation from ground station horizon
-            units:          deg
+            units:          "deg"
             range:          "(0, 90)"
         frequency:
-            description:    Radio frequency
-            units:          MHz
+            description:    "Radio frequency"
+            units:          "MHz"
             range:          "(0, inf)"  
 RX:
-    overall_description:    Summary of RX element
+    overall_description:    "Summary of RX element"
     parameter_set_1:
         antenna_diameter:
-            description:    Diameter of antenna
-            units:          m
+            description:    "Diameter of antenna"
+            units:          "m"
             range:          "(0, inf)"
         antenna_efficiency:
-            description:    Efficiency of antenna
+            description:    "Efficiency of antenna"
             units:          "-"
             range:          "(0, 1]"
         frequency:
-            description:    Radio frequency
-            units:          MHz
+            description:    "Radio frequency"
+            units:          "MHz"
             range:          "(0, inf)"
 TX:
-    overall_description:    Summary of TX element
+    overall_description:    "Summary of TX element"
     parameter_set_1:
         antenna_diameter:
-            description:    Diameter of antenna
-            units:          m
+            description:    "Diameter of antenna"
+            units:          "m"
             range:          "(0, inf)"
         antenna_efficiency:
-            description:    Efficiency of antenna
+            description:    "Efficiency of antenna"
             units:          "-"
             range:          "(0, 1]"
         frequency:
-            description:    Radio frequency
-            units:          MHz
+            description:    "Radio frequency"
+            units:          "MHz"
             range:          "(0, inf)"
     parameter_set_2:
         waist_radius:
             description:    "??????"
-            units:          m
+            units:         "m"
         frequency:
-            description:    Radio frequency
-            units:          MHz
+            description:    "Radio frequency"
+            units:          "MHz"
             range:          "(0, inf)"
 GENERIC:
-    overall_description:    Summary of GENERIC element
+    overall_description:    "Summary of GENERIC element"
     gain_loss:
         gain_loss:
-            description:        "Overall gain of the Link Element. \n\tPositive = Gain \n\tNegative = Loss" # Must use double quotes to recognize line-break: \n
-            units:              dB
+            description:    "Overall gain of the Link Element. \n\tPositive = Gain \n\tNegative = Loss" # Must use double quotes to recognize line-break: \n
+            units:          "dB"
 
 #LINK_TYPE:
 #    overall_description:    Summary of element

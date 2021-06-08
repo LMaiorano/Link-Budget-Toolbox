@@ -243,11 +243,21 @@ class MainWindow(QMainWindow, mainwindow_form_class):
     @pyqtSlot()
     def move_up_clicked(self):
         """PyQt Slot for 'Move Up' button"""
+        # Identify selected element
+        selected = self.tbl_elements.selectedItems()
+        if len(selected) == 0:
+            return  # quit because no rows selected
+
         self.shift_selected_elements(up=True)
 
     @pyqtSlot()
     def move_down_clicked(self):
         """PyQt Slot for 'Move Down' button"""
+        # Identify selected element
+        selected = self.tbl_elements.selectedItems()
+        if len(selected) == 0:
+            return  # quit because no rows selected
+
         self.shift_selected_elements(up=False)
 
     @pyqtSlot(int, int)
@@ -299,10 +309,10 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         self.fill_results_table(self.cfg_data['elements'])
 
         # Display Final Values
-        gain_sum = self.cfg_data['general_values']['total_gain']
         margin = self.cfg_data['general_values']['total_margin']
+        output_power = self.cfg_data['general_values']['output_power']
 
-        self.txt_total.setText(f'{gain_sum:.{self.decimals}f}')
+        self.txt_total.setText(f'{output_power:.{self.decimals}f}')
         self.txt_margin.setText(f'{margin:.{self.decimals}f}')
 
         self.btn_save_results.setEnabled(True) # Enable save_results button
@@ -595,13 +605,17 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                 # if strings are entered, this will raise a TypeError to be caught by the click
                 # action
                 value = self.tbl_elements.item(r, self.value_col).text()
-                if value == '':
-                    value = 0
+                if allow_blank and value == '':
+                    value = None
 
-                value = float(value)
+                else:
+                    if value == '':
+                        value = 0
 
-                if isinstance(value, str): # Sometimes previous line doesn't run, double check here
                     value = float(value)
+
+                    if isinstance(value, str): # Sometimes previous line doesn't run, double check here
+                        value = float(value)
 
                 # Decide where to save name:value
                 if attribute_type == 'parameter':
@@ -698,6 +712,9 @@ class MainWindow(QMainWindow, mainwindow_form_class):
                     units = att_details.get('units')
                     descr = att_details.get('description')
                     val_range = att_details.get('range')
+
+                    if val is None:
+                        val = ''
 
                     try:
                         value_text = f"{val:.{self.decimals}f}"
@@ -872,6 +889,28 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         return param_set_details
 
     def build_empty_element(self, link_type, input_type):
+        """Create new element dictionary with required fields and empty values
+
+        This new element is added to the config attribute and table by a different
+        function. This is solely used to create the element dictionary and
+        pre-fill the required entries.
+
+        Both parameters should be passed as variables, which are created automatically
+        by the new_element dialog. See self.add_element_clicked() for example usage.
+
+        Parameters
+        ----------
+        link_type : str
+            The link type of this element. MUST exist in element_reference.yaml AND
+            conform to naming convention
+        input_type : str
+            Name of parameter set to be used. See element_reference.yaml for available types
+
+        Returns
+        -------
+        dict
+            Single element dictionary with all values blank except 'link_type' and 'input_type'
+        """
         # basic ref_data
         data = {'gain_loss': None,
                 'idx': np.inf,
@@ -891,26 +930,47 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         return data
 
     def shift_selected_elements(self, up=True):
-        if not self.validate_input_values():
+        """Shifts selected elements in input table up or down one place
+
+        This works on basis of modifying the 'idx' entries of the selected elements,
+        and then reloading the table. This avoids difficult calculations of how many
+        rows the previous or next element occupies.
+
+        All element indexes are first multiplied by 2, creating even numbers. When a selected
+        element is moved up or down, its index increases or decreases by one, resulting in an odd
+        number. By definition this index will never be shared with another element. Next, the
+        indexes are reset to natural numbering 1, 2, 3, etc. Finally, the elements are
+        applied to the table, placing them in the correct order.
+
+        Parameters
+        ----------
+        up : bool, default=True
+            Whether to shift the selection one index up. Set to False to move the selection down
+
+        Returns
+        -------
+        None
+        """
+        # Cancel operation if there are problems with the values (except blank)
+        if not self.validate_input_values(allow_blank=True):
             return
 
-        self.save_input_table()  # Save current table (in case some values have been changed)
+        # Save current table (in case some values have been changed)
+        self.save_input_table(allow_blank=True)
 
-        selected = self.tbl_elements.selectedRanges()
+        selected = self.tbl_elements.selectedRanges() # Identify selected elements
 
-        self.tbl_elements.clearSpans()
+        self.tbl_elements.clearSpans() # Clear multi-row spans of element titles
 
-        if len(selected) < 1:
-            return  # quit because no rows selected
-
-        rows = {cell.topRow() for cell in selected}
+        rows = {cell.topRow() for cell in selected} # Create set of rows to move (no duplicates)
 
         for elem in self.cfg_data['elements'].values():
             elem['idx'] *= 2  # multiply indexes of all by two, to allow space for item to shift
 
+        # Iterate through all selected rows, and modify 'idx' if cell contains element title
         for row in rows:
             elem_item = self.tbl_elements.item(row, self.name_col)
-            if isinstance(elem_item, ElementTableItem):
+            if isinstance(elem_item, ElementTableItem): # new element
                 name = elem_item.text()
 
                 if up:
@@ -925,11 +985,22 @@ class MainWindow(QMainWindow, mainwindow_form_class):
             self.cfg_data['elements'][elem_name]['idx'] = idx
             idx += 1
 
+        # Reset table and reload elements
         self.clear_table_elements(results=False)
         self.fill_input_table()
         self.fill_general_values()
 
     def rename_element(self):
+        """Renames selected element by opening dialog
+
+        Using a dialog allows for complex actions such as checking that the name
+        does not already exist. The names of each element MUST be unique, as they are
+        the keys in the config dictionary.
+
+        Returns
+        -------
+        None
+        """
         selected = self.tbl_elements.selectedRanges()
         if len(selected) == 0:
             return  # quit because no rows selected
@@ -937,18 +1008,26 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         # Get existing names, (cannot have a duplicate, due to dictionary structure)
         existing_element_names = [name.lower() for name in self.cfg_data['elements'].keys()]
 
+        # Ensure the left column (element name) is selected
         col_L = selected[0].leftColumn()
-        if col_L == 0:  # Element name must be selected
+        if col_L == 0:
+            # Get current name
             old_name = self.tbl_elements.item(selected[0].topRow(), self.name_col).text()
+
+            # Open dialog, passing current and existing names of all other elements
             dlg = RenameElementDialog(old_name, existing_element_names)
             accepted = dlg.exec()
 
-            if accepted:
+            if accepted: # New name is not same as old and does not yet exist
                 new_name = dlg.txt_name.text()
 
+                # Remove current element from config
                 old_elem = self.cfg_data['elements'].pop(old_name)
+
+                # Re-add current element to config under new name
                 self.cfg_data['elements'][new_name] = old_elem
 
+                # Reload input table
                 self.fill_input_table()
 
     def sync_input_fields(self, in_field, out_field, convert_fn, sigfigs=4):
@@ -970,27 +1049,63 @@ class MainWindow(QMainWindow, mainwindow_form_class):
         None
             Modifies out_field directly
         """
+
+        # Temporarily remove validators from fields to prevent odd conflicting behavior
         self.set_lineedit_validators(remove=True)
 
+        # replace empty string with zero
         if in_field.text() in ['', '-']:
             in_field.setText('0.0')
 
+        # Convert field text to float
         val_in = float(in_field.text())
+
+        # Update other field with converted value
         out_field.setText(f'{convert_fn(val_in):.{sigfigs}g}')
 
+        # Re-apply validators
         self.set_lineedit_validators()
 
     def txt_threshold_dbm_changed(self):
+        """Automatically update self.cfg_data with new threshold power
+
+        Only power values in dBm need to be added to the config dictionary. This
+        is run when the user edits either Power Input field
+
+        Returns
+        -------
+        None
+        """
         threshold = float(self.txt_threshold_dbm.text())
         self.cfg_data['general_values']['rx_sys_threshold'] = threshold
 
     def txt_in_power_dbm_changed(self):
+        """Automatically update self.cfg_data with new input power
+
+        Only power values in dBm need to be added to the config dictionary. This
+        is run when the user edits either Power Input field
+
+        Returns
+        -------
+        None
+        """
         power = float(self.txt_in_power_dbm.text())
         self.cfg_data['general_values']['input_power'] = power
 
 
 
 def set_log_level(log_level='INFO'):
+    """Sets level of log statements to print to console
+
+    Parameters
+    ----------
+    log_level : str, default="INFO"
+        Verbosity of debug statements. Options are: 'DEBUG', 'INFO', or 'SUCCESS'
+
+    Returns
+    -------
+    None
+    """
     logger.remove()
     format_clean = '<cyan>{time:HH:mm:ss}</cyan> | ' \
                    '<level>{level: <8}</level> | ' \
@@ -1007,11 +1122,12 @@ def run_app(log_lvl='INFO'):
 
     Parameters
     ----------
-    log_lvl
+    log_lvl : str, default="INFO"
+        Verbosity of debug statements. Options are: 'DEBUG', 'INFO', or 'SUCCESS'
 
     Returns
     -------
-
+    None
     '''
     set_log_level(log_lvl)
     app = QtWidgets.QApplication(sys.argv)

@@ -557,7 +557,7 @@
            </font>
           </property>
           <property name="text">
-           <string>dB</string>
+           <string>dBm</string>
           </property>
           <property name="buddy">
            <cstring>txt_total</cstring>
@@ -635,6 +635,9 @@
             <pointsize>10</pointsize>
            </font>
           </property>
+          <property name="toolTip">
+           <string>= Receiver Sys Threshold - Received Power</string>
+          </property>
           <property name="text">
            <string>Margin:</string>
           </property>
@@ -668,8 +671,11 @@
             <pointsize>10</pointsize>
            </font>
           </property>
+          <property name="toolTip">
+           <string>= Input Power + Sum( Element Gains/Losses )</string>
+          </property>
           <property name="text">
-           <string>Total Gain/Loss:</string>
+           <string>Received Power</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

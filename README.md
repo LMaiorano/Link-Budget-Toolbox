@@ -11,6 +11,7 @@ A modular Python alternative to STK to easily calculate satellite link budgets
 - [ ] Review all entries in element_reference.yaml
 - [ ] Proofread ReadMe
 - [ ] Create relevant example config 
+- [ ] Settings.py description
 
 
 
@@ -117,7 +118,7 @@ New element types can be added using the steps below. The GUI dynamically loads 
 10. Finally convert per calculation the gain to decibels using the LinkElement.dB(value) method and then update the new LINKTYPE_LinkElement.gain
 
 ### Example Link Element
-```
+```python
 from project.link_element import LinkElement
 # import other packages here
 
@@ -125,8 +126,10 @@ class RX_LinkElement(LinkElement):
     def __init__(self, name, input_type, gain, parameters):
         # Run the initialization of parent LinkElement
         super().__init__(name, linktype='RX', gain = gain)
+
         # Add attributes that are unique to Rx_LinkElement
         self.input_type = input_type
+
         # Add attributes that are unique parameters to RxElement
         self.param_a = parameters.get('param_a', None)
         self.param_b = parameters.get('param_b', None)
@@ -142,16 +145,23 @@ class RX_LinkElement(LinkElement):
         elif self.input_type == "parameter_set_2":
             G = self.calc_2()
             self.gain = self.dB(G)
+
     def calc_1(self):
         G = self.param_a + self.param_b
         return G
+
     def calc_2(self):
         G = self.param_a*self.param_c + self.param_b
         return G
     
-    if __name__ == '__main__':
-    # Put any code here you want to use to test the class
-    # (like a scratch pad to test stuff while you're working)
+if __name__ == '__main__':
+    elem_name = 'Test Element'
+    testparameters = {'antenna_efficiency':0.7,
+                      'antenna_diameter':10,
+                      'wavelength':1550e-9,
+                      'waist_radius': 24.7e-3}
+
+    rx_le = RX_LinkElement(elem_name, 'parameter_set_2', None, testparameters)
 ```
 ### Definitions:
 |            	|                                                        Description                                                         	|   Naming Convention  	|
@@ -180,15 +190,15 @@ FREE_SPACE:
             range:          "(0, inf)"
         frequency:
             description:    Radio frequency
-            units:          MHz
+            units:          "MHz"
             range:          "(0, inf)"
     parameter_set_2:
         angle:
             description:    "Elevation angle"
-            units:          deg
+            units:          "deg"
         distance:
-            description:    Slant range between spacecraft and ground station
-            units:          km
+            description:    "Slant range between spacecraft and ground station"
+            units:          "km"
             range:          "(0, inf)"
         gs_altitude:
             description:    Ground station altitude
