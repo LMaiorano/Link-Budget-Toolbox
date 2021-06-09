@@ -21,9 +21,9 @@ def showdialog(message: list, level='warning'):
     message : list of str
         List of message strings. The first (required) is the main message. The
             second (optional) is additional detailed information
-    level : str
-        Sets type and icon of message box. (default: 'warning'),
-        or 'question', 'information', 'critical'
+    level : str, default='warning'
+        Sets type and icon of message box. 'warning', 'question', 'information',
+        or 'critical'
 
     Returns
     -------
