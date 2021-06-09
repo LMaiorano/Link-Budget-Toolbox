@@ -4,7 +4,7 @@
 title: new_element_dialog.py
 project: Link-Budget-Toolbox
 date: 17/05/2021
-author: nicolas Fosseprez
+author: Nicolas Fosseprez
 """
 
 from PyQt5 import QtWidgets, uic, QtCore
@@ -96,7 +96,7 @@ class NewElementDialog(QDialog, newelement_form_class):
             super().accept()
 
     def yes_gain_clicked(self):
-        ''' The user already know the gain or loss of the new element. 
+        ''' The user already knows the gain or loss of the new element. 
         
         The element is therefore a Generic type of element. The only parameter 
         for that is the gain/loss. 
@@ -117,8 +117,10 @@ class NewElementDialog(QDialog, newelement_form_class):
     def no_gain_clicked(self):
         ''' The user does not know the gain/loss value. 
         
-        A few element types are suggested in the combobox that the user can choose from.
-        The Generic type is not suggested as the user does not know the gain nor loss.        
+        A few element types are suggested in the combobox that the user can
+        choose from.
+        The Generic type is not suggested as the user does not know the gain
+        nor loss.        
         
         '''
 
@@ -132,7 +134,10 @@ class NewElementDialog(QDialog, newelement_form_class):
     def element_type_selected(self):
         ''' The user selects an element type in the combobox.
 
-
+        When an element type is selected, the parameter set combobox is refreshed
+        with the according sets of parameters for that particular element type.
+        
+        The Description textbox is updated.
 
         '''
         
@@ -141,24 +146,38 @@ class NewElementDialog(QDialog, newelement_form_class):
 
         # Prevents error when starting and type is ''
         if selected_element_type in self.element_ref.keys():
+            # Refresh Parameter Set combobox
             self.refresh_param_set(selected_element_type)
-            self.show_overall_desc(selected_element_type)
+            # Display Element Type description
+            self.show_overall_desc(selected_element_type)   
 
     
     def param_set_selected(self):
+        ''' The user selects a parameter set in the combobox.
+
+        When a parameter set is selected, the Required Inputs textbox is updated.
+
+        '''
         param_set = self.cmb_set_param.currentText()
         logger.debug(f'Selected: {param_set}')
+        
+        # Conditions MUST be met before displaying information on parameter set:
+        #   a paramater set is chosen AND yes/no radial is checked
         if (param_set != '') and (self.rdl_yes.isChecked() or self.rdl_no.isChecked()):
             self.summarize_info()    
 
     def refresh_param_set(self, selected_elem_type):
-        '''
+        ''' The parameter set combobox is refreshed when an element type has
+        been chosen.
         
+        If the user knows the gain or loss of the element type, only the gain_loss 
+        is proposed as parameters.
+        Otherwise, all parameter sets of the selected element type are proposed.
 
         Parameters
         ----------
-        selected_elem_type : TYPE
-            DESCRIPTION.
+        selected_elem_type : string
+            Dictionary key of the element type.
 
         Returns
         -------
@@ -168,27 +187,35 @@ class NewElementDialog(QDialog, newelement_form_class):
         # Add available parameters to Parameters Set combobox
         self.cmb_set_param.clear()  # Ensures it start empty
         
-        if self.rdl_yes.isChecked():
+        # If Yes is checked, only gain_loss is proposed
+        if self.rdl_yes.isChecked():    
             self.cmb_set_param.addItem("gain_loss")
         
+        # If No checked, propose all parameter sets
         elif self.rdl_no.isChecked():
             for param_set in self.element_ref[selected_elem_type].keys():
+                # overall_description is not a parameter set in the dictionary
                 if param_set != 'overall_description':
-                    self.cmb_set_param.addItem(param_set)
+                    self.cmb_set_param.addItem(param_set) # Add each parameter set
     
     def show_overall_desc(self, selected_element_type):
-        '''Shows description of element type
+        '''Shows description of the selected element type. 
+        
+        The Description textbox is updated with the description of the element
+        type as defined in element_reference.yaml.
+        The textbox can only be read by the user.
+        
         Parameters
         ----------
-        selected_element_type : TYPE
-            DESCRIPTION.
+        selected_element_type : string
+            Dictionary key of the element type.
 
         Returns
         -------
         None.
 
         '''
-        
+        # Only updates if a radio button is checked
         if self.rdl_yes.isChecked() or self.rdl_no.isChecked():
             description = self.element_ref[selected_element_type]['overall_description']
             # Display information in the text box
@@ -196,7 +223,14 @@ class NewElementDialog(QDialog, newelement_form_class):
             self.txt_description.insertPlainText(f"{description}")
 
     def summarize_info(self):
-        ''' Show all the ref_data the user has selected for the new Element'''
+        ''' Show a summary of the inputs the user will have to specif for the
+        new Element.
+        
+        A summary is given of the selected element type and the parameters 
+        that the user will have to specify later.
+        The textbox can only be read by the user.
+        
+        '''
         
         # Gather all the Element parameters
         selected_elem_type = self.cmb_element_type.currentText()   # Get element type

@@ -1,0 +1,89 @@
+elements:
+  Atmospheric Loss:
+    gain_loss: -0.5
+    idx: 5
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  Cable Loss:
+    gain_loss: -1.1
+    idx: 10
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  Circuit Loss:
+    gain_loss: -0.2
+    idx: 1
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  Path Loss:
+    gain_loss: null
+    idx: 4
+    input_type: parameter_set_1
+    link_type: FREE_SPACE
+    parameters:
+      distance: 1686000.0
+      frequency: 7240.0
+  Pointing Loss:
+    gain_loss: -0.1
+    idx: 3
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  Polarisation Mismatch:
+    gain_loss: -0.17
+    idx: 6
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  RFDU Circuit Loss:
+    gain_loss: -1.1
+    idx: 11
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  RX Antenna Gain:
+    gain_loss: -3.0
+    idx: 7
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  RX System Temp:
+    gain_loss: 25.38
+    idx: 13
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  Receiver Noise Figure:
+    gain_loss: 2.0
+    idx: 12
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  S/C Ant RX Axial Rat:
+    gain_loss: 3.0
+    idx: 8
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  TX Ant Gain:
+    gain_loss: 64.3
+    idx: 2
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  VSWR Loss:
+    gain_loss: -0.01
+    idx: 9
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+general_values:
+  input_power: 33.0
+  output_power: -112.67970595160077
+  rx_sys_threshold: -135.0
+  total_gain: -145.67970595160077
+  total_margin: -22.320294048399234
+settings:
+  case_type: nominal
