@@ -25,7 +25,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ``` 
 or on Windows:
-```shell script
+```cmd
 git clone https://github.com/LMaiorano/Link-Budget-Toolbox.git
 cd Link-Budget-Toolbox
 python3 -m virtualenv -p python3 venv
@@ -45,7 +45,7 @@ python main.py
 Alternatively, if a configuration file is already present, the link budget calculation
 can be run as a CLI script using the <nobr>`-s`</nobr> flag. The path to the YAML config can be specified with the `-f <filepath>` argument. 
 
-```
+```shell script
 python main.py -s -f "project/configs/demo.yaml"
 ```
 
@@ -53,7 +53,7 @@ python main.py -s -f "project/configs/demo.yaml"
 
 By default, an example configuration file will be used, which is defined in `settings.py` by variable `DEFAULT_LINK_CONFIG`.
 
-```
+```shell script
 usage: Link Budget Toolbox [-h] [-d | -s] [-f FILE]
 
 Runs by default as application with GUI
