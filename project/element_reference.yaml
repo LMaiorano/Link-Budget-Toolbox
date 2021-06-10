@@ -13,7 +13,7 @@
 
 
 FREE_SPACE:
-    overall_description:    "Summary of FREE_SPACE element"
+    overall_description:    "Path loss of a signal travelling \n through free space"
     parameter_set_1:
         distance:
             description:    "Distance between spacecraft and ground station"
@@ -45,7 +45,7 @@ FREE_SPACE:
             units:          "MHz"
             range:          "(0, inf)"
 ATMOSPHERIC:
-    overall_description:    "Summary of Atmospheric element"
+    overall_description:    "Atmospheric attenuation loss of a signal \n through dry and wet air in Earth's atmosphere"
     parameter_set_1:
         air_temperature:
             description:    "Surface temperature"
@@ -72,22 +72,7 @@ ATMOSPHERIC:
             units:          "MHz"
             range:          "(0, inf)"  
 RX:
-    overall_description:    "Summary of RX element"
-    parameter_set_1:
-        antenna_diameter:
-            description:    "Diameter of antenna"
-            units:          "m"
-            range:          "(0, inf)"
-        antenna_efficiency:
-            description:    "Efficiency of antenna"
-            units:          "-"
-            range:          "(0, 1]"
-        frequency:
-            description:    "Radio frequency"
-            units:          "MHz"
-            range:          "(0, inf)"
-TX:
-    overall_description:    "Summary of TX element"
+    overall_description:    "Gain of the receiving channel antenna"
     parameter_set_1:
         antenna_diameter:
             description:    "Diameter of antenna"
@@ -103,8 +88,31 @@ TX:
             range:          "(0, inf)"
     parameter_set_2:
         waist_radius:
-            description:    "??????"
-            units:         "m"
+            description:    "measure of antenna propagated Gaussian beam at point of its focus"
+            units:          "m"
+        frequency:
+            description:    "Radio frequency"
+            units:          "MHz"
+            range:          "(0, inf)"
+TX:
+    overall_description:    "Gain of the transmitting channel antenna"
+    parameter_set_1:
+        antenna_diameter:
+            description:    "Diameter of antenna"
+            units:          "m"
+            range:          "(0, inf)"
+        antenna_efficiency:
+            description:    "Efficiency of antenna"
+            units:          "-"
+            range:          "(0, 1]"
+        frequency:
+            description:    "Radio frequency"
+            units:          "MHz"
+            range:          "(0, inf)"
+     parameter_set_2:
+        waist_radius:
+            description:    "measure of antenna propagated Gaussian beam at point of its focus"
+            units:          "m"
         frequency:
             description:    "Radio frequency"
             units:          "MHz"
