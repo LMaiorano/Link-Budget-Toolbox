@@ -225,7 +225,7 @@ if __name__ == '__main__':
 | input_type 	| Which parameter set is to be used. This depends on the Link Type, and can be referenced in `element_reference.yaml` 	| lower_case no spaces 	|
 
 
-### Element Reference File:
+## Element Reference File:
 Found at `project/element_reference.yaml`
 This is used for the backend, to define for each `link_type` an overall description and available parameter sets. Per parameter_set, the following properties are defined:
  - Which parameters are required
