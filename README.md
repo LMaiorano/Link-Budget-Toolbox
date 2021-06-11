@@ -47,7 +47,7 @@ python main.py
 ```
 
 Alternatively, if a configuration file is already present, the link budget calculation
-can be run as a CLI script using the <nobr>`-s`</nobr> flag. The path to the YAML config can be specified with the `-f <filepath>` argument. 
+can be run as a shell script using the <nobr>`-s`</nobr> flag. The path to the YAML config can be specified with the `-f <filepath>` argument. 
 
 ```shell script
 python main.py -s -f "project/configs/demo.yaml"
@@ -66,7 +66,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -d, --debug           GUI app only: Print debug statements to terminal
   -s, --script          Run as CLI script. Does not open GUI
-  -f FILE, --file FILE  Link Budget configuration file (YAML)
+  -f FILE, --file FILE  Link Budget configuration file (YAML) (optional)
 
 ```
 
@@ -251,34 +251,35 @@ The units of each parameter are used by process.py to convert to and from standa
 An example is shown below. Note: this is incomplete and not up-to-date.
 ```yaml
 FREE_SPACE:
-    overall_description:    Summary of FREE_SPACE element
+    overall_description:    "Path loss of a signal travelling through free space"
     parameter_set_1:
         distance:
-            description:    Distance between spacecraft and ground station
-            units:          m
+            description:    "Distance between spacecraft and ground station"
+            units:          "km"
             range:          "(0, inf)"
         frequency:
-            description:    Radio frequency
+            description:    "Radio frequency"
             units:          "MHz"
             range:          "(0, inf)"
     parameter_set_2:
-        angle:
-            description:    "Elevation angle"
+        elevation_angle:
+            description:    "Spacecraft elevation from ground station horizon"
             units:          "deg"
+            range:          "(0, 90)"
         distance:
             description:    "Slant range between spacecraft and ground station"
             units:          "km"
             range:          "(0, inf)"
         gs_altitude:
-            description:    Ground station altitude
-            units:          m
+            description:    "Ground station altitude"
+            units:          "m"
             range:          "[0, inf)"
         sc_altitude:
-            description:    Spacecraft altitude
-            units:          km
+            description:    "Spacecraft altitude"
+            units:          "km"
             range:          "[0, inf)"
         frequency:
-            description:    Radio frequency
-            units:          MHz
+            description:    "Radio frequency"
+            units:          "MHz"
             range:          "(0, inf)"
 ```

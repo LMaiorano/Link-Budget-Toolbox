@@ -7,10 +7,6 @@ from project.process import read_user_data, fill_results_data, load_from_yaml, \
 
 
 class ProcessTestCase(unittest.TestCase):
-    # TODO: Use dics/df from txt/csv/??? file instead of hardcoding in this script
-    # TODO: find setup / teardown? to limit crosscontamination test variables between unit tests
-    # TODO: Check for tests to fail, skip next tests, as it is chronological.
-
     def setUp(self):
         self.cwd = Path(__file__).parent
         self.maxDiff = None
@@ -24,6 +20,9 @@ class ProcessTestCase(unittest.TestCase):
 
         self.unit_converted_user_data = load_from_yaml(f'{self.cwd}/ref_data/unit_converted_user_data.yaml')
         self.ref_fill_results_data = load_from_yaml(f'{self.cwd}/ref_data/ref_fill_results_data.yaml')
+
+        self.ref_test_main_process_complex = load_from_yaml(f'{self.cwd}/ref_data/ref_test_main_process_complex.yaml')
+
 
     def tearDown(self):
         if os.path.exists(self.tmp_fname): # Remove temp saved file if it exists
@@ -71,13 +70,12 @@ class ProcessTestCase(unittest.TestCase):
 
         self.assertEqual(read_user_data(self.data_test_user_data).to_dict(), self.ref_user_data)
 
-    @unittest.expectedFailure # TODO: Remove this once it works
     def test_fill_results_data(self):
 
         test_df_user_data = read_user_data(self.unit_converted_user_data)
-        out = fill_results_data(test_df_user_data, self.unit_converted_user_data)
 
-        self.assertEqual(out, self.ref_fill_results_data)
+        self.assertEqual(fill_results_data(test_df_user_data, self.unit_converted_user_data),
+                         self.ref_fill_results_data)
 
 
     def test_sum_results(self):
@@ -94,7 +92,9 @@ class ProcessTestCase(unittest.TestCase):
         self.assertDictEqual(result, self.data_generic_only)
 
     def test_main_process_complex(self):
-        pass
+        result = main_process(self.data_test_user_data)
+
+        self.assertDictEqual(result, self.ref_test_main_process_complex)
 
 
 
