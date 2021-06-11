@@ -145,6 +145,7 @@ settings:                         # Future-proofing for potential alternative ca
 A few configuration examples from existing missions are available in the Configs folder. 
 
 The GAIA example is taken from the GAIA-ESC-ICD-00515 ESA document. It allows to calculate the link budget of a basic uplink transmission, for the nominal case.
+
 The Delfi example is taken from the DPQ-TUD-BU-04 document. It allows to calculate the link budget of a downlink transmission of the Delfi-PQ.
 
 <a name="dev"></a>
