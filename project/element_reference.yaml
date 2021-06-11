@@ -13,7 +13,7 @@
 
 
 FREE_SPACE:
-    overall_description:    "Path loss of a signal travelling \nthrough free space"
+    overall_description:    "Path loss of a signal travelling through free space"
     parameter_set_1:
         distance:
             description:    "Distance between spacecraft and ground station"
@@ -45,7 +45,7 @@ FREE_SPACE:
             units:          "MHz"
             range:          "(0, inf)"
 ATMOSPHERIC:
-    overall_description:    "Atmospheric attenuation loss of a signal \nthrough dry and wet air in Earth's atmosphere"
+    overall_description:    "Atmospheric attenuation loss of a signal through dry and wet air in Earth's atmosphere"
     parameter_set_1:
         air_temperature:
             description:    "Surface temperature"
@@ -118,7 +118,7 @@ TX:
             units:          "MHz"
             range:          "(0, inf)"
 GENERIC:
-    overall_description:    "Summary of GENERIC element"
+    overall_description:    "A basic link element where the total gain or loss is already known. \nRequires no additional parameters."
     gain_loss:
         gain_loss:
             description:    "Overall gain of the Link Element. \n\tPositive = Gain \n\tNegative = Loss" # Must use double quotes to recognize line-break: \n
