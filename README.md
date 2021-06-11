@@ -10,6 +10,7 @@ A modular Python alternative to STK to easily calculate satellite link budgets
 ## Contents
 - [Usage](#usage)
 - [Configuration Files](#config-file)
+  * [Examples](#ex-cfg) 
 - [Development](#dev)
   * [File Structure](#file-struct)
   * [How-To: Creating a New Element](#new-elem)
@@ -142,6 +143,8 @@ settings:                         # Future-proofing for potential alternative ca
   case_type: nominal                # methods. Currently not used.
   
 ```
+<a name="ex-cfg"></a>
+### Example Configurations
 A few configuration examples from existing missions are available in the Configs folder. 
 
 The GAIA example is taken from the GAIA-ESC-ICD-00515 ESA document. It allows to calculate the link budget of a basic uplink transmission, for the nominal case.
