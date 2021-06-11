@@ -13,7 +13,7 @@
 
 
 FREE_SPACE:
-    overall_description:    "Path loss of a signal travelling \n through free space"
+    overall_description:    "Path loss of a signal travelling \nthrough free space"
     parameter_set_1:
         distance:
             description:    "Distance between spacecraft and ground station"
@@ -27,7 +27,7 @@ FREE_SPACE:
         elevation_angle:
             description:    "Spacecraft elevation from ground station horizon"
             units:          "deg"
-            range:          "(0,90)"
+            range:          "(0, 90)"
         distance:
             description:    "Slant range between spacecraft and ground station"
             units:          "km"
@@ -45,7 +45,7 @@ FREE_SPACE:
             units:          "MHz"
             range:          "(0, inf)"
 ATMOSPHERIC:
-    overall_description:    "Atmospheric attenuation loss of a signal \n through dry and wet air in Earth's atmosphere"
+    overall_description:    "Atmospheric attenuation loss of a signal \nthrough dry and wet air in Earth's atmosphere"
     parameter_set_1:
         air_temperature:
             description:    "Surface temperature"
@@ -109,7 +109,7 @@ TX:
             description:    "Radio frequency"
             units:          "MHz"
             range:          "(0, inf)"
-     parameter_set_2:
+    parameter_set_2:
         waist_radius:
             description:    "measure of antenna propagated Gaussian beam at point of its focus"
             units:          "m"
