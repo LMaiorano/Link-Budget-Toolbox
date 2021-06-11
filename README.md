@@ -47,7 +47,7 @@ python main.py
 ```
 
 Alternatively, if a configuration file is already present, the link budget calculation
-can be run as a CLI script using the <nobr>`-s`</nobr> flag. The path to the YAML config can be specified with the `-f <filepath>` argument. 
+can be run as a shell script using the <nobr>`-s`</nobr> flag. The path to the YAML config can be specified with the `-f <filepath>` argument. 
 
 ```shell script
 python main.py -s -f "project/configs/demo.yaml"
