@@ -119,6 +119,20 @@ def fill_results_data(df_user_data, user_data):
 
 
 def sum_results(data):
+    '''Calculates total gain of processed elements
+
+    Additionally calculates the total margin and output power
+
+    Parameters
+    ----------
+    data : dict
+        Config dictionary as produced by the main analysis
+
+    Returns
+    -------
+    None
+        Modifies data in-place
+    '''
     elements = data['elements']
 
     # Calculate gain/loss sum
@@ -127,10 +141,11 @@ def sum_results(data):
     for attributes in elements.values():
         gain_sum += attributes['gain_loss']
 
-
+    # Calculate output power
     output_power = data['general_values']['input_power'] + gain_sum
     margin = data['general_values']['rx_sys_threshold'] - output_power
 
+    # Update values in dict
     data['general_values']['total_margin'] = margin
     data['general_values']['total_gain'] = gain_sum
     data['general_values']['output_power'] = output_power
