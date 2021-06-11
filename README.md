@@ -7,13 +7,17 @@
 A modular Python alternative to STK to easily calculate satellite link budgets
 
 
-## TODO Checklist:
-- [ ] Review all entries in element_reference.yaml
-- [ ] Proofread ReadMe
+## Contents
+- [Usage](#usage)
+- [Configuration Files](#config-file)
+- [Development](#dev)
+  * [File Structure](#file-struct)
+  * [How-To: Creating a New Element](#new-elem)
+  * [Element Reference File](#ref-file)
 
 
 
-
+<a name="usage"></a>
 ## Usage
 To work/use Link Budget Toolbox locally:
 #### Clone and Setup Environment:
@@ -66,7 +70,7 @@ optional arguments:
 
 ```
 
-
+<a name="config-file"></a>
 ## Link Budget Configuration Files
 
 It is __strongly__ recommended to use the GUI to create new configuration files. This will ensure that all entries are properly formatted and contain the required attributes.
@@ -139,10 +143,11 @@ settings:                         # Future-proofing for potential alternative ca
   
 ```
 
-
+<a name="dev"></a>
 # Development
 
-## Directory Structure
+<a name="file-struct"></a>
+## File Structure
 The project is organized as follows:
 
 ```
@@ -157,7 +162,7 @@ Link-Budget-Toolbox/
  ┃ ┗ test/                   # Verification unittests (automated GitHub actions) 
  ┗ main.py                   # Main file to run the Link Budget Toolbox
 ```
-
+<a name="new-elem"></a>
 ## How-To: Creating a New Element
 New element types can be added using the steps below. The GUI dynamically loads these elements, and therefore does not need modification.
 
@@ -171,6 +176,7 @@ New element types can be added using the steps below. The GUI dynamically loads 
 8. In the process method, check which parameter_set_# is to be used and call the specific required class methods to calculate the gain per parameter_set_#
 9. For any parameter_set_#, define the required methods to calculate the gain with
 10. Finally convert per calculation the gain to decibels using the LinkElement.dB(value) method and then update the new LINKTYPE_LinkElement.gain
+
 
 ### Example Link Element
 ```python
@@ -224,7 +230,7 @@ if __name__ == '__main__':
 | link_type  	|  The prefix of the LinkElement class name. This specifies which type of element needs to be constructed during the analysis. Possible values are specified in `element_reference.yaml` | ALL_CAPS (required)  	|
 | input_type 	| Which parameter set is to be used. This depends on the Link Type, and can be referenced in `element_reference.yaml` 	| lower_case no spaces 	|
 
-
+<a name="ref-file"></a>
 ## Element Reference File:
 Found at `project/element_reference.yaml`
 This is used for the backend, to define for each `link_type` an overall description and available parameter sets. Per parameter_set, the following properties are defined:
