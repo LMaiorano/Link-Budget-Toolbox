@@ -66,7 +66,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -d, --debug           GUI app only: Print debug statements to terminal
   -s, --script          Run as CLI script. Does not open GUI
-  -f FILE, --file FILE  Link Budget configuration file (YAML)
+  -f FILE, --file FILE  Link Budget configuration file (YAML) (optional)
 
 ```
 
@@ -166,7 +166,7 @@ Link-Budget-Toolbox/
 ## How-To: Creating a New Element
 New element types can be added using the steps below. The GUI dynamically loads these elements, and therefore does not need modification.
 
-1. Create a new linktype_link_element.py file, replacing "linktype" with the type of link element that is being created
+1. Create a new LINKTYPE_link_element.py file
 2. Import the LinkElement parent class
 3. Create the LINKTYPE_LinkElement(LinkElement) childclass
 4. Initialize the class, requiring a name, input_type, gain and a parameters dictionary
@@ -183,15 +183,15 @@ New element types can be added using the steps below. The GUI dynamically loads 
 from project.link_element import LinkElement
 # import other packages here
 
-class EXAMPLE_LinkElement(LinkElement):
+class RX_LinkElement(LinkElement):
     def __init__(self, name, input_type, gain, parameters):
         # Run the initialization of parent LinkElement
-        super().__init__(name, linktype='EXAMPLE', gain = gain)
+        super().__init__(name, linktype='RX', gain = gain)
 
-        # Add attributes that are unique to EXAMPLE_LinkElement
+        # Add attributes that are unique to Rx_LinkElement
         self.input_type = input_type
 
-        # Add attributes that are unique parameters to EXAMPLE_LinkElement
+        # Add attributes that are unique parameters to RxElement
         self.param_a = parameters.get('param_a', None)
         self.param_b = parameters.get('param_b', None)
         self.param_c = parameters.get('param_c', None)
@@ -222,7 +222,7 @@ if __name__ == '__main__':
                       'wavelength':1550e-9,
                       'waist_radius': 24.7e-3}
 
-    ex_le = EXAMPLE_LinkElement(elem_name, 'parameter_set_2', None, testparameters)
+    rx_le = RX_LinkElement(elem_name, 'parameter_set_2', None, testparameters)
 ```
 ### Definitions:
 |            	|                                                        Description                                                         	|   Naming Convention  	|
