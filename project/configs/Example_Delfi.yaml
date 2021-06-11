@@ -1,0 +1,56 @@
+elements:
+  Dry Air Attenuation:
+    gain_loss: -0.01
+    idx: 5
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  Ionospheric Losses:
+    gain_loss: -0.2
+    idx: 6
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  Path Loss:
+    gain_loss: null
+    idx: 3
+    input_type: parameter_set_2
+    link_type: FREE_SPACE
+    parameters:
+      distance: 1656.18
+      elevation_angle: 5.0
+      frequency: 437.0
+      gs_altitude: 0.0
+      sc_altitude: 350.0
+  Pointing Loss:
+    gain_loss: -0.1
+    idx: 7
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  Polarization Mismatch:
+    gain_loss: -3.0
+    idx: 4
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  TX Antenna Gain:
+    gain_loss: -5.0
+    idx: 2
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+  TX Total Losses:
+    gain_loss: -0.2
+    idx: 1
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+general_values:
+  input_power: 23.98
+  output_power: -134.16958188393968
+  rx_sys_threshold: -130.0
+  total_gain: -158.14958188393967
+  total_margin: 4.169581883939685
+settings:
+  case_type: nominal
