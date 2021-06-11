@@ -3,7 +3,7 @@ import filecmp
 import os
 from pathlib import Path
 from project.process import read_user_data, fill_results_data, load_from_yaml, \
-    main_process, save_to_yaml
+    main_process, save_to_yaml, sum_results
 
 
 class ProcessTestCase(unittest.TestCase):
@@ -21,8 +21,9 @@ class ProcessTestCase(unittest.TestCase):
         self.unit_converted_user_data = load_from_yaml(f'{self.cwd}/ref_data/unit_converted_user_data.yaml')
         self.ref_fill_results_data = load_from_yaml(f'{self.cwd}/ref_data/ref_fill_results_data.yaml')
 
-        self.ref_test_main_process_complex = load_from_yaml(f'{self.cwd}/ref_data/ref_test_main_process_complex.yaml')
+        self.ref_sum_results_data = load_from_yaml(f'{self.cwd}/ref_data/ref_sum_results_data.yaml')
 
+        self.ref_test_main_process_complex = load_from_yaml(f'{self.cwd}/ref_data/ref_test_main_process_complex.yaml')
 
     def tearDown(self):
         if os.path.exists(self.tmp_fname): # Remove temp saved file if it exists
@@ -45,7 +46,6 @@ class ProcessTestCase(unittest.TestCase):
                     }
         self.assertDictEqual(self.data_bare_minimum, ref_data)
 
-
     def test_save_to_yaml(self):
         ref_data = {"elements": {"test_element": {"input_type": "parameter_set_1",
                                                   "link_type": "FREE_SPACE",
@@ -65,7 +65,6 @@ class ProcessTestCase(unittest.TestCase):
 
         # tearDown automatically removes this file after running
 
-
     def test_read_user_data(self):
 
         self.assertEqual(read_user_data(self.data_test_user_data).to_dict(), self.ref_user_data)
@@ -79,7 +78,10 @@ class ProcessTestCase(unittest.TestCase):
 
 
     def test_sum_results(self):
-        pass
+        input = self.ref_fill_results_data
+        sum_results(input)
+
+        assert(sum_results(input), self.ref_sum_results_data)
 
     def test_main_process_basic(self):
         result = main_process(self.data_generic_only)
@@ -95,8 +97,6 @@ class ProcessTestCase(unittest.TestCase):
         result = main_process(self.data_test_user_data)
 
         self.assertDictEqual(result, self.ref_test_main_process_complex)
-
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -58,7 +58,7 @@ def read_user_data(user_data):
         Dictionary which gives along its rows per link element the link element name, link type, input type,
         gain loss and parameters, based on the user input in the dictionary user_data
     '''
-
+    # Convert the link elements of user_data to a dataframe by its columns
     df_user_data = pd.DataFrame.from_dict(user_data['elements']).T.reset_index().rename(columns={'index' : 'name'})
 
     return df_user_data
@@ -78,17 +78,16 @@ def fill_results_data(df_user_data, user_data):
     results_data : dict
         User_data dictionary which has been updated with the calculated gains/losses
     '''
-
+    # Create the results_data dict from the user_data dict
     results_data = user_data
 
-    for i in range(len(df_user_data)):
-        # calculation step
-
+    for i in range(len(df_user_data)): # Go through the rows of the dataframe (user data link elements)
+        # Calculate the gain/loss for the link element
         link_type = df_user_data.get("link_type")[i]
         link_class = f'{link_type}_LinkElement'
 
-
-        if link_type == 'GENERIC':     # Generic (parent) link element class, takes 3 arguments
+        # Check what link type is given and get the gain/loss from the respective link element class
+        if link_type == 'GENERIC': # Generic (parent) link element class, takes 3 arguments
             link_class = f'LinkElement'
             result_gain_loss = (eval('le.' + link_class +
                                      '(df_user_data.get("name")[i], \
@@ -102,14 +101,14 @@ def fill_results_data(df_user_data, user_data):
                                      df_user_data.get("gain_loss")[i], \
                                      dict())')).gain
 
-        else:           # All other link elements with parameters given
+        else: # All other link elements with parameters given
             result_gain_loss = (eval('le.' + link_class +
                                      '(df_user_data.get("name")[i], \
                                      df_user_data.get("input_type")[i],\
                                      df_user_data.get("gain_loss")[i], \
                                      df_user_data.get("parameters")[i])')).gain
 
-        #update step
+        # Update the gain/loss in the results data dictionary
         results_data['elements'][df_user_data.get("name")[i]]["gain_loss"] = result_gain_loss
 
     return results_data
@@ -178,9 +177,7 @@ def main_process(user_data):
 if __name__ == '__main__':
 
     default_file = Path(CONFIGS_DIR, 'example_config.yaml')
-
     data = load_from_yaml(default_file)
-
     main_process(data)
 
 

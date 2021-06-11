@@ -1,0 +1,35 @@
+elements:
+  Free Space:
+    gain_loss: -113.73752927876805
+    idx: 3
+    input_type: parameter_set_2
+    link_type: FREE_SPACE
+    parameters:
+      elevation_angle: 10.0
+      distance: 1500000.0
+      gs_altitude: 0.0
+      sc_altitude: 300000.0
+      wavelength: 29.9792458
+  GS RX Ant:
+    gain_loss: -0.5625167347564372
+    idx: 1
+    input_type: parameter_set_1
+    link_type: RX
+    parameters:
+      antenna_diameter: 1.0
+      antenna_efficiency: 0.8
+      wavelength: 2.99792458
+  SC TX Ant:
+    gain_loss: 10.0
+    idx: 2
+    input_type: gain_loss
+    link_type: GENERIC
+    parameters: null
+general_values:
+  input_power: 65
+  rx_sys_threshold: 6
+  total_gain: -104.3000460135245
+  total_margin: 45.300046013524494
+  output_power: -39.300046013524494
+settings:
+  case_type: nominal
