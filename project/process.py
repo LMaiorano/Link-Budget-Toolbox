@@ -78,8 +78,6 @@ def fill_results_data(df_user_data, user_data):
     results_data : dict
         User_data dictionary which has been updated with the calculated gains/losses
     '''
-    # user_data = load_from_yaml('test/ref_data/unit_converted_user_data.yaml')
-    # df_user_data = read_user_data(user_data)
 
     results_data = user_data
 
@@ -114,7 +112,6 @@ def fill_results_data(df_user_data, user_data):
         #update step
         results_data['elements'][df_user_data.get("name")[i]]["gain_loss"] = result_gain_loss
 
-        # save_to_yaml(df_user_data.to_dict(), 'test/ref_data/ref_fill_results_data')
     return results_data
 
 
